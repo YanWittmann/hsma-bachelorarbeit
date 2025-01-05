@@ -1,4 +1,4 @@
-**Thesis topic:** Improving Software Product Identification for Vulnerability Management
+## Improving Software Product Identification for Vulnerability Management
 
 1. **Strengths of the Proposed Approach**:
     * **Relevance**: The topic addresses a tangible, real-world problem, making your work directly applicable and
