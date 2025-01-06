@@ -1,0 +1,1 @@
+wsl pandoc %1.md -o %1.pdf --pdf-engine=xelatex -V linkcolor=blue

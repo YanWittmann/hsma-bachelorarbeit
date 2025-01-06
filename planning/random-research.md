@@ -1,4 +1,4 @@
-- Analyse was es für formate gibt um produkte zu identifizieren
+- Analyse was es für formate gibt, um produkte zu identifizieren
 - Analyse was es für Tools gibt die auch schwachstellen scans und damit auch produktidentifikation machen
 
 ---
@@ -15,7 +15,7 @@ DependencyVersion # public int compareTo(@NotNull DependencyVersion version) {
     - [Software-Identification-Ecosystem-Option-Analysis-508c.pdf](ref/Software-Identification-Ecosystem-Option-Analysis-508c.pdf)
 - Graph-Based CPE Matching for Identification of Vulnerable Asset Configurations
     - [Graph-Based CPE Matching for Identification of Vulnerable Asset Configurations.pdf](ref/Graph-Based%20CPE%20Matching%20for%20Identification%20of%20Vulnerable%20Asset%20Configurations.pdf)
-- Universal-Software-Product-Indentity
+- Universal-Software-Product-Indentity (Thomas Schmidt, FIRSTCON23)
     - https://www.first.org/resources/papers/conf2023/FIRSTCON23-TLPCLEAR-Schmidt-Manion-Universal-Software-Product-Indentity.pdf
     - [FIRSTCON23-TLPCLEAR-Schmidt-Manion-Universal-Software-Product-Indentity.pdf](ref/FIRSTCON23-TLPCLEAR-Schmidt-Manion-Universal-Software-Product-Indentity.pdf)
     - https://www.karlton.org/2017/12/naming-things-hard/
