@@ -1,11 +1,12 @@
 ---
 geometry: margin=1.5in
+fontsize: 11pt
 ---
 
 # Bachelorarbeit Yan Wittmann
 
 > an der Hochschule Mannheim, Fakultät für Informatik, im SS2025  
-> in Kooperation mit der metaeffekt GmbH
+> in Kooperation mit der metaeffekt GmbH.
 
 ## Hintergrund
 
