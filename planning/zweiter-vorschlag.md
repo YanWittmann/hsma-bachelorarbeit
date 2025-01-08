@@ -3,7 +3,7 @@ geometry: margin=1.5in
 fontsize: 11pt
 ---
 
-# Bachelorarbeit von Yan Wittmann
+# Expose der Bachelorarbeit von Yan Wittmann
 
 > an der Hochschule Mannheim, Fakultät für Informatik, im SS2025  
 > in Kooperation mit der [metaeffekt GmbH](https://metaeffekt.com).
@@ -11,7 +11,8 @@ fontsize: 11pt
 ## Hintergrund
 
 Die [metaeffekt GmbH](https://metaeffekt.com) entwickelt eine Software zur automatisierten Identifikation von
-Schwachstellen in Softwareprodukten, die frei unter einer offenen Lizenz verfügbar ist.
+Schwachstellen in Softwareprodukten,
+die [frei unter einer offenen Lizenz verfügbar](https://github.com/org-metaeffekt) ist.
 Ein langfristiges Ziel ist die vollständige Automatisierung der Schwachstellenidentifikation.
 
 Für die Schwachstellenzuordnung werden öffentlich zugängliche Datenquellen wie die NVD, OSV-Datenbanken und
