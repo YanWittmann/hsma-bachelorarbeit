@@ -1,0 +1,1 @@
+https://raw.githubusercontent.com/scanoss/purl2cpe/refs/heads/main/purl2cpe.db.zip
