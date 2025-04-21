@@ -1,0 +1,14 @@
+Plagiate: https://www.plagscan.com/de
+
+Gliederungsempfehlung
+- Abstract: Eine sehr kurze (wenige Zeilen) Beschreibung, worum es in der Arbeit geht
+- (optional) Executive Summary: Eine für sich alleine lesbare Zusammenfassung der Arbeit und deren Ergebnisse.
+- Einleitung: Motivation, Aufgabenstellung/Zielsetzung, Aufbau der Arbeit
+- Grundlagen und Definitionen
+- Verwandte Arbeiten (ggf. als Teil von 2)
+- ggf: Problem und Anforderungsanalyse
+- Konzept / Lösungsansatz / (Auswahl der) Methoden
+- falls relevant: Implementierung / Anwendungsbeispiel
+- Validierung, Nachweis der Richtigkeit (z.B. durch Experimente und Ergebnisse)
+- Diskussion, Bewertung (von Alternativen, der Validierung; evtl. dort integriert)
+- Zusammenfassung und Ausblick
