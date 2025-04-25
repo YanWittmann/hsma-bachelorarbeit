@@ -35,6 +35,7 @@ Other websites and projects
 
 - [OWASP Web Security Testing Guide's "Naming Schemes": describes SWID, CPE, and PURL to uniquely identify software vulnerabilities](https://owasp.org/www-project-web-security-testing-guide/latest/5-Reporting/02-Naming_Schemes)
 - [How does OSS Index manage to map these CVEs to Maven packages, as from a quick glance nothing in the CVEs looks like (complete) Maven coordinates](https://github.com/aboutcode-org/vulnerablecode/issues/279#issuecomment-740439444)
+- [national software reference library nsrl](https://www.nist.gov/itl/ssd/software-quality-group/national-software-reference-library-nsrl/nsrl-download/current-rds)
 
 ---
 
@@ -58,3 +59,22 @@ und:
 
 Automatisiertes Schwachstellen-Matching Optimierung - Deep Research
 https://chatgpt.com/share/68063fc6-3d68-8006-b0f9-0d9f57172a2e
+
+---
+
+Questions to look into:
+
+- Origin Question: How can we find out what vulnerabilities our software (which uses other software) has?
+- How does the law surrounding software supply chain security handle SBOM / software lists?
+- There are X many projects, but only Y many maintainers on average
+    - extremely hard to make EVERYONE comply with including information about their software unless forced
+    - they have little time or no longer maintained
+    - https://www.intel.com/content/www/us/en/developer/articles/guide/the-careful-consumption-of-open-source-software.html
+
+---
+
+→ Why is CPE bad in the first place?
+
+- https://trackd.com/cpe-data-and-false-positives-in-vulnerability-management
+- https://vulners.com/blog/navigating-uncertainty-nvd-cpe-delays
+- https://www.linkedin.com/pulse/cve-nvd-doesnt-work-open-source-supply-chain-security-mark-curphey
