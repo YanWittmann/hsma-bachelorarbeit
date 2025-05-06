@@ -64,7 +64,6 @@ https://chatgpt.com/share/68063fc6-3d68-8006-b0f9-0d9f57172a2e
 
 Questions to look into:
 
-- Origin Question: How can we find out what vulnerabilities our software (which uses other software) has?
 - How does the law surrounding software supply chain security handle SBOM / software lists?
 - There are X many projects, but only Y many maintainers on average
     - extremely hard to make EVERYONE comply with including information about their software unless forced

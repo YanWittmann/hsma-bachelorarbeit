@@ -7,10 +7,15 @@
 ### Innere Konsistenz
 
 - Es darf keine losen Knoten geben
+- Jedes Artefakt was von außen zur identifikation reingeschickt wird, muss GENAU EIN Produkt gefunden werden
 
 ### Datensatz erklärt sich selbst
+
+- Jeder Knoten (Produktidentifikation, Gruppierung, ...) muss eine Erklärung angehängt haben, die ihre Richtigkeit
+  erklärt
+- Hier wäre eine Maschinen-auswertbare Form interessant (see reason editor)
 
 ## Wie kann für die Zukunft gesichert werden, dass die Qualität konsistent bleibt?
 
 - Durch das Anlegen eines immer weiter wachsenden Datensatzes:
-  - Jeder Datensa
+    - Jeder Datensatz der manuell
