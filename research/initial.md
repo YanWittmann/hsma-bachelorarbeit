@@ -77,3 +77,8 @@ Questions to look into:
 - https://trackd.com/cpe-data-and-false-positives-in-vulnerability-management
 - https://vulners.com/blog/navigating-uncertainty-nvd-cpe-delays
 - https://www.linkedin.com/pulse/cve-nvd-doesnt-work-open-source-supply-chain-security-mark-curphey
+
+---
+
+Produkt vs Repräsentation eines Produktes
+kommt auf _fast_ das Gleiche raus wie das name != identity Problem oben glaube ich?

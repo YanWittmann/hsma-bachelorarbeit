@@ -18,4 +18,4 @@
 ## Wie kann für die Zukunft gesichert werden, dass die Qualität konsistent bleibt?
 
 - Durch das Anlegen eines immer weiter wachsenden Datensatzes:
-    - Jeder Datensatz der manuell
+    - Jeder Datensatz der manuell durchgeschickt wird
