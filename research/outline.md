@@ -3,34 +3,32 @@
 # Produktidentifikation und Korrelationsformate in der Schwachstellenanalyse
 
 <!-- TOC -->
-
 * [Produktidentifikation und Korrelationsformate in der Schwachstellenanalyse](#produktidentifikation-und-korrelationsformate-in-der-schwachstellenanalyse)
-    * [Abstract](#abstract)
-    * [Einleitung](#einleitung)
-        * [Hintergrund und Motivation](#hintergrund-und-motivation)
-        * [Zielsetzung und Forschungsfrage(n)](#zielsetzung-und-forschungsfragen)
-        * [Aufbau der Arbeit](#aufbau-der-arbeit)
-    * [Hauptteil](#hauptteil)
-        * [Stand der Technik](#stand-der-technik)
-            * [Interne Produktmodellierung (metaeffekt)](#interne-produktmodellierung-metaeffekt)
-            * [Produktidentifikationsstandards und relevante Formate](#produktidentifikationsstandards-und-relevante-formate)
-            * [Analyse bestehender Produkt-Mapping Algorithmen](#analyse-bestehender-produkt-mapping-algorithmen)
-        * [Analyse des metaeffekt-Schwachstellenscanners](#analyse-des-metaeffekt-schwachstellenscanners)
-        * [Verwandte Arbeiten](#verwandte-arbeiten)
-            * [Aktuelles Korrelationsformat](#aktuelles-korrelationsformat)
-            * [Schwächen und Herausforderungen des aktuellen Korrelationsformats](#schwächen-und-herausforderungen-des-aktuellen-korrelationsformats)
-        * [Anforderungen an das neue YAML-Korrelationsformat](#anforderungen-an-das-neue-yaml-korrelationsformat)
-        * [Konzeption und Implementierung des neuen Formats](#konzeption-und-implementierung-des-neuen-formats)
-            * [Modellierungsansatz für Produktidentifikation](#modellierungsansatz-für-produktidentifikation)
-            * [Implementierung und Integration](#implementierung-und-integration)
-            * [Beispielhafte Anwendung](#beispielhafte-anwendung)
-        * [Evaluation](#evaluation)
-            * [Evaluationsmethodik](#evaluationsmethodik)
-            * [Ergebnisse und Diskussion](#ergebnisse-und-diskussion)
-    * [Schluss](#schluss)
-        * [Zusammenfassung der Arbeit](#zusammenfassung-der-arbeit)
-        * [Ausblick](#ausblick)
-
+  * [Abstract](#abstract)
+  * [Einleitung](#einleitung)
+    * [Hintergrund und Motivation](#hintergrund-und-motivation)
+    * [Zielsetzung und Forschungsfrage(n)](#zielsetzung-und-forschungsfragen)
+    * [Aufbau der Arbeit](#aufbau-der-arbeit)
+  * [Grundlagen](#grundlagen)
+    * [Produktidentifikationsstandards und relevante Formate](#produktidentifikationsstandards-und-relevante-formate)
+    * [Analyse bestehender Produkt-Mapping Algorithmen](#analyse-bestehender-produkt-mapping-algorithmen)
+    * [Interne Produktmodellierung (metaeffekt)](#interne-produktmodellierung-metaeffekt)
+    * [Analyse des metaeffekt-Schwachstellenscanners](#analyse-des-metaeffekt-schwachstellenscanners)
+  * [Anforderungen an das neue Korrelationsformat](#anforderungen-an-das-neue-korrelationsformat)
+    * [Aktuelles Korrelationsformat](#aktuelles-korrelationsformat)
+    * [Schwächen und Herausforderungen des aktuellen Korrelationsformats](#schwächen-und-herausforderungen-des-aktuellen-korrelationsformats)
+    * [Auflistung der Anforderungen](#auflistung-der-anforderungen)
+  * [Konzeption und Implementierung des neuen Formats](#konzeption-und-implementierung-des-neuen-formats)
+    * [Design](#design)
+    * [Implementierung und Integration](#implementierung-und-integration)
+    * [Beispielhafte Anwendung](#beispielhafte-anwendung)
+  * [Evaluation](#evaluation)
+    * [Evaluationsmethodik](#evaluationsmethodik)
+    * [Ergebnisse](#ergebnisse)
+    * [Diskussion](#diskussion)
+  * [Schluss](#schluss)
+    * [Zusammenfassung der Arbeit](#zusammenfassung-der-arbeit)
+    * [Ausblick](#ausblick)
 <!-- TOC -->
 
 ## Abstract
@@ -51,6 +49,8 @@ jederzeit darüber Auskunft geben zu können.
 
 Das bisher verwendete Korrelationsformat verursacht sowohl intern als auch extern einige Leidenspunkte, die wir mit
 einer neuen Version beheben wollen.
+
+[2025 Open Source Security and Risk Analysis Report.md](2025%20Open%20Source%20Security%20and%20Risk%20Analysis%20Report.md)
 
 ### Zielsetzung und Forschungsfrage(n)
 
@@ -87,6 +87,9 @@ Wenn man einen solchen Graphen erst einmal aufgestellt hat, dann können auch we
 Schwachstellen-Scanning-Kontexts beantwortet werden: Etwa welchen End of Life-Identifier ein Produkt hat.
 Natürlich gibt es weitere Komplexitäten mit komplexeren Produktverhältnissen, ist als Startpunkt gedacht.
 
+Zusätzlich stellt sich die Frage, wie dieser Graph automatisch durch diverse Datenquellen genährt werden kann, sodass
+nicht mit einer komplett leeren Darstellung gestartet werden muss, sondern einige Daten bereits vorhanden wären.
+
 ### Aufbau der Arbeit
 
 - Zunächst werden die unterschiedlichen Formate vorgestellt, die die metaeffekt in diesem Kontext berühren
@@ -97,11 +100,51 @@ Natürlich gibt es weitere Komplexitäten mit komplexeren Produktverhältnissen,
   dieses geprüft werden kann und der Ansatz für die Implementierung erklärt
 - Abschließend wird noch die Implementierung vorgestellt und anhand von den Qualitätsmetriken geprüft.
 
-## Hauptteil
+## Grundlagen
 
-### Stand der Technik
+### Produktidentifikationsstandards und relevante Formate
 
-#### Interne Produktmodellierung (metaeffekt)
+Nach [Software Identification Ecosystem Option Analysis](https://www.cisa.gov/sites/default/files/2023-10/Software-Identification-Ecosystem-Option-Analysis-508c.pdf)
+gibt es zwei Arten von Produkt-Identifiers:
+
+**Inherent Identifiers**:  
+ergeben sich ausschließlich aus den Eigenschaften eines Paketes, die Kennzeichnung kann ohne
+weitere Parteien aus dem Inhalt direkt abgeleitet werden. Sie werden von keiner Authority definiert.
+In der Forschungsarbeit sprechen sie hier ausschließlich von Hashes und Hash-Techniken, die auf eine lokale Datei oder
+ein Verzeichnis angewandt werden können.  
+Leider enthalten die wenigsten Schwachstelldatenbanken konsistent nützliche Matching-Informationen in Form von Hashes,
+und es kommt für uns nicht infrage, erst alle Software-Pakete der Welt zu hashen und zu diesen die entsprechenden
+anderen Repräsentationen zuzuordnen.  
+Daher ist diese Art von Identifier nicht zu nützlich in unserem Kontext.
+
+**Defined Identifiers**:
+eerden entweder von einer Authority verwegen (CPE, MS-Product Ids, etc.), oder ergeben sich aus einer Kombination aus
+intrinsischen Eigenschaften eines Pakets und einer weiteren externen Information, wie bei PURL mit den Paket-Managern.
+Diese Art wird von allen Quellen in irgendeiner Form unterstützt, daher wird der Fokus auf diesen liegen.
+
+Im Anschluss zu dieser ersten Einordnung werden die Formate vorgestellt, die im Laufe der Arbeit relevanz finden.
+Diese Formate werden in irgendeiner Form von allen Schwachstell- oder anderen Produkt-zentrischen Datenbanken verwendet
+und sind damit für uns wichtig zu erknennen.
+
+Formate:
+
+- CPE, PURL
+- OSV, CSAF
+- MSRC-Product Ids, EOL Ids
+- Hashes
+- ...
+
+weitere werden im Laufe der Analyse festgestellt.
+
+### Analyse bestehender Produkt-Mapping Algorithmen
+
+Vorstellen von existierenden Algorithmen, die versuchen zu Produkten eine CPE oder andere Repräsentationen zuzuordnen.
+
+- [DependencyCheck](https://github.com/dependency-check/DependencyCheck/blob/29fb1112845dd7130b6de03382c5a3c6f672a41c/core/src/main/java/org/owasp/dependencycheck/analyzer/CPEAnalyzer.java#L261)
+
+weitere werden im Laufe der Analyse festgestellt.
+
+### Interne Produktmodellierung (metaeffekt)
 
 https://github.com/org-metaeffekt/metaeffekt-core/blob/master/libraries/ae-inventory-processor/src/main/java/org/metaeffekt/core/inventory/processor/model/Inventory.java  
 Die metaeffekt verwendet ein proprietäres Format ("Inventory"), um Software-Komponenten, Schwachstellen und weitere
@@ -168,48 +211,6 @@ Interne Tickets:
 - https://metaeffekt.atlassian.net/browse/AE-556
 -->
 
-#### Produktidentifikationsstandards und relevante Formate
-
-Nach [Software Identification Ecosystem Option Analysis](https://www.cisa.gov/sites/default/files/2023-10/Software-Identification-Ecosystem-Option-Analysis-508c.pdf)
-gibt es zwei Arten von Produkt-Identifiers:
-
-**Inherent Identifiers**:  
-ergeben sich ausschließlich aus den Eigenschaften eines Paketes, die Kennzeichnung kann ohne
-weitere Parteien aus dem Inhalt direkt abgeleitet werden. Sie werden von keiner Authority definiert.
-In der Forschungsarbeit sprechen sie hier ausschließlich von Hashes und Hash-Techniken, die auf eine lokale Datei oder
-ein Verzeichnis angewandt werden können.  
-Leider enthalten die wenigsten Schwachstelldatenbanken konsistent nützliche Matching-Informationen in Form von Hashes,
-und es kommt für uns nicht infrage, erst alle Software-Pakete der Welt zu hashen und zu diesen die entsprechenden
-anderen Repräsentationen zuzuordnen.  
-Daher ist diese Art von Identifier nicht zu nützlich in unserem Kontext.
-
-**Defined Identifiers**:
-eerden entweder von einer Authority verwegen (CPE, MS-Product Ids, etc.), oder ergeben sich aus einer Kombination aus
-intrinsischen Eigenschaften eines Pakets und einer weiteren externen Information, wie bei PURL mit den Paket-Managern.
-Diese Art wird von allen Quellen in irgendeiner Form unterstützt, daher wird der Fokus auf diesen liegen.
-
-Im Anschluss zu dieser ersten Einordnung werden die Formate vorgestellt, die im Laufe der Arbeit relevanz finden.
-Diese Formate werden in irgendeiner Form von allen Schwachstell- oder anderen Produkt-zentrischen Datenbanken verwendet
-und sind damit für uns wichtig zu erknennen.
-
-Formate:
-
-- CPE, PURL
-- OSV, CSAF
-- MSRC-Product Ids, EOL Ids
-- Hashes
-- ...
-
-weitere werden im Laufe der Analyse festgestellt.
-
-#### Analyse bestehender Produkt-Mapping Algorithmen
-
-Vorstellen von existierenden Algorithmen, die versuchen zu Produkten eine CPE oder andere Repräsentationen zuzuordnen.
-
-- [DependencyCheck](https://github.com/dependency-check/DependencyCheck/blob/29fb1112845dd7130b6de03382c5a3c6f672a41c/core/src/main/java/org/owasp/dependencycheck/analyzer/CPEAnalyzer.java#L261)
-
-weitere werden im Laufe der Analyse festgestellt.
-
 ### Analyse des metaeffekt-Schwachstellenscanners
 
 Vorstellen der Logik, die aktuell bei der metaeffekt dazu verwendet wird, um zu Artefakten die entsprechenden CPEs zu
@@ -224,18 +225,16 @@ Hierrauf liegt allerdings nicht der Fokus und es werden höchstwahrscheinlich eh
 die relevant sind, wie sie verwendet werden, woher sie kommen und erklärt welche Merkmale sie haben müssen, um nützlich
 zu sein.
 
-### Verwandte Arbeiten
+## Anforderungen an das neue Korrelationsformat
 
-TBD
-
-#### Aktuelles Korrelationsformat
+### Aktuelles Korrelationsformat
 
 - Die Notwendigkeit und der Ursprung des Formats begründen
 - Erklären des YAML-Formats und die Funktionsweise
 - Zeigen eines Beispiels
 - Ausmaße des aktuellen Korrelationsdatensets (Anzahl Einträge, Produkte, ...)
 
-#### Schwächen und Herausforderungen des aktuellen Korrelationsformats
+### Schwächen und Herausforderungen des aktuellen Korrelationsformats
 
 In diesem Kapitel wird eine große Liste an Problemen aufgeführt, die ich und meine Kollegen mit dem Format
 aus einer Nutzerperspektive (Erstellung, Pflege) und aus Prozesssicht haben.
@@ -245,7 +244,7 @@ mit dem aktuellen Wissensstand konsolidiert und entsprechend erweitert.
 
 <!-- Internal Link: https://metaeffekt.atlassian.net/wiki/spaces/KM/pages/3037888514/TBD+New+Correlation+System -->
 
-### Anforderungen an das neue YAML-Korrelationsformat
+### Auflistung der Anforderungen
 
 Aus den Herausforderungen des vorherigen Kapitels werden in diesem Kapitel zunächst einmal einige nichtfunktionale
 Anforderungen abgeleitet.
@@ -263,26 +262,28 @@ Unter anderem gibt hier diese Ansätze:
   gegeben sein, dass die Identifikation eines bekannten Produktes nicht einfach so ändern kann, ohne, dass man es
   mitbekommen würde.
 
-### Konzeption und Implementierung des neuen Formats
+## Konzeption und Implementierung des neuen Formats
 
-#### Modellierungsansatz für Produktidentifikation
+### Design
 
 Aus den Anforderungen, der Literaturrecherche, der Format-analyse und Analyse von anderen Systemen wird hier konkret das
 neue Identifikationssystem aufgebaut.
 
-#### Implementierung und Integration
+### Implementierung und Integration
 
 Implementierungsdetails.
 
-#### Beispielhafte Anwendung
+### Beispielhafte Anwendung
 
 Anhand eines/mehreren konkreten Testfällen zeigen, wie die neuen Zuordnungen funktionieren.
 
-### Evaluation
+## Evaluation
 
-#### Evaluationsmethodik
+### Evaluationsmethodik
 
-#### Ergebnisse und Diskussion
+### Ergebnisse
+
+### Diskussion
 
 ## Schluss
 
