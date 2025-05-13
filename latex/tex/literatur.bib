@@ -35,6 +35,123 @@
     url = {https://www.bitkom.org/sites/main/files/2023-09/bitkom-studie-open-source-monitor-2023.pdf},
 }
 
+@misc{eu2024cra,
+    title = {Regulation (EU) 2024/2847 of the European Parliament and of the Council of 23 October 2024 on horizontal cybersecurity requirements for products with digital elements (Cyber Resilience Act)},
+    year = {2024},
+    institution = {European Union},
+    url = {http://data.europa.eu/eli/reg/2024/2847/oj},
+    note = {Official Journal of the European Union, L Series, 20.11.2024}
+}
+
+@article{Sanguino_Uetz_2017,
+    title = {Software Vulnerability Analysis Using CPE and CVE},
+    url = {http://arxiv.org/abs/1705.05347},
+    DOI = {10.48550/arXiv.1705.05347},
+    abstractNote = {In this paper, we analyze the Common Platform Enumeration (CPE) dictionary and the Common Vulnerabilities and Exposures (CVE) feeds. These repositories are widely used in Vulnerability Management Systems (VMSs) to check for known vulnerabilities in software products. The analysis shows, among other issues, a lack of synchronization between both datasets that can lead to incorrect results output by VMSs relying on those datasets. To deal with these problems, we developed a method that recommends to a user a prioritized list of CPE identifiers for a given software product. The user can then assign (and, if necessary, adapt) the most suitable CPE identifier to the software so that regular (e.g., daily) checks can find known vulnerabilities for this software in the CVE feeds. Our evaluation of this method shows that this interaction is indeed necessary because a fully automated CPE assignment is prone to errors due to the CPE and CVE shortcomings. We implemented an open-source VMS that employs the proposed method and published it on GitHub.},
+    note = {arXiv:1705.05347 [cs]},
+    number = {arXiv:1705.05347},
+    publisher = {arXiv},
+    author = {Sanguino, Luis Alberto Benthin and Uetz, Rafael},
+    year = {2017},
+    month = may
+}
+
+@misc{nvd12mai2025dashboard,
+    author = {{National Institute of Standards and Technology}},
+    title = {National Vulnerability Database Dashboard},
+    year = {2025},
+    url = {https://nvd.nist.gov/general/nvd-dashboard},
+    note = {Zugriff am 12. Mai 2025},
+    institution = {U.S. Department of Commerce},
+}
+
+@article{Idrissi_Sebai_Faroukhi_Mahouachi_2024,
+    title = {A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies},
+    volume = {4},
+    rights = {http://creativecommons.org/licenses/by/3.0/},
+    ISSN = {2624-800X},
+    DOI = {10.3390/jcp4040040},
+    abstractNote = {The number of new vulnerabilities continues to rise significantly each year. Simultaneously, vulnerability databases have challenges in promptly sharing new security events with enough information to improve protections against emerging cyberattack vectors and possible exploits. In this context, several organizations adopt strategies to protect their data, technologies, and infrastructures from cyberattacks by implementing anticipatory and proactive approaches to their system security activities. To this end, vulnerability management systems play a crucial role in mitigating the impact of cyberattacks by identifying potential vulnerabilities within an organization and alerting cyber teams. However, the effectiveness of these systems, which employ multiple methods and techniques to identify weaknesses, relies heavily on the accuracy of published security events. For this reason, we introduce a discussion concerning existing vulnerability detection methods through an in-depth literature study of several research papers. Based on the results, this paper points out some issues related to vulnerability databases handling that impact the effectiveness of certain vulnerability identification methods. Furthermore, after summarizing the existing methodologies, this study classifies them into four approaches and discusses the challenges, findings, and potential research directions.},
+    number = {44},
+    journal = {Journal of Cybersecurity and Privacy},
+    publisher = {Multidisciplinary Digital Publishing Institute},
+    author = {Bennouk, Khalid and Ait Aali, Nawal and El Bouzekri El Idrissi, Younès and Sebai, Bechir and Faroukhi, Abou Zakaria and Mahouachi, Dorra},
+    year = {2024},
+    month = dec,
+    pages = {853–908},
+    language = {en}
+}
+
+@inproceedings{Ushakov_Doynikova_Novikova_Kotenko_2021,
+    title = {CPE and CVE based Technique for Software Security Risk Assessment},
+    volume = {1},
+    ISSN = {2770-4254},
+    url = {https://ieeexplore.ieee.org/document/9660968},
+    DOI = {10.1109/IDAACS53288.2021.9660968},
+    abstractNote = {Currently, a lot of work has been done in the area of detection, scoring, and inventory of software and hardware vulnerabilities. Known vulnerabilities are listed in the open databases. It is essential to continuously monitor that information system doesn’t contain severe vulnerabilities to ensure its information security. Applicability of open vulnerability databases is limited by the challenges occurring due to automated mapping the software product names in the analyzed system logs to their product names in the open sources (to extract relevant vulnerabilities from them). The paper proposes the technique incorporating an algorithm for mapping the software products names in the analyzed system logs to the relevant Common Platform Enumeration entries in open vulnerability databases based on the Ratcliff/Obershelp algorithm, identification of known vulnerabilities for the detected entries, and security risk assessment of the analysed system. The technique is implemented and tested using Windows computers software and has shown an accuracy of 79% on average.},
+    booktitle = {2021 11th IEEE International Conference on Intelligent Data Acquisition and Advanced Computing Systems: Technology and Applications (IDAACS)},
+    author = {Ushakov, Roman and Doynikova, Elena and Novikova, Evgenia and Kotenko, Igor},
+    year = {2021},
+    month = sep,
+    pages = {353–356}
+}
+
+% CPE
+
+@book{Cheikes_Waltermire_Scarfone_2011,
+    title = {Common Platform Enumeration: Naming Specification Version 2.3},
+    author = {Cheikes, Brant and Waltermire, David and Scarfone, Karen},
+    year = 2011,
+    month = aug,
+    number = {NIST Internal or Interagency Report (NISTIR) 7695},
+    doi = {10.6028/NIST.IR.7695},
+    url = {https://csrc.nist.gov/pubs/ir/7695/final},
+    abstractnote = {This report defines the Common Platform Enumeration (CPE) Naming version 2.3 specification. The CPE Naming specification is a part of a stack of CPE specifications that support a variety of use cases relating to IT product description and naming. The CPE Naming specification defines the logical structure of names for IT product classes and the procedures for binding and unbinding these names to and from machine-readable encodings. This report also defines and explains the requirements that IT products must meet for conformance with the CPE Naming version 2.3 specification.},
+    institution = {National Institute of Standards and Technology},
+    language = {en}
+}
+
+@book{Cichonski_Waltermire_Scarfone_2011,
+    title = {Common Platform Enumeration: Dictionary Specification Version 2.3},
+    author = {Cichonski, Paul and Waltermire, David and Scarfone, Karen},
+    year = 2011,
+    month = aug,
+    number = {NIST Internal or Interagency Report (NISTIR) 7697},
+    doi = {10.6028/NIST.IR.7697},
+    url = {https://csrc.nist.gov/pubs/ir/7697/final},
+    abstractnote = {This report defines the Common Platform Enumeration (CPE) Dictionary version 2.3 specification. The CPE Dictionary Specification is a part of a stack of CPE specifications that support a variety of use cases relating to IT product description and naming. An individual CPE dictionary is a repository of IT product names, with each name in the repository identifying a unique class of IT product in the world. This specification defines the semantics of the CPE Dictionary data model and the rules associated with CPE dictionary creation and management. This report also defines and explains the requirements that IT products and services, including CPE dictionaries, must meet for conformance with the CPE Dictionary version 2.3 specification.},
+    institution = {National Institute of Standards and Technology},
+    language = {en}
+}
+
+@article{Parmelee_Booth_Waltermire_Scarfone_2011,
+    title = {Common Platform Enumeration: Name Matching Specification Version 2.3},
+    author = {Parmelee, Mary and Booth, Harold and Waltermire, David A. and Scarfone, Karen},
+    year = 2011,
+    month = aug,
+    journal = {NIST},
+    publisher = {Mary Parmelee, Harold Booth, David A. Waltermire, Karen Scarfone},
+    url = {https://www.nist.gov/publications/common-platform-enumeration-name-matching-specification-version-23},
+    note = {Last Modified: 2021-10-12T11:10-04:00},
+    abstractnote = {This report defines the Common Platform Enumeration (CPE) Name Matching version 2.3 specification},
+    language = {en}
+}
+
+@book{Waltermire_Cichonski_Scarfone_2011,
+    title = {Common Platform Enumeration: Applicability Language Specification Version 2.3},
+    author = {Waltermire, David and Cichonski, Paul and Scarfone, Karen},
+    year = 2011,
+    month = aug,
+    number = {NIST Internal or Interagency Report (NISTIR) 7698},
+    doi = {10.6028/NIST.IR.7698},
+    url = {https://csrc.nist.gov/pubs/ir/7698/final},
+    abstractnote = {This report defines the Common Platform Enumeration (CPE) Applicability Language version 2.3 specification. The CPE Applicability Language specification is part of a stack of CPE specifications that support a variety of use cases relating to IT product description and naming. The CPE Applicability Language data model builds on top of other CPE specifications to provide the functionality required to allow CPE users to construct complex groupings of CPE names to describe IT platforms. These groupings are referred to as applicability statements because they are used to designate which platforms particular guidance, policies, etc. apply to. This report defines the semantics of the CPE Applicability Language data model and the requirements that IT products and CPE Applicability Language documents must meet for conformance with the CPE Applicability Language version 2.3 specification.},
+    institution = {National Institute of Standards and Technology},
+    language = {en}
+}
+
+% https://flamingtempura.github.io/bibtex-tidy
+
 %%%%% entries from template %%%%%
 
 @online{Gao2017,

@@ -1,12 +1,35 @@
-\chapter{Einleitung}
+\chapter{Einleitung}\label{ch:einleitung}
 
 
-\section{Hintergrund und Motivation}
+\section{Hintergrund und Motivation}\label{sec:hintergrund-motivation}
 
-Moderne Softwareentwicklung in Unternehmen jeder Größe setzt heutzutage auf die Verwendung von \acrfull{oss}
+\acrfull{oss} hat die Art und Weise, wie moderne Software entwickelt, verteilt und eingesetzt wird, verändert.
+Als Grundlage für digitale Infrastrukturen findet sie in nahezu allen Branchen Anwendung:
+Laut dem Open Source Monitor des Bitkom e.V.\ nutzen 69\,\% der Unternehmen in Deutschland \acrshort{oss} in ihren Lösungen\ \autocite{OpenSourceMonitorWintergerst}.
+
+Mit dem zunehmenden Einsatz von \acrshort{oss} steigen jedoch auch die Anforderungen an deren sichere und nachvollziehbare Verwendung in Unternehmenssoftware.
+Der geplante \acrfull{cra} der Europäischen Union, der ab dem 11.\ Dezember 2027 vollständig in Kraft tritt,
+verpflichtet Unternehmen bereits ab dem 11.\ Juni 2026 dazu, Schwachstellen und Sicherheitsvorfälle systematisch zu dokumentieren,
+auf Anfrage verfügbar zu machen und sicherzustellen, dass das Produkt keine bekannten ausnutzbaren Schwachstellen beinhaltet\ \autocite{eu2024cra}.
+
+Eine aktiv ausgenutzte Schwachstelle in einem Produkt stellt nach dem \acrshort{cra} einen Sicherheitsvorfall dar, der innerhalb von 72 Stunden den zuständigen Behörden gemeldet werden muss.
+Eine der am weitesten verbreiteten Quellen für Schwachstelleninformationen ist das \acrfull{cve}-System, das als Bestandteil der \acrfull{nvd} des \acrfull{nist}\footnote{\url{https://nvd.nist.gov/vuln}} mit derzeit fast 300.000 Einträgen die umfangreichste öffentlich zugängliche Schwachstellendatenbank darstellt\ \autocite{nvd12mai2025dashboard}.
+Diese große Anzahl an erfassten Schwachstellen und der kontinuierliche Zuwachs machen es in Kombination mit den kurzen Meldefristen des \acrshort{cra} unmöglich, diesen Prozess rein manuell abzubilden.
+Der zeitliche Aufwand und das Risiko eines menschlichen Fehlers sind für 65\% der Unternehmen zu hoch\ \autocite{OpenSourceMonitorWintergerst}, welche daraus die Notwendigkeit ableiten, ein automatisiertes \acrfull{vms} einzusetzen.
+
+In einem vollständig automatisierten \acrshort{vms} durchlaufen die erfassten Softwareinventare typischerweise mehrere Verarbeitungsschritte, um den firmeneigenen Softwarekatalog mit relevanten Schwachstelleninformationen aus verknüpften \acrlongpl{vdb} (\acrshort{vdb}s) abzugleichen:
+die Identifikation der eingesetzten Komponenten, die Erkennung potenzieller Schwachstellen, eine regelbasierte Bewertung der Ergebnisse und die Erzeugung von Ergebnisberichten\ \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
+
+Die größte Herausforderung liegt dabei im ersten Schritt, der Zuordnung der eigenen Softwarekomponenten zu den Produktbezeichnern der jeweils abzugleichenden \acrshort{vdb}.
+Die \acrshort{nvd} etwa stellt mit dem \acrfull{cpe}-System ein Schema zur Verfügung, um Softwareprodukte zu identifizieren und zu \acrshort{cve} zuzuordnen\ \autocite{Cheikes_Waltermire_Scarfone_2011}.
+In der Praxis ist die korrekte Abbildung der eingesetzen Komponenten auf \acrshort{cpe}-Einträge jedoch mit Schwierigkeiten verbunden:
+uneinheitliche Benennungen, Doppelungen, fehlende Einträge und mehr führen zu fehleranfälligen und unvollständigen Ergebnissen im darauf folgenden Schwachstellen-Scan\ \autocite{Sanguino_Uetz_2017}.
+
+Ergänzend zu den Daten der werden auch Informationen aus weiteren Quellen wie der \acrfull{osv}-Datenbank\footnote{\url{https://osv.dev}}, den Update Guides von \acrfull{msrc}\footnote{\url{https://msrc.microsoft.com/update-guide}} und einigen anderen relevanten Schwachstellendatenbanken berücksichtigt.
+
+\section{Zielsetzung und Forschungsfrage(n)}\label{sec:ziel-forschungsfrage}
+
+Ziel dieser Arbeit ist es, das bestehende Korrelationsformat im Hinblick auf seine Schwächen zu analysieren und ein verbessertes, zukunftsfähiges Format zu entwerfen, das den aktuellen und kommenden Anforderungen, insbesondere im Kontext regulatorischer Vorgaben wie dem \acrshort{cra}, besser gerecht wird.
 
 
-\section{Zielsetzung und Forschungsfrage(n)}
-
-
-\section{Aufbau der Arbeit}
+\section{Aufbau der Arbeit}\label{sec:arbeit-aufbau}
