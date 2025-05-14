@@ -34,7 +34,7 @@
 
 
 
-							
+
 
 
 \newcommand{\snowcard}[9]{
@@ -114,3 +114,21 @@
 	\end{table}
 }
 
+\ifluatex
+  \newfontfamily\quicksandfont[
+      Path      = ../font/Quicksand/,
+      Extension = .ttf,
+      UprightFont = Quicksand-VariableFont_wght,
+      BoldFont    = Quicksand-VariableFont_wght,
+      ItalicFont  = Quicksand-VariableFont_wght
+  ]{Quicksand}
+
+  \newfontfamily\nanumgothicfont[
+      Path      = ../font/NanumGothic/,
+      Extension = .ttf,
+  ]{NanumGothic-Regular}
+
+  \newcommand{\metaeffekt}[0]{\footnotesize\nanumgothicfont\{\small\quicksandfont\addfontfeature{FakeBold=1.5}met\ae ffekt\footnotesize\nanumgothicfont\}\normalfont\normalsize\ }
+\else
+  \newcommand{\metaeffekt}{\small\textsf{\{}\textsf{metæffekt}\textsf{\}}\normalfont\normalsize\ }
+\fi

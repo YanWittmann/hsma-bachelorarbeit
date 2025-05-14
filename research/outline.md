@@ -278,6 +278,11 @@ Anhand eines/mehreren konkreten Testfällen zeigen, wie die neuen Zuordnungen fu
 
 ### Diskussion
 
+Kritische Würdigung der Arbeit:
+
+- what went wrong
+- what went well
+
 ## Schluss
 
 ### Zusammenfassung der Arbeit

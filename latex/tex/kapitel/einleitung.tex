@@ -17,19 +17,50 @@ Eine der am weitesten verbreiteten Quellen für Schwachstelleninformationen ist 
 Diese große Anzahl an erfassten Schwachstellen und der kontinuierliche Zuwachs machen es in Kombination mit den kurzen Meldefristen des \acrshort{cra} unmöglich, diesen Prozess rein manuell abzubilden.
 Der zeitliche Aufwand und das Risiko eines menschlichen Fehlers sind für 65\% der Unternehmen zu hoch\ \autocite{OpenSourceMonitorWintergerst}, welche daraus die Notwendigkeit ableiten, ein automatisiertes \acrfull{vms} einzusetzen.
 
-In einem vollständig automatisierten \acrshort{vms} durchlaufen die erfassten Softwareinventare typischerweise mehrere Verarbeitungsschritte, um den firmeneigenen Softwarekatalog mit relevanten Schwachstelleninformationen aus verknüpften \acrlongpl{vdb} (\acrshort{vdb}s) abzugleichen:
+In einem vollständig automatisierten \acrshort{vms} durchlaufen die erfassten Softwareinventare typischerweise mehrere Verarbeitungsschritte, um den firmeneigenen Softwarekatalog mit relevanten Schwachstelleninformationen aus verknüpften \acrfullpl{vdb} abzugleichen:
 die Identifikation der eingesetzten Komponenten, die Erkennung potenzieller Schwachstellen, eine regelbasierte Bewertung der Ergebnisse und die Erzeugung von Ergebnisberichten\ \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
 
-Die größte Herausforderung liegt dabei im ersten Schritt, der Zuordnung der eigenen Softwarekomponenten zu den Produktbezeichnern der jeweils abzugleichenden \acrshort{vdb}.
+Die größte Herausforderung liegt dabei im ersten Schritt, der Zuordnung der eigenen Komponenten zu den Produktbezeichnern der jeweils abzugleichenden \acrshort{vdb}.
 Die \acrshort{nvd} etwa stellt mit dem \acrfull{cpe}-System ein Schema zur Verfügung, um Softwareprodukte zu identifizieren und zu \acrshort{cve} zuzuordnen\ \autocite{Cheikes_Waltermire_Scarfone_2011}.
 In der Praxis ist die korrekte Abbildung der eingesetzen Komponenten auf \acrshort{cpe}-Einträge jedoch mit Schwierigkeiten verbunden:
 uneinheitliche Benennungen, Doppelungen, fehlende Einträge und mehr führen zu fehleranfälligen und unvollständigen Ergebnissen im darauf folgenden Schwachstellen-Scan\ \autocite{Sanguino_Uetz_2017}.
+Dies macht es unmöglich, sich ausschließlich auf die Ergebnisse dieser automatischen Scans zu verlassen und erfordert eine manuelle Kontrolle der Ergebnisse, inklusive der erschlossenen Komponenten-Abbildungen\ \autocite{Sanguino_Uetz_2017}.
 
-Ergänzend zu den Daten der werden auch Informationen aus weiteren Quellen wie der \acrfull{osv}-Datenbank\footnote{\url{https://osv.dev}}, den Update Guides von \acrfull{msrc}\footnote{\url{https://msrc.microsoft.com/update-guide}} und einigen anderen relevanten Schwachstellendatenbanken berücksichtigt.
+Doch nicht nur die \acrshort{nvd} stellt durch die Zuordnungen der jeweils verwendeten Produktbezeichnern zu den eigenen Komponenten eine Schwierigkeit dar, auch weitere verwandte Datenquellen leiden unter diesem Problem:
+Ergänzend zu den \acrshort{cpe} werden auch Produktbezeichner aus weiteren Quellen wie der \acrfull{osv}-Datenbank\footnote{\url{https://osv.dev}}, den Update Guides von \acrfull{msrc}\footnote{\url{https://msrc.microsoft.com/update-guide}}, endoflife.date\footnote{\url{https://endoflife.date}} und einigen weiteren relevanten Schwachstellendatenbanken berücksichtigt.
 
-\section{Zielsetzung und Forschungsfrage(n)}\label{sec:ziel-forschungsfrage}
+Die \metaeffekt entwickelt seit mehreren Jahren ein eigenes \acrshort{vms}, bei dem die Abbildung von Komponenten auf verschiedene Produktbezeichner (wie \acrshort{cpe}, \acrfullpl{purl} von \acrshort{osv}, interne numerische Product-Ids von \acrshort{msrc}, eigene Ids von endoflife.date und weiteren) ein zentrales Problem darstellt.
+Bisher wurde dafür ein YAML-basiertes \enquote{Korrelationsformat} genutzt, das Teammitgliedern manuelle Anpassungen der automatisierten Zuordnungen ermöglicht.
 
-Ziel dieser Arbeit ist es, das bestehende Korrelationsformat im Hinblick auf seine Schwächen zu analysieren und ein verbessertes, zukunftsfähiges Format zu entwerfen, das den aktuellen und kommenden Anforderungen, insbesondere im Kontext regulatorischer Vorgaben wie dem \acrshort{cra}, besser gerecht wird.
+
+\section{Zielsetzung und Forschungsfrage}\label{sec:ziel-forschungsfrage}
+
+Aufgrund von neuen Erkenntnissen über die vergangenen Jahre hat diese Arbeit als Ziel, ein neues System für die \metaeffekt zu entwickeln und zu implementieren, was das alte Korrelationsformat ablösen soll.
+Das neue System soll eine bidirektionale Abbildung zwischen verschiedenen Produktrepräsentationen ermöglichen, sodass ausgehend von einer beliebigen Identifikation (z.B.\ einer internen Komponente oder einer \acrshort{cpe}) alle zugehörigen Bezeichner ermittelt werden können.
+Eine Kernanforderung an das neue System ist, dass es automatisch aus vorhandenen Datenquellen gespeist werden soll.
+Zudem ist es zu Beginn der Forschung recht klar gewesen, dass
+
+% \bigskip \medskip \smallskip
+\medskip
+
+Die Herleitung der Forschungsfrage erfolgt durch logische Schlüsse, ausgehend von dem ersten Schritt eines \acrshort{vms}\ \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}:
+
+\begin{quote}
+    Wie kann zu einer Komponente herausgefunden werden, welche weiteren \acrshort{vdb}-spezifischen Repräsentationen es gibt, um diese für Schwachstellenabfragen verwenden zu können?
+\end{quote}
+
+Eine Umformung dieser Frage führt zu:
+
+\begin{quote}
+    Zu einer gegebenen Komponente in einer beliebigen Repräsentation, welche weiteren Repräsentationen gibt es, die das gleiche reale Produkt modellieren?
+\end{quote}
+
+Und dies führt zu der etwas allgemeineren Forschungsfrage, die in dieser Arbeit beantwortet werden soll:
+
+\begin{quote}
+    Wie muss ein Produkt-Graph strukturiert sein, der heterogene Repräsentationen von Software- und Hardwarekomponenten (wie \acrshort{cpe} oder \acrshort{purl}) bidirektional verknüpft und
+    dabei sowohl manuelle Korrekturen ermöglicht als auch automatisch importierte Daten aus Schwachstellendatenbanken integriert?
+\end{quote}
 
 
 \section{Aufbau der Arbeit}\label{sec:arbeit-aufbau}
