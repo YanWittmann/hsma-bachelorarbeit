@@ -1,13 +1,62 @@
-\chapter{Grundlagen}
+\chapter{Grundlagen}\label{ch:grundlagen}
 
 
-\section{Interne Produktmodellierung (metaeffekt)}
+\section{Schwächen und Schwachstellen}\label{sec:def-weakness-vulnerability}
+
+% “vulnerability A weakness that can be exploited or triggered to produce an adverse effect. The inability to withstand adversity.” (Ross et al., 2022, p. 63)
+% “weakness Defect or characteristic that may lead to undesirable behavior.” (Ross et al., 2022, p. 63)
+
+\paragraph{Schwäche (Wakness)}
+Der Begriff einer Schwäche in einer Software-Komponente bezeichnet einen intrinsischen Fehler, Defekt oder eine problematische Eigenschaft, die unter bestimmten Bedingungen in einer Software oder Hardware zu unerwünschtem Verhalten führen kann \autocite{Ross_Winstead_McEvilley_2022}.
+Schwächen beschreibende grundlegende Fehlermuster, die unabhängig von spezifischen Implementierungen oder Angriffsszenarien existieren.
+
+Das \acrfull{cwe}-Projekt\footnote{\url{https://cwe.mitre.org/about/index.html}}, unter der Leitung der MITRE Corporation, stellt einen großen Katalog solcher Software-Schwächen dar.
+Als Community-getriebenes Projekt ordnet es Schwächen in einem hierarchischen System als \acrshort{cwe}-Einträge an, die verschiedene Abstraktionsebenen abdecken\ \autocite{wu2016cwe}.
+Die Klassifikation reicht von abstrakteren Kategorien (\verb+CWE-20+: Improper Input Validation\footnote{\url{https://cwe.mitre.org/data/definitions/20.html}}) bis zu konkreteren Implementierungsfehlern (\verb+CWE-125+: Out-of-bounds Read\footnote{\url{https://cwe.mitre.org/data/definitions/125.html}}).
+
+\paragraph{Schwachstelle (Vulnerability)}
+
+Während Schwächen allgemeine Fehlermuster beschreiben, stellt eine Schwachstelle eine konkrete Ausprägung einer Schwäche in einem spezifischen System oder Produkt dar.
+Sie wirken sich direkt negativ auf die zentralen \acrshort{ciavuln}-Sicherheitsziele (Confidentiality (Vertraulichkeit), Integrity (Integrität) oder Availability (Verfügbarkeit)) aus und stellen einen Bruch mit definierten oder vorausgesetzten Sicherheitsanforderungen dar.
+Das \acrshort{cve}-Programm, ebenfalls von MITRE koordiniert, bietet den wichtigsten Standard zur Identifikation und Dokumentation solcher Schwachstellen.
+Jeder \acrshort{cve}-Eintrag enthält eine eindeutige Kennung (z.B.\ \verb+CVE-2024-12345+), eine Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, die zugrundeliegende \acrshort{cwe}-Klassifikation sowie eine Bewertung des Schweregrads\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
+
+Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api} von der \acrshort{nvd} öffentlich zur Verfügung gestellt\footnote{\url{https://nvd.nist.gov/developers/vulnerabilities}}.
+
+
+\section{Software-Inventare}\label{sec:def-inventories}
+
+% was ist ein software-inventar?
+% was für ausprägungen gibt es? wie werden diese erzeugt?
+% - cyclonedx
+% - spdx
+% - metaeffekt extractor
+
+% “Specifying the precise inventory is so crucial for assessing vulnerabilities” (Bennouk et al., 2024, p. 857)
 
 
 \section{Produktidentifikationsstandards und relevante Formate}
 
+\subsection{Produkte und ihre Repräsentation}
+
+% erst mal allgemein darüber reden worum es geht
+% Name ≠ Identity
+% Intrinsic vs extrinsic naming scheme
+% warum gibt es so viele formate (jeder sein use-case)
+
+\subsection{CPE}
+
+\subsection{PURL}
+
+\subsection{MSRC Product-Ids}
+
+\subsection{EOL Product-Ids}
+
 
 \section{Analyse bestehender Produkt-Mapping Algorithmen}
+
+
+\section{Interne Produktmodellierung der \metaeffektlg}
 
 
 \section{Analyse des metaeffekt-Schwachstellenscanners}

@@ -237,6 +237,8 @@ mit dem aktuellen Wissensstand konsolidiert und entsprechend erweitert.
 
 <!-- Internal Link: https://metaeffekt.atlassian.net/wiki/spaces/KM/pages/3037888514/TBD+New+Correlation+System -->
 
+- “Product properties, such as name, version, and edition, might change frequently affecting mapping with VDBs” ([Bennouk et al., 2024, p. 857](zotero://select/library/items/MISSDZDH)) ([pdf](zotero://open-pdf/library/items/V4R6T2Q8?page=5&annotation=WRYZ42G9))
+
 ### Auflistung der Anforderungen
 
 Aus den Herausforderungen des vorherigen Kapitels werden in diesem Kapitel zunächst einmal einige nichtfunktionale
