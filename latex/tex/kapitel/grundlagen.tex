@@ -23,6 +23,31 @@ Jeder \acrshort{cve}-Eintrag enthält eine eindeutige Kennung (z.B.\ \verb+CVE-2
 
 Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api} von der \acrshort{nvd} öffentlich zur Verfügung gestellt\footnote{\url{https://nvd.nist.gov/developers/vulnerabilities}}.
 
+\paragraph{Schwachstelle (Vulnerability)}
+
+Während Schwächen allgemeine Fehlermuster beschreiben, stellt eine Schwachstelle eine konkrete Ausprägung einer Schwäche in einem spezifischen System oder Produkt dar.
+Sie beeinträchtigt zentrale Sicherheitsziele wie Vertraulichkeit, Integrität oder Verfügbarkeit (\acrfull{ciavuln}) und stellen eine Verletzung formeller oder impliziter Sicherheitsanforderungen dar.
+
+Das \acrshort{cve}-Programm, betrieben durch die MITRE Corporation und unterstützt von US-Behörden wie der \acrfull{cisa}, stellt eine weltweit anerkannte Systematik zur Identifikation, Benennung und Beschreibung von öffentlich bekannten Sicherheitslücken bereit.
+Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.,B.\ \verb+CVE-2024-12345+) und wird durch autorisierte \acrfull{cna} klassifiziert.
+
+Die weitere Auswertung erfolgt über die \acrshort{nvd}, die zu jedem \acrshort{cve}-Eintrag ergänzende Metadaten wie Schwachstellenbeschreibungen, betroffene Produkte (basierend auf \acrshort{cpe}), Schweregradbewertungen mittels CVSS und eine Einordnung nach der \acrshort{cwe}-Systematik bereitstellt.
+Diese öffentlich zugänglichen Informationen werden über eine \acrshort{api} veröffentlicht\footnote{\url{\href{https://nvd.nist.gov/developers/vulnerabilities%7D%7D}{https://nvd.nist.gov/developers/vulnerabilities}}} und bilden die Grundlage für automatisierte Sicherheitsanalysen, Monitoring-Werkzeuge und Risikoabschätzungen.
+
+% noch erwähnen: in diesem kontext zählen nur CVEs als schwachstellen, nicht etwa osv und co.
+
+\paragraph{Security Advisories}
+
+% OSV, CSAF, etc.
+% ich mochte die tabelle aus “Table 2. Security vulnerability databases (VDBs).” (Bennouk et al., 2024, p. 865) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
+
+
+\section{Schachstelldatenbanken}\label{sec:security-vulnerability-databases}
+
+% VDBs
+% “3.3. Security Vulnerability Databases” (Bennouk et al., 2024, p. 864) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
+% auflisten von den unterschiedlichen lieferanten von schwachstellinfos und advisories und wie sie
+
 
 \section{Software-Inventare}\label{sec:def-inventories}
 
@@ -54,6 +79,8 @@ Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api}
 
 
 \section{Analyse bestehender Produkt-Mapping Algorithmen}
+
+% “Table 3. Collected methods related to the similarity matching-based approach.” (Bennouk et al., 2024, p. 870) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
 
 
 \section{Interne Produktmodellierung der \metaeffektlg}

@@ -1,0 +1,2 @@
+- “Source code dependencies” ([LaMantia, 2006, p. 22](zotero://select/library/items/MUCB6FC8)) ([pdf](zotero://open-pdf/library/items/FYYIN65H?page=22&annotation=I9FBZNCE))
+- ich werde nur über runtime dependencies reden, nicht über compile-time (“Static dependencies capture the notion that one software module is necessary in order to compile another.” ([LaMantia, 2006, p. 22](zotero://select/library/items/MUCB6FC8)) ([pdf](zotero://open-pdf/library/items/FYYIN65H?page=22&annotation=BS48P5IL)))
