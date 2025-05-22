@@ -9,10 +9,10 @@ Laut dem Open Source Monitor des Bitkom e.V.\ nutzen 69\,\% der deutschen Untern
 
 Mit dem zunehmenden Einsatz von \acrshort{oss} steigen jedoch auch die Anforderungen an deren sichere und nachvollziehbare Verwendung in Unternehmenssoftware.
 Der geplante \acrfull{cra} der Europäischen Union, der ab dem 11.\ Dezember 2027 vollständig in Kraft tritt,
-verpflichtet Unternehmen bereits ab dem 11.\ Juni 2026 dazu, Schwachstellen und Sicherheitsvorfälle systematisch zu dokumentieren,
-auf Anfrage verfügbar zu machen und sicherzustellen, dass das Produkt keine bekannten ausnutzbaren Schwachstellen beinhaltet\ \autocite{eu2024cra}.
+verpflichtet Unternehmen bereits ab dem 11.\ Juni 2026 dazu, Schwachstellen und Sicherheitsvorfälle zu dokumentieren,
+auf Anfrage verfügbar zu machen und sicherzustellen, dass das Produkt keine bekannten ausnutzbaren Schwachstellen beinhaltet.
+Eine aktiv ausgenutzte Schwachstelle in einem Produkt stellt nach dem \acrshort{cra} einen Sicherheitsvorfall dar, der innerhalb von 72 Stunden den zuständigen Behörden gemeldet werden muss\ \autocite{eu2024cra}.
 
-Eine aktiv ausgenutzte Schwachstelle in einem Produkt stellt nach dem \acrshort{cra} einen Sicherheitsvorfall dar, der innerhalb von 72 Stunden den zuständigen Behörden gemeldet werden muss.
 Eine der am weitesten verbreiteten Quellen für Schwachstelleninformationen ist das \acrfull{cve}-System, das als Bestandteil der \acrfull{nvd} des \acrfull{nist}\footnote{\url{https://nvd.nist.gov/vuln}} mit derzeit fast 300.000 Einträgen die umfangreichste öffentlich zugängliche Schwachstellendatenbank darstellt\ \autocite{nvd12mai2025dashboard}.
 Diese große Anzahl an erfassten Schwachstellen und der kontinuierliche Zuwachs machen es in Kombination mit den kurzen Meldefristen des \acrshort{cra} unmöglich, diesen Prozess rein manuell abzubilden.
 Für 65\% der Unternehmen ist eine manuelle Überwachung dieser Datenmengen durch den zeitlichen Aufwand und das Risiko eines menschlichen Fehlers unmöglich\ \autocite{OpenSourceMonitorWintergerst}, weshalb sie automatisierte \acrfull{vms} einsetzen.
@@ -28,7 +28,7 @@ Dies macht es unmöglich, sich ausschließlich auf die Ergebnisse dieser automat
 
 Das Problem beschränkt sich jedoch nicht auf die \acrshort{nvd} mit ihren \acrshort{cpe}, auch Produktbezeichner aus anderen Quellen wie die \acrfull{osv}-Datenbank\footnote{\url{https://osv.dev}}, den \acrfull{msrc} Update Guides\footnote{\url{https://msrc.microsoft.com/update-guide}}, endoflife.date\footnote{\url{https://endoflife.date}} und weitere lassen sich nicht ohne weiteres gegenseitig zuordnen.
 
-Die \metaeffekt entwickelt seit mehreren Jahren ein eigenes \acrshort{vms}, bei dem die Abbildung von Komponenten auf verschiedene Produktbezeichner ein zentrales Problem darstellt.
+Die \metaeffekt\ entwickelt seit mehreren Jahren ein eigenes \acrshort{vms}, bei dem die Abbildung von Komponenten auf verschiedene Produktbezeichner ein zentrales Problem darstellt.
 Bisher wurde dafür ein YAML-basiertes \enquote{Korrelationsformat} genutzt, das Teammitgliedern manuelle Anpassungen der automatisierten Zuordnungen ermöglicht, jedoch zunehmend an seine Grenzen stößt.
 
 
@@ -36,7 +36,7 @@ Bisher wurde dafür ein YAML-basiertes \enquote{Korrelationsformat} genutzt, das
 
 \paragraph{Problemherleitung}
 
-Der initiale Schritt in \acrshort{vms} mit der Abbildung von Komponenten auf \acrshort{vdb}-spezifischen Repräsentationen\ \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024} lässt sich auf folgende Kernfrage reduzieren:
+Der erste Schritt eines \acrshort{vms}, die Abbildung von Komponenten auf \acrshort{vdb}-spezifischen Repräsentationen\ \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}, lässt sich auf folgende Kernfrage reduzieren:
 
 \begin{quote}
     Wie lässt sich für eine gegebene Komponente ermitteln, welche \acrshort{vdb}-spezifischen Repräsentationen existieren, um diese in Schwachstellenabfragen nutzen zu können?
@@ -49,7 +49,7 @@ Diese Fragestellung präsentiert bei genauerer Untersuchung zwei Herausforderung
     \item Automatische Zuordnungen sind oft unvollständig oder inkonsistent, während manuelle Pflege skalierungsbeschränkt ist.
 \end{enumerate}
 
-Basierend auf diesen und weiteren Erkenntnissen über die letzten Jahre hat diese Arbeit als Ziel, ein neues System für die \metaeffekt zu entwickeln und implementieren, das das alte Korrelationsformat ablösen wird.
+Basierend auf diesen und weiteren Erkenntnissen über die letzten Jahre hat diese Arbeit als Ziel, ein neues System für die \metaeffekt\  zu entwickeln und implementieren, das das alte Korrelationsformat ablösen wird.
 Das neue System soll eine bidirektionale Abbildung zwischen verschiedenen Produktrepräsentationen ermöglichen, sodass ausgehend von einer beliebigen Identifikation (z.B.\ einer internen Komponente oder einer \acrshort{cpe}) alle zugehörigen Bezeichner ermittelt werden können.
 
 \paragraph{Forschungsfrage}
@@ -68,7 +68,7 @@ Diese Arbeit gliedert sich in sechs thematische Abschnitte, die vom den theoreti
 
 \paragraph{\autoref{ch:grundlagen}: Grundlagen}
 Zunächst werden die relevanten Produktidentifikationsstandards (\acrshort{cpe}, \acrshort{purl}, \acrshort{osv}, \acrshort{msrc}-IDs, \ldots) analysiert und bestehende Mapping-Algorithmen evaluiert.
-Darauf aufbauend wird die interne Produktmodellierung der \metaeffekt sowie der aktuelle Schwachstellenscanner untersucht.
+Darauf aufbauend wird die interne Produktmodellierung der \metaeffekt\  sowie der aktuelle Schwachstellenscanner untersucht.
 
 \paragraph{\autoref{ch:anforderungen}: Anforderungsanalyse}
 Ausgehend vom bestehenden YAML-basierten Korrelationsformat werden dessen Schwächen erfasst und daraus Anforderungen für das neue System abgeleitet.

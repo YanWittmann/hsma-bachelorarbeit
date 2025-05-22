@@ -2,10 +2,23 @@
 RESULT_DIR="../result"
 FILE="thesis"
 ENGINE="pdflatex"
+LAST_ENGINE_FILE=".last_engine"
 
 if [ "$1" = "lua" ]; then
     ENGINE="lualatex"
 fi
+
+if [ -f "$LAST_ENGINE_FILE" ]; then
+    LAST_ENGINE=$(cat "$LAST_ENGINE_FILE")
+else
+    LAST_ENGINE=""
+fi
+
+if [ "$ENGINE" != "$LAST_ENGINE" ]; then
+    ./clean.sh
+fi
+
+echo "$ENGINE" > "$LAST_ENGINE_FILE"
 
 cd tex
 if [ "$ENGINE" = "lualatex" ]; then

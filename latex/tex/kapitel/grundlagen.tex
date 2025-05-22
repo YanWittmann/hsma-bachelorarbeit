@@ -17,26 +17,16 @@ Die Klassifikation reicht von abstrakteren Kategorien (\verb+CWE-20+: Improper I
 \paragraph{Schwachstelle (Vulnerability)}
 
 Während Schwächen allgemeine Fehlermuster beschreiben, stellt eine Schwachstelle eine konkrete Ausprägung einer Schwäche in einem spezifischen System oder Produkt dar.
-Sie wirken sich direkt negativ auf die zentralen \acrshort{ciavuln}-Sicherheitsziele (Confidentiality (Vertraulichkeit), Integrity (Integrität) oder Availability (Verfügbarkeit)) aus und stellen einen Bruch mit definierten oder vorausgesetzten Sicherheitsanforderungen dar.
-Das \acrshort{cve}-Programm, ebenfalls von MITRE koordiniert, bietet den wichtigsten Standard zur Identifikation und Dokumentation solcher Schwachstellen.
-Jeder \acrshort{cve}-Eintrag enthält eine eindeutige Kennung (z.B.\ \verb+CVE-2024-12345+), eine Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, die zugrundeliegende \acrshort{cwe}-Klassifikation sowie eine Bewertung des Schweregrads\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
-
+Sie beeinträchtigt die zentralen \acrshort{ciavuln}-Sicherheitsziele (Confidentiality (Vertraulichkeit), Integrity (Integrität) oder Availability (Verfügbarkeit)) und stellen eine Verletzung formeller oder impliziter Sicherheitsanforderungen dar.
+Das \acrshort{cve}-Programm, betrieben durch die MITRE Corporation und unterstützt von US-Behörden wie der \acrfull{cisa}, bietet einen weltweit anerkannten Standard zur Identifikation und Beschreibung von öffentlich bekannten Schwachstellen.
+Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.B.\ \verb+CVE-2024-12345+) und wird in kooperation mit autorisierten \acrfull{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
 Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api} von der \acrshort{nvd} öffentlich zur Verfügung gestellt\footnote{\url{https://nvd.nist.gov/developers/vulnerabilities}}.
 
-\paragraph{Schwachstelle (Vulnerability)}
-
-Während Schwächen allgemeine Fehlermuster beschreiben, stellt eine Schwachstelle eine konkrete Ausprägung einer Schwäche in einem spezifischen System oder Produkt dar.
-Sie beeinträchtigt zentrale Sicherheitsziele wie Vertraulichkeit, Integrität oder Verfügbarkeit (\acrfull{ciavuln}) und stellen eine Verletzung formeller oder impliziter Sicherheitsanforderungen dar.
-
-Das \acrshort{cve}-Programm, betrieben durch die MITRE Corporation und unterstützt von US-Behörden wie der \acrfull{cisa}, stellt eine weltweit anerkannte Systematik zur Identifikation, Benennung und Beschreibung von öffentlich bekannten Sicherheitslücken bereit.
-Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.,B.\ \verb+CVE-2024-12345+) und wird durch autorisierte \acrfull{cna} klassifiziert.
-
-Die weitere Auswertung erfolgt über die \acrshort{nvd}, die zu jedem \acrshort{cve}-Eintrag ergänzende Metadaten wie Schwachstellenbeschreibungen, betroffene Produkte (basierend auf \acrshort{cpe}), Schweregradbewertungen mittels CVSS und eine Einordnung nach der \acrshort{cwe}-Systematik bereitstellt.
-Diese öffentlich zugänglichen Informationen werden über eine \acrshort{api} veröffentlicht\footnote{\url{\href{https://nvd.nist.gov/developers/vulnerabilities%7D%7D}{https://nvd.nist.gov/developers/vulnerabilities}}} und bilden die Grundlage für automatisierte Sicherheitsanalysen, Monitoring-Werkzeuge und Risikoabschätzungen.
+Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen betrachtet, andere ähnliche Standards werden als \nameref{par:security-advisories} behandelt.
 
 % noch erwähnen: in diesem kontext zählen nur CVEs als schwachstellen, nicht etwa osv und co.
 
-\paragraph{Security Advisories}
+\paragraph{Security Advisories}\label{par:security-advisories}
 
 % OSV, CSAF, etc.
 % ich mochte die tabelle aus “Table 2. Security vulnerability databases (VDBs).” (Bennouk et al., 2024, p. 865) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
@@ -86,4 +76,4 @@ Diese öffentlich zugänglichen Informationen werden über eine \acrshort{api} v
 \section{Interne Produktmodellierung der \metaeffektlg}
 
 
-\section{Analyse des metaeffekt-Schwachstellenscanners}
+\section{Analyse des \metaeffektlg-Schwachstellenscanners}

@@ -1,0 +1,15 @@
+\newfontfamily\quicksandfont[
+    Path      = ../font/Quicksand/,
+    Extension = .ttf,
+    UprightFont = Quicksand-VariableFont_wght,
+    BoldFont    = Quicksand-VariableFont_wght,
+    ItalicFont  = Quicksand-VariableFont_wght
+]{Quicksand}
+
+\newfontfamily\nanumgothicfont[
+    Path      = ../font/NanumGothic/,
+    Extension = .ttf,
+]{NanumGothic-Regular}
+
+\newcommand{\metaeffekt}[0]{\footnotesize\nanumgothicfont\{\small\quicksandfont\addfontfeature{FakeBold=1.5}met\ae ffekt\footnotesize\nanumgothicfont\}\normalfont\normalsize}
+\newcommand{\metaeffektlg}[0]{\small\nanumgothicfont\{\normalsize\quicksandfont\addfontfeature{FakeBold=1.5}met\ae ffekt\small\nanumgothicfont\}\normalfont\normalsize}
