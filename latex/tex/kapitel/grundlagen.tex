@@ -40,13 +40,36 @@ Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen
 
 \section{Software-Inventare}\label{sec:def-inventories}
 
-% was ist ein software-inventar?
-% was für ausprägungen gibt es? wie werden diese erzeugt?
-% - cyclonedx
-% - spdx
-% - metaeffekt extractor
+Eine \acrfull{sbom} ist ein strukturiertes Inventar aller Software-Komponenten, aus denen ein System oder Produkt besteht.
+Sie enthält Informationen über die Namen, Versionen, Lizenzen, Schwachstellen und Abhängigkeiten der Softwarebestandteile, sowie Metadaten wie Copyright-Hinweise oder kryptographische Hashes.
+Eine \acrshort{sbom} hat das Ziel, die Transparenz in der Software-Lieferkette mit Informationen über die Herkunft und Zusammensetzung einer Software zu unterstützen, um den Nächsten in der Lieferkette eine Risikobewertung zu ermöglichen oder die Einhaltung von Lizenzbestimmungen nachweisen zu können \autocite{Bi_Xia_Xing_Lu_Zhu_2023}.
 
-% “Specifying the precise inventory is so crucial for assessing vulnerabilities” (Bennouk et al., 2024, p. 857)
+Eine \acrshort{sbom} kann sowohl manuell als auch automatisiert durch die Identifikation und Dokumentation aller verwendeten Software-Komponenten erfolgen.
+Manuelle Methoden sind jedoch vor allem bei wiederholten Durchläufen inkonsistent, fehleranfällig und in größeren Projekten kaum skalierbar.
+Die Aktualisierung von \acrshortpl{sbom} ist nötig, wenn z.B.\ bei neuen Versionen sich die Zusammensetzung einer Software verändert.
+Daher wird die Erzeugung von \acrshortpl{sbom} in der Regel projektweit durch Werkzeuge, die Quellcode, Projektdateien oder Container analysieren, durchgeführt \autocite{Bi_Xia_Xing_Lu_Zhu_2023}.
+
+Die Qualität eines Software-Inventars ist für eine erfolgreiche Sicherheitsanalyse wichtig, da die Zuordnung bekannter Schwachstellen zu konkreten Software-Komponenten von der Genauigkeit und Vollständigkeit des Inventars abhängt.
+Fehlende oder ungenaue Angaben zu Produktnamen und Versionen können durch die inhaltliche oder formale Abweichung von Produktrepräsentationen zwischen Inventaren und \acrshortpl{vdb} zu falsch-positiven oder falsch-negativen Schwachstellenzuweisungen führen \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
+
+Zur einheitlichen Darstellung und Verbreitung solcher Inventare haben sich mehrere maschinenlesbare Standards etabliert.
+
+\paragraph{\acrfull{spdx}}\footnote{\url{https://spdx.dev}}
+wurde ursprünglich für das Lizenzmanagement entwickelt und stellt heute einen häufig eingesetzten Standard zur Beschreibung von Software-Inventaren dar.
+Der Fokus des Projekts liegt noch immer auf der Darstellung lizenzrechtlicher Informationen, jedoch lassen sich mit \acrshort{spdx} auch Komponenten, Abhängigkeiten und Beziehungen detailliert beschreiben \autocite{spdxOverview1june2024}.
+\acrshort{spdx} wird von der Linux Foundation gepflegt und ist unter \texttt{ISO/IEC 5962:2021}\footnote{\url{https://www.iso.org/standard/81870.html}} international standardisiert.
+
+\paragraph{CycloneDX}\footnote{\url{https://cyclonedx.org}}
+wurde von der OWASP Foundation in Zusammenarbeit mit Ecma International entwickelt und ist seit 2024 als Standard \texttt{ECMA-424} veröffentlicht \autocite{CycloneDX2024Spec, ecma424:2024}.
+CycloneDX beschreibt ein maschinenlesbares Format zur Dokumentation von Software-Komponenten, deren direkten Abhängigkeiten, Lizenzinformationen, kryptografischen Prüfsummen und bekannten Schwachstellen.
+Durch die Möglichkeit, eigene Felder und Erweiterungen in den Dokumenten zu verwenden, können domänenspezifische Anforderungen ohne Anpassung des Standards abgedeckt werden.
+Neuere Versionen führen Erweiterungen für z.B.\ für Hardware-Komponenten (HBOM)\footnote{\url{https://cyclonedx.org/capabilities/hbom}}, KI-Modelle und Trainingsdaten (AI/ML-BOM)\footnote{\url{https://cyclonedx.org/capabilities/mlbom}} oder Konfigurationen und Betriebsdaten (OBOM)\footnote{\url{https://cyclonedx.org/capabilities/obom}} hinzu.
+
+\paragraph{\metaeffekt-Inventare}
+werden im Detail in \autoref{sec:metaeffekt-inventory-format} erklärt.
+Durch Konverter-Plugins\footnote{\url{https://gitlab.opencode.de/metaeffekt/metaeffekt-components/-/tree/master}} können Inventare vom und zum proprietären Format der \metaeffektsp von \acrshort{spdx} und CycloneDX konvertiert werden.
+Durch den \metaeffektsp Extractor kann die Erzeugung von Inventaren auf Basis von Analysen von Quellcode, Build-Artefakten oder Softwarecontainern automatisiert werden.
+Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellenanalyse oder Lizenzklassifikation verwendet werden und dienen als Eingabe in die Prozesse, die in dieser Arbeit entwickelt werden sollen.
 
 
 \section{Produktidentifikationsstandards, Formate und ihre Herausforderungen}\label{sec:produktidentifikationsstandards-herausforderungen}
