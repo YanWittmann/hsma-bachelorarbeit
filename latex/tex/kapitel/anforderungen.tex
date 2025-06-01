@@ -1,4 +1,48 @@
-\chapter{Anforderungen an das neue Korrelationsformat}\label{ch:anforderungen}
+\chapter{Erhebung der Anforderungen an das neue Korrelationsformat}\label{ch:anforderungen}
+
+
+\section{Methode zu Erhebung der Anforderungen}
+
+Zur Herleitung der Anforderungen an das neue Korrelationssystem wird zunächst die proprietäre Produktmodellierung der \metaeffektsp beschrieben, die in den meisten Fällen als Ausgangspunkt der Produktidentifikation dienen wird.
+Anschließend wird der intern entwickelten Schwachstellenscanners vorgestellt, und das darin bisher verwendete Korrelationsformat zur Zuordnung von Komponenten mit ihren anderen Repräsentationen.
+Das bestehende Format wird anschließend auf seine Schwächen und Herausforderungen untersucht, woraus die Anforderungen an das neue Korrelationsformat abgeleitet werden.
+
+
+\section{Interne Produktmodellierung der \metaeffektlg}
+
+Wie alle Datentypen im Inventar basieren auch Artefakte auf Key-Value-Pairs, einer frei definierbaren Zuordnung von Textschlüsseln zu Textwerten.
+Dieses Format wurde gewählt, um möglichst einfach Änderungen und neue Felder einführen zu können, ohne Schemata definieren und ändern zu müssen.
+Komplexere Werte als flache Texte werden z.B.\ automatisch als JSON-Objekte serialisiert und beim Einlesen wieder als Objekte deserialisiert.
+
+Für Artefakte ist die zugrunde liegende Struktur mit einigen Basis-Feldern für alle Software-Ökosysteme die gleiche, jedoch unterscheidet sich je nach Ökosystem die tatsächliche Verwendung der Felder.
+Jedes Ökosystem hat somit eine übliche Menge an Feldern, mit denen eine Komponente beschrieben wird, die typischerweise ausgefüllt werden.
+
+Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inventory-artifact-entries} dargestellt.
+
+\begin{table}[ht]
+    \caption{Beispielhafte Artefakteinträge in einem Software-Inventar}
+    \label{tab:inventory-artifact-entries}
+    \centering
+    \begin{tabular}{llll}
+        \toprule
+        \textbf{Id}                  & \textbf{Component}         & \textbf{Group Id}        & \textbf{Version} \\
+        \midrule
+        commons-codec-1.15.jar       & Apache Commons Codec       & commons-codec            & 1.15             \\
+        commons-collections4-4.1.jar & Apache Commons Collections & org.apache.commons       & 4.1              \\
+        slf4j-api-1.7.36.jar         & SLF4J                      & org.slf4j                & 1.7.36           \\
+        log4j-api-2.14.0.jar         & Apache Log4j               & org.apache.logging.log4j & 2.14.0           \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Da das Datenmodell tabellarisch angeordnet ist und damit in Tabelleneditoren mit mehreren Tabellenblättern abbildbar ist, wird es häufig in menschenlesbarer Form als \texttt{.xlsx} oder ähnlichen Formaten exportiert.
+
+\section{Analyse des Schwachstellenscanners der \metaeffektlg}
+
+% “The results show that the method describe” (Sanguino and Uetz, 2017, p. 22) Sanguino_Uetz_2017
+%   auf diese art und weise die shortcomings unseres scanners beschreiben
+% vor allem problematisch wenn es keine CPE gibt weil dann oft doch eine gefunden wird
+
 
 
 \section{Aktuelles Korrelationsformat}

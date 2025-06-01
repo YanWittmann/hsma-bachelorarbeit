@@ -6,8 +6,9 @@
 % “vulnerability A weakness that can be exploited or triggered to produce an adverse effect. The inability to withstand adversity.” (Ross et al., 2022, p. 63)
 % “weakness Defect or characteristic that may lead to undesirable behavior.” (Ross et al., 2022, p. 63)
 
-\paragraph{Schwäche (Wakness)}
-Der Begriff einer Schwäche in einer Software-Komponente bezeichnet einen intrinsischen Fehler, Defekt oder eine problematische Eigenschaft, die unter bestimmten Bedingungen in einer Software oder Hardware zu unerwünschtem Verhalten führen kann \autocite{Ross_Winstead_McEvilley_2022}.
+\paragraph{Schwäche (Weakness)}
+
+Der Begriff \enquote{Schwäche} in einer Software-Komponente bezeichnet einen intrinsischen Fehler, Defekt oder eine problematische Eigenschaft, die unter bestimmten Bedingungen in einer Software oder Hardware zu unerwünschtem Verhalten führen kann \autocite{Ross_Winstead_McEvilley_2022}.
 Schwächen beschreibende grundlegende Fehlermuster, die unabhängig von spezifischen Implementierungen oder Angriffsszenarien existieren.
 
 Das \acrfull{cwe}-Projekt\footnote{\url{https://cwe.mitre.org/about/index.html}}, unter der Leitung der MITRE Corporation, stellt einen großen Katalog solcher Software-Schwächen dar.
@@ -19,12 +20,10 @@ Die Klassifikation reicht von abstrakteren Kategorien (\verb+CWE-20+: Improper I
 Während Schwächen allgemeine Fehlermuster beschreiben, stellt eine Schwachstelle eine konkrete Ausprägung einer Schwäche in einem spezifischen System oder Produkt dar.
 Sie beeinträchtigt die zentralen \acrshort{ciavuln}-Sicherheitsziele (Confidentiality (Vertraulichkeit), Integrity (Integrität) oder Availability (Verfügbarkeit)) und stellen eine Verletzung formeller oder impliziter Sicherheitsanforderungen dar.
 Das \acrshort{cve}-Programm, betrieben durch die MITRE Corporation und unterstützt von US-Behörden wie der \acrfull{cisa}, bietet einen weltweit anerkannten Standard zur Identifikation und Beschreibung von öffentlich bekannten Schwachstellen.
-Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.B.\ \verb+CVE-2024-12345+) und wird in kooperation mit autorisierten \acrfull{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
+Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.B.\ \verb+CVE-2024-12345+) und wird in Kooperation mit autorisierten \acrfull{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
 Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api} von der \acrshort{nvd} öffentlich zur Verfügung gestellt\footnote{\url{https://nvd.nist.gov/developers/vulnerabilities}}.
 
 Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen betrachtet, andere ähnliche Standards werden als \nameref{par:security-advisories} behandelt.
-
-% noch erwähnen: in diesem kontext zählen nur CVEs als schwachstellen, nicht etwa osv und co.
 
 \paragraph{Security Advisories}\label{par:security-advisories}
 
@@ -50,7 +49,7 @@ Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen
 % “Specifying the precise inventory is so crucial for assessing vulnerabilities” (Bennouk et al., 2024, p. 857)
 
 
-\section{Produktidentifikationsstandards und relevante Formate}
+\section{Produktidentifikationsstandards, Formate und ihre Herausforderungen}\label{sec:produktidentifikationsstandards-herausforderungen}
 
 \subsection{Produkte und ihre Repräsentation}
 
@@ -61,6 +60,35 @@ Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen
 
 \subsection{CPE}
 
+% Sanguino_Uetz_2017
+% “2.1. Common Platform Enumeration (CPE) CPE is a method that specifies a naming scheme for applications, hardware devices, and operating systems. CPE is part of the Security Content Automation Protocol (SCAP)5 standard, which was proposed by the National Institute of Standards and Technology (NIST). Currently, there exist two versions of the CPE specification: CPE 2.2 and CPE 2.3. Version 2.3 defines a stack formed by five specifications, including the CPE naming specification [4] and the CPE dictionary specification [5].” (Sanguino and Uetz, 2017, p. 3)
+% “3. CPE Dictionary and CVE Feeds Analysis” “This section discusses issues that we found in the official CPE dictionary9 and CVE feeds10” (Sanguino and Uetz, 2017, p. 6)
+% the above paper also talks quite well about CVE
+
+\paragraph{Probleme mit CPE}
+
+% Probleme mit CPE:
+% “3.1. CVE entries without CPE entries” (Sanguino and Uetz, 2017, p. 7) Sanguino_Uetz_2017
+%       Found [40652 / 291389] vulnerabilities that do not have any vulnerable software configurations
+% “3.2. Software Products without assigned CPE” (Sanguino and Uetz, 2017, p. 7)
+% “3.3. CPE Dictionary Deprecation Process” (Sanguino and Uetz, 2017, p. 8)
+% “When CVE matches for a software product are found, IVA does not automatically generate alerts. The user must confirm that a CVE is indeed a vulnerability for the software product.” (Sanguino and Uetz, 2017, p. 23)
+%       notwendigkeit dass man manuell daran arbeiten muss
+% man kann sie nicht einfach erraten, weil sie nicht einer konvention folgen:
+%       “However, some CPE-IDs registered in the dictionary may not follow the nomenclature rules of CPE specification. For instance, Hidemaru’s CPE-ID violated the rules at the time of this writing.” (Takahashi et al., 2016, p. 4) Takahashi_Miyamoto_Nakao_2016
+% python pthyon
+
+\paragraph{Identifikation von CPE}\label{par:automated-cpe-identification}
+
+% “Table 3. Collected methods related to the similarity matching-based approach.” (Bennouk et al., 2024, p. 870) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
+% “In the first step, CPE identifiers that could be assigned to a software product (CPE candidates) are searched for.” (Sanguino and Uetz, 2017, p. 10) Sanguino_Uetz_2017
+%    “5.2.1. CPE Matching As can be seen in Table 3, IVA would be able to automatically assign the correct CPEs to ten products; however, to the products P6 and P11 incorrect CPEs would be assigned.” (Sanguino and Uetz, 2017, p. 19) Sanguino_Uetz_2017
+% “Because we typically find only a few exact matches, we use a numerical method to determine a CPE-ID. We introduce a parameter, called matching rate, which is calculated as the percentage of the characters that match the query.” (Takahashi et al., 2016, p. 3) Takahashi_Miyamoto_Nakao_2016
+%    “We choose the CPE-ID that shows the highest matching rate, although we judge that no CPE-ID is found if we do not find a CPE-ID with matching rate higher than a certain threshold value.” (Takahashi et al., 2016, p. 3) Takahashi_Miyamoto_Nakao_2016
+% “The novelty of this research consists in the algorithm for mapping software names in the information system to the CPE entries based on the Ratcliff/Obershelp algorithm recursively implemented for the software product name’s parts.” (Ushakov et al., 2021, p. 353) Ushakov_Doynikova_Novikova_Kotenko_2021
+%    “Research work Method CPE fields Disadvantages Gawron et al., 2017 [6] Regular expression. Name and version Not unified entries or entries with errors are not mapped Sanguino and Uetz [7, 8] Levenshtein algorithm to select CPE candidates based on vendor and name, distance should be less than 2. Versions are used to prioritize the candidates. Vendor, name, and version Requires manual selection from several CPE candidates to avoid errors. Evaluation on 12 products. O'Hare and Macfarlane, 2018 [9] Levenshtein algorithm applied to the CPE list. Candidates with the minimum distance are selected (consequently, 0, 1, or 2). Full entry Error-prone. Na et al., 2017 [10] Hierarchical tree based on entry fields, full words comparison Full entry Error-prone, no evaluation. Bela and Enachescu, 2015 [11] Multiple hierarchical trees Full entry Error-prone” (Ushakov et al., 2021, p. 354) Ushakov_Doynikova_Novikova_Kotenko_2021
+%    basically eine zusammenfassung von untersch. papers zum thema
+
 \subsection{PURL}
 
 \subsection{MSRC Product-Ids}
@@ -68,12 +96,17 @@ Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen
 \subsection{EOL Product-Ids}
 
 
-\section{Analyse bestehender Produkt-Mapping Algorithmen}
+\section{\acrlongpl{vms}}
 
-% “Table 3. Collected methods related to the similarity matching-based approach.” (Bennouk et al., 2024, p. 870) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
+Vulnerability Management (Schwachstellenmanagement) beschreibt den wiederkehrenden Prozess zur Erkennung von Sicherheitslücken in IT-Systemen.
+Ziel ist es, Schwachstellen vor auslieferung des Systems zu identifizieren, nach Risiko zu bewerten und durch Patches oder Gegenmaßnahmen zu mitigieren.
+Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Scanning, (2) Schwachstellenerkennung, (3) Analyse und (4) Reporting.
+In der Praxis werden dabei zunächst Schwachstellen durch Abgleich mit bekannten \acrshortpl{vdb} identifiziert und mit Metadaten angereichert, um eine automatisierte Priorisierung und Reihenfolge des Vorgehens abzuleiten, bevor die manuelle Behebung durch Patches oder Workarounds erfolgt und schließlich die Wirksamkeit der Korrekturmaßnahmen überprüft wird \autocite{foreman2019vulnerabilityManagement}.
 
+Die Identifikation von Schwachstellen ist also nur der erste Schritt in einem vollständigen Schachstellmanagement.
+Diesen manuell regelmäßig durchzuführen ist zeitaufwendig, ein \acrshort{vms} automatisiert darum durch den Abgleich mit \acrshortpl{vdb} (wie \acrshort{cve} mit \acrshort{cpe} der \acrshort{nvd}) zur Identifikation von Schwachstellen und der Priorisierung bereits wesentliche aufwendige Schritte des Schwachstellenmanagements \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
 
-\section{Interne Produktmodellierung der \metaeffektlg}
+Die Effektivität eines \acrshort{vms} hängt dabei stark von der Qualität der zugrundeliegenden Software-Inventare und Produktidentifikationsmechanismen ab (vgl. \autoref{sec:def-inventories}).
+Einige Mechanismen für die Erkennung von Produkten wurden in \autoref{sec:produktidentifikationsstandards-herausforderungen} vorgestellt und gezeigt, dass diese für die genaue Erkennung zu Fehleranfällig sind und es meist einem manuellen Korrekturschritt bedarf.
 
-
-\section{Analyse des \metaeffektlg-Schwachstellenscanners}
+Schwachstellmanagement als Prozess verwendet somit die priorisierte Liste an Schwachstellen eines Schwachstellenscans um dann durch manuelle Bewertungsprozesse bis zu einem durch Rahmenbedingungen gesetzen Score-Limit die Schwachstellen auszuwerten und zu bewerten \autocite{foreman2019vulnerabilityManagement}.

@@ -9,18 +9,17 @@ Laut dem Open Source Monitor des Bitkom e.V.\ nutzen 69\,\% der deutschen Untern
 
 Mit dem zunehmenden Einsatz von \acrshort{oss} steigen jedoch auch die Anforderungen an deren sichere und nachvollziehbare Verwendung in Unternehmenssoftware.
 Der geplante \acrfull{cra} der Europäischen Union, der ab dem 11.\ Dezember 2027 vollständig in Kraft tritt,
-verpflichtet Unternehmen bereits ab dem 11.\ Juni 2026 dazu, Schwachstellen und Sicherheitsvorfälle zu dokumentieren,
-auf Anfrage verfügbar zu machen und sicherzustellen, dass das Produkt keine bekannten ausnutzbaren Schwachstellen beinhaltet.
+verpflichtet Unternehmen bereits ab dem 11.\ Juni 2026 dazu, Schwachstellen und Sicherheitsvorfälle zu dokumentieren und sicherzustellen, dass das Produkt keine bekannten ausnutzbaren Schwachstellen beinhaltet.
 Eine aktiv ausgenutzte Schwachstelle in einem Produkt stellt nach dem \acrshort{cra} einen Sicherheitsvorfall dar, der innerhalb von 72 Stunden den zuständigen Behörden gemeldet werden muss\ \autocite{eu2024cra}.
 
 Eine der am weitesten verbreiteten Quellen für Schwachstelleninformationen ist das \acrfull{cve}-System, das als Bestandteil der \acrfull{nvd} des \acrfull{nist}\footnote{\url{https://nvd.nist.gov/vuln}} mit derzeit fast 300.000 Einträgen die umfangreichste öffentlich zugängliche Schwachstellendatenbank darstellt\ \autocite{nvd12mai2025dashboard}.
-Diese große Anzahl an erfassten Schwachstellen und der kontinuierliche Zuwachs machen es in Kombination mit den kurzen Meldefristen des \acrshort{cra} unmöglich, diesen Prozess rein manuell abzubilden.
+Diese große Anzahl an erfassten Schwachstellen und der kontinuierliche Zuwachs machen es in Kombination mit den kurzen Meldefristen des \acrshort{cra} unmöglich, den Prozess der Schwachstellensuche rein manuell abzubilden.
 Für 65\% der Unternehmen ist eine manuelle Überwachung dieser Datenmengen durch den zeitlichen Aufwand und das Risiko eines menschlichen Fehlers unmöglich\ \autocite{OpenSourceMonitorWintergerst}, weshalb sie automatisierte \acrfull{vms} einsetzen.
 
 Moderne und automatisierte \acrshort{vms} verarbeiten die erfassten Softwareinventare typischerweise in mehreren Schritten, um den firmeneigenen Softwarekatalog mit relevanten Schwachstelleninformationen aus verknüpften \acrfullpl{vdb} abzugleichen:
 die Identifikation der eingesetzten Komponenten, die Erkennung potenzieller Schwachstellen, eine regelbasierte Bewertung der Ergebnisse und die Erzeugung von Ergebnisberichten\ \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
 
-Die Zuordnung der eigenen Komponenten zu den Produktbezeichnern der jeweils abzugleichenden \acrshort{vdb} ist als erster Schritt bereits einer der herausfordernsten.
+Die Zuordnung der eigenen Komponenten zu den Produktbezeichnern der jeweils abzugleichenden \acrshort{vdb} ist als erster Schritt bereits einer der herausforderndsten.
 Die \acrshort{nvd} etwa stellt mit dem \acrfull{cpe}-System ein Schema zur Verfügung, um Softwareprodukte zu identifizieren und zu \acrshort{cve} zuzuordnen\ \autocite{Cheikes_Waltermire_Scarfone_2011}.
 In der Praxis ist die korrekte Abbildung der eingesetzen Komponenten auf \acrshort{cpe}-Einträge jedoch mit Schwierigkeiten verbunden:
 uneinheitliche Benennungen, Doppelungen, Rechtschreibfehler und mehr führen zu Fehlidentifikationen und unvollständigen Ergebnissen im darauf folgenden Schwachstellen-Scan\ \autocite{Sanguino_Uetz_2017}.
@@ -45,19 +44,19 @@ Der erste Schritt eines \acrshort{vms}, die Abbildung von Komponenten auf \acrsh
 Diese Fragestellung präsentiert bei genauerer Untersuchung zwei Herausforderungen:
 
 \begin{enumerate}
-    \item Kein einzelnes Schema (z.B. \acrshort{cpe}) deckt alle Komponenten oder \acrshort{vdb} vollständig ab, es ist also die Erfassung mehrerer nötig.
-    \item Automatische Zuordnungen sind oft unvollständig oder inkonsistent, während manuelle Pflege skalierungsbeschränkt ist.
+    \item Kein einzelnes Schema (z.B. \acrshort{cpe}) deckt alle Komponenten oder \acrshort{vdb} vollständig ab, es ist also die Erfassung von Abbildungen der Komponenten in mehrere Schemata nötig um ein umfassendes Bild der Schwachstellen zu erhalten.
+    \item Automatische Zuordnungen sind oft unvollständig oder inkonsistent, während manuelle Pflege einen großen Pflegeaufwand mit sich bringt.
 \end{enumerate}
 
-Basierend auf diesen und weiteren Erkenntnissen über die letzten Jahre hat diese Arbeit als Ziel, ein neues System für die \metaeffekt\  zu entwickeln und implementieren, das das alte Korrelationsformat ablösen wird.
+Basierend auf diesen und weiteren Erkenntnissen über die letzten Jahre hat diese Arbeit als Ziel, ein neues System für die \metaeffektsp zu entwickeln und zu implementieren, das das alte Korrelationsformat ablösen wird.
 Das neue System soll eine bidirektionale Abbildung zwischen verschiedenen Produktrepräsentationen ermöglichen, sodass ausgehend von einer beliebigen Identifikation (z.B.\ einer internen Komponente oder einer \acrshort{cpe}) alle zugehörigen Bezeichner ermittelt werden können.
 
 \paragraph{Forschungsfrage}
 
-Dies führt zu der Forschungsfrage, die in dieser Arbeit beantwortet werden soll:
+Dies führt zu der Forschungsfrage dieser Arbeit:
 
 \begin{quote}
-    Wie muss ein Produkt-Graph strukturiert sein, der heterogene Repräsentationen von Software- und Hardwarekomponenten (wie \acrshort{cpe} oder \acrshort{purl}) bidirektional verknüpft und
+    Wie muss ein Produkt-Graph strukturiert sein, der heterogene Repräsentationen von Software- und Hardwarekomponenten (wie \acrfull{cpe} oder \acrfull{purl}) bidirektional verknüpft und
     dabei sowohl manuelle Korrekturen, als auch die automatische integration von importierten Daten aus Schwachstellendatenbanken ermöglicht?
 \end{quote}
 
@@ -68,7 +67,7 @@ Diese Arbeit gliedert sich in sechs thematische Abschnitte, die vom den theoreti
 
 \paragraph{\autoref{ch:grundlagen}: Grundlagen}
 Zunächst werden die relevanten Produktidentifikationsstandards (\acrshort{cpe}, \acrshort{purl}, \acrshort{osv}, \acrshort{msrc}-IDs, \ldots) analysiert und bestehende Mapping-Algorithmen evaluiert.
-Darauf aufbauend wird die interne Produktmodellierung der \metaeffekt\  sowie der aktuelle Schwachstellenscanner untersucht.
+Darauf aufbauend wird die interne Produktmodellierung der \metaeffektsp sowie der aktuelle Schwachstellenscanner untersucht.
 
 \paragraph{\autoref{ch:anforderungen}: Anforderungsanalyse}
 Ausgehend vom bestehenden YAML-basierten Korrelationsformat werden dessen Schwächen erfasst und daraus Anforderungen für das neue System abgeleitet.
