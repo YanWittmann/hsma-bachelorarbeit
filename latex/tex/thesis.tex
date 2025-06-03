@@ -82,7 +82,7 @@
 \input{preambel}
 
 
-%Abstrakt Ihrer Abschlussarbeit
+% Abstrakt Ihrer Abschlussarbeit
 \input{abstrakt}
 
 
@@ -91,10 +91,14 @@
 
 
 % Anfang des Dokuments
-\begin{document}	
+\begin{document}
+
+% https://tex.stackexchange.com/questions/9107/how-can-i-make-my-text-never-go-over-the-right-margin-by-always-hyphenating-or-br
+% Verhindern, dass Text auf der rechten Seite über den Rand ragt
+\sloppy
 
 
-%Laden der Dateien mit Abkürzungen, Begriffserklärungen (Glossar), Symbole
+% Laden der Dateien mit Abkürzungen, Begriffserklärungen (Glossar), Symbole
 \input{definitionen/abkuerzungen}
 \input{definitionen/glossar}
 \input{definitionen/symbole}

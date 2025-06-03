@@ -3,9 +3,6 @@
 
 \section{Schwächen und Schwachstellen}\label{sec:def-weakness-vulnerability}
 
-% “vulnerability A weakness that can be exploited or triggered to produce an adverse effect. The inability to withstand adversity.” (Ross et al., 2022, p. 63)
-% “weakness Defect or characteristic that may lead to undesirable behavior.” (Ross et al., 2022, p. 63)
-
 \paragraph{Schwäche (Weakness)}
 
 Der Begriff \enquote{Schwäche} in einer Software-Komponente bezeichnet einen intrinsischen Fehler, Defekt oder eine problematische Eigenschaft, die unter bestimmten Bedingungen in einer Software oder Hardware zu unerwünschtem Verhalten führen kann \autocite{Ross_Winstead_McEvilley_2022}.
@@ -35,7 +32,7 @@ Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen
 
 % VDBs
 % “3.3. Security Vulnerability Databases” (Bennouk et al., 2024, p. 864) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
-% auflisten von den unterschiedlichen lieferanten von schwachstellinfos und advisories und wie sie
+% auflisten von den unterschiedlichen lieferanten von schwachstellinfos und advisories
 
 
 \section{Software-Inventare}\label{sec:def-inventories}
@@ -71,6 +68,25 @@ Durch Konverter-Plugins\footnote{\url{https://gitlab.opencode.de/metaeffekt/meta
 Durch den \metaeffektsp Extractor kann die Erzeugung von Inventaren auf Basis von Analysen von Quellcode, Build-Artefakten oder Softwarecontainern automatisiert werden.
 Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellenanalyse oder Lizenzklassifikation verwendet werden und dienen als Eingabe in die Prozesse, die in dieser Arbeit entwickelt werden sollen.
 
+% “Table 3. SBOM issue categories” ([Bi et al., 2023, p. 13](zotero://select/library/items/WYCQM3PA)) ([pdf](zotero://open-pdf/library/items/XG7WITCJ?page=13&annotation=LSB777ZB)) Bi_Xia_Xing_Lu_Zhu_2023
+%   ganz nette übersicht über die use-cases der SBOM
+
+
+\section{\acrlongpl{vms}}\label{sec:grundlagen-vms}
+
+Vulnerability Management (Schwachstellenmanagement) beschreibt den wiederkehrenden Prozess zur Erkennung von Sicherheitslücken in IT-Systemen.
+Ziel ist es, Schwachstellen vor auslieferung des Systems zu identifizieren, nach Risiko zu bewerten und durch Patches oder Gegenmaßnahmen zu mitigieren.
+Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Scanning, (2) Schwachstellenerkennung, (3) Analyse und (4) Reporting.
+In der Praxis werden dabei zunächst Schwachstellen durch Abgleich mit bekannten \acrshortpl{vdb} identifiziert und mit Metadaten angereichert, um eine automatisierte Priorisierung und Reihenfolge des Vorgehens abzuleiten, bevor die manuelle Behebung durch Patches oder Workarounds erfolgt und schließlich die Wirksamkeit der Korrekturmaßnahmen überprüft wird \autocite{foreman2019vulnerabilityManagement}.
+
+Schwachstellmanagement als Prozess verwendet somit die priorisierte Liste an Schwachstellen eines Schwachstellenscans, um dann durch manuelle Bewertungsprozesse bis zu einem durch Rahmenbedingungen gesetzen Score-Limit die Schwachstellen auszuwerten und zu bewerten \autocite{foreman2019vulnerabilityManagement}.
+
+Die Identifikation von Schwachstellen ist also nur der erste Schritt in einem vollständigen Schachstellmanagement.
+Diesen manuell regelmäßig durchzuführen ist zeitaufwendig, ein \acrshort{vms} automatisiert darum durch den Abgleich mit \acrshortpl{vdb} (wie \acrshort{cve} mit \acrshort{cpe} der \acrshort{nvd}) zur Identifikation von Schwachstellen und der Priorisierung bereits wesentliche aufwendige Schritte des Schwachstellenmanagements \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
+
+Die Effektivität eines \acrshort{vms} hängt dabei stark von der Qualität der zugrundeliegenden Software-Inventare und Produktidentifikationsmechanismen ab (vgl. \autoref{sec:def-inventories}).
+Einige Mechanismen für die Erkennung von Produkten werden in \autoref{sec:produktidentifikationsstandards-herausforderungen} vorgestellt und es wird festgestellt, dass diese für die genaue Erkennung zu Fehleranfällig sind und es meist einem manuellen Korrekturschritt bedarf.
+
 
 \section{Produktidentifikationsstandards, Formate und ihre Herausforderungen}\label{sec:produktidentifikationsstandards-herausforderungen}
 
@@ -80,6 +96,40 @@ Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellen
 % Name ≠ Identity
 % Intrinsic vs extrinsic naming scheme
 % warum gibt es so viele formate (jeder sein use-case)
+
+Um Schwachstellmanagement wie in \autoref{sec:grundlagen-vms} beschrieben effektiv durchführen zu können, muss Software in Software-Inventaren auf eine Weise angegeben sein, die eine Korrelation dieser Software mit anderen Informationen wie bekannten Schwachstellen erlaubt.
+Das Ziel muss es sein, dass verschiedene Akteure wie Konsumenten von \acrshortpl{vdb}, Inventarwerkzeuge und Sicherheitsexperten mit der Darstellung der Software genau wissen, dass sie über dieselbe Software reden.
+In der Realität existieren jedoch viele heterogene Lösungen zur Software-Identifikation, die eine unterschiedliche Granularität oder Fokus haben und sich darum nicht einfach gegenseitig ineinander überführen lassen \autocite{CISA2023}.
+
+Ein grundlegendes Problem bei der Identifikation ist die Unterscheidung zwischen einem \textit{Namen} und einer eindeutigen \textit{Identität} \autocite{Manion_Proell_Schmidt2023}.
+Anhand eines Beispiels aus der Chemie:
+Natriumchlorid ist eine kubische Kristallstruktur und kann mit \textit{NaCl} als identifizierende Verhältnisformel vollständig nur aufgrund seiner intrinsischen Eigenschaften beschrieben werden.
+Allerdings gibt es noch weitere Systeme, wie chemische Stoffe angegeben werden können.
+Authoritative Systeme wie CAS-Nummern definieren einen extrinsischen, künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
+Die \textit{Identität} ist die eigentliche Zusammensetzung von Natriumchlorid, NaCl und 7647-14-5 sind Namen, die dieser Struktur gegeben wurden.
+
+Ebenso verhält es sich mit Software.
+Ein zu benennendes Artefakt kann sich auf eine oder mehrere Dateien beziehen, aber auch auf ein Betriebssystem, Hardware, eine Sammlung an Projekten und weiteren, beliebigen Inhalten.
+Die Bezüge der Hersteller zu den Artefakten können jederzeit ändern:
+Neue Hersteller treten in den Markt, ziehen sich zurück, werden aufgekauft oder zusammengeführt, aber auch alleine die Projekte können geforkt, archiviert oder aufgegeben werden.
+Projekte und Produkte können in komplexen Beziehungen stehen und transformieren sich stets weiter.
+Diese Gefüge lassen sich nicht mit den bisherigen häufig eingesetzen Identifikationsstandards abbilden \autocite{Manion_Proell_Schmidt2023}.
+
+Der Begriff \enquote{Produktidentifikationsstandard-Ökosystem} wird wie in \autocite{CISA2023} dazu verwendet, um zu verdeutlichen, dass es nicht einfach ausreicht, ein technisches Format zur Beschreibung von Softwareprodukten zu definieren.
+Vielmehr ist ein Ökosystem welches von der Industrie akzeptiert und deren Regeln durchgängig angewendet werden notwendig, das auch Prozesse zur Erstellung, Verbreitung und Nutzung solcher Identifikatoren umfasst.
+
+--- TODO: check but it's quite all right:
+
+Ein solches Ökosystem muss verschiedene Anforderungen erfüllen, um eine effektive Korrelation von Daten – etwa zwischen Software-Inventaren und Schwachstellendatenbanken – zu ermöglichen.
+Dabei identifiziert \textcite{CISA2023} zwei zentrale Anforderungen: Erstens müssen Produktidentifikatoren in allen relevanten Kontexten und Zeitpunkten verfügbar sein.
+Das bedeutet, dass sowohl beim Erstellen von Inventareinträgen als auch beim Verfassen von Schwachstellenberichten die richtigen Identifikatoren bekannt und zugreifbar sein müssen.
+Zweitens muss das Ökosystem unterschiedliche Granularitätsanforderungen unterstützen – von sehr spezifischen Softwarevarianten bis hin zu generischen Produktfamilien.
+
+Die Heterogenität bestehender Identifikationsschemata – wie etwa \acrshort{cpe}, \acrshort{purl} oder interne IDs in proprietären Systemen – erschwert jedoch die breite Korrelation zwischen verschiedenen Datensätzen und Tools.
+Während einige dieser Standards in bestimmten Kontexten erfolgreich angewendet werden (z.,B. \acrshort{purl} in Paketmanagern), scheitern sie häufig daran, produktübergreifend und interoperabel eingesetzt werden zu können.
+Ein zukunftsfähiges Identifikationssystem muss daher eine flexible Ausdrucksstärke besitzen, um sowohl präzise als auch generische Identifikationen zu ermöglichen, interoperabel einsetzbar sein und durch geeignete Governance-Mechanismen gestützt werden.
+
+Solch ein System würde nicht nur die Effizienz im Schwachstellenmanagement deutlich erhöhen, sondern auch die Grundlage für eine skalierbare Automatisierung im Bereich Software-Sicherheit und Lieferketten-Transparenz schaffen.
 
 \subsection{CPE}
 
@@ -119,17 +169,10 @@ Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellen
 \subsection{EOL Product-Ids}
 
 
-\section{\acrlongpl{vms}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% somewhere else
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Vulnerability Management (Schwachstellenmanagement) beschreibt den wiederkehrenden Prozess zur Erkennung von Sicherheitslücken in IT-Systemen.
-Ziel ist es, Schwachstellen vor auslieferung des Systems zu identifizieren, nach Risiko zu bewerten und durch Patches oder Gegenmaßnahmen zu mitigieren.
-Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Scanning, (2) Schwachstellenerkennung, (3) Analyse und (4) Reporting.
-In der Praxis werden dabei zunächst Schwachstellen durch Abgleich mit bekannten \acrshortpl{vdb} identifiziert und mit Metadaten angereichert, um eine automatisierte Priorisierung und Reihenfolge des Vorgehens abzuleiten, bevor die manuelle Behebung durch Patches oder Workarounds erfolgt und schließlich die Wirksamkeit der Korrekturmaßnahmen überprüft wird \autocite{foreman2019vulnerabilityManagement}.
-
-Die Identifikation von Schwachstellen ist also nur der erste Schritt in einem vollständigen Schachstellmanagement.
-Diesen manuell regelmäßig durchzuführen ist zeitaufwendig, ein \acrshort{vms} automatisiert darum durch den Abgleich mit \acrshortpl{vdb} (wie \acrshort{cve} mit \acrshort{cpe} der \acrshort{nvd}) zur Identifikation von Schwachstellen und der Priorisierung bereits wesentliche aufwendige Schritte des Schwachstellenmanagements \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
-
-Die Effektivität eines \acrshort{vms} hängt dabei stark von der Qualität der zugrundeliegenden Software-Inventare und Produktidentifikationsmechanismen ab (vgl. \autoref{sec:def-inventories}).
-Einige Mechanismen für die Erkennung von Produkten wurden in \autoref{sec:produktidentifikationsstandards-herausforderungen} vorgestellt und gezeigt, dass diese für die genaue Erkennung zu Fehleranfällig sind und es meist einem manuellen Korrekturschritt bedarf.
-
-Schwachstellmanagement als Prozess verwendet somit die priorisierte Liste an Schwachstellen eines Schwachstellenscans um dann durch manuelle Bewertungsprozesse bis zu einem durch Rahmenbedingungen gesetzen Score-Limit die Schwachstellen auszuwerten und zu bewerten \autocite{foreman2019vulnerabilityManagement}.
+% “Rule #1 Partition by supplier” (Manion et al., p. 18)
+% \citeauthor{Manion_Proell_Schmidt2023} erkennen, dass diese Gefüge sich nicht mit den bisherigen häufig eingesetzen Identifikationsstandards abbilden lassen können.
+% Sie schlagen vor,

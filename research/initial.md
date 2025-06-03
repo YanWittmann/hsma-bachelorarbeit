@@ -21,7 +21,7 @@ Papers and presentations
     - https://dl.ifip.org/db/conf/im/im2021-ws4-grasec/213273.pdf  
       downloaded as
       [Graph-Based CPE Matching for Identification of Vulnerable Asset Configurations.pdf](documents/Graph-Based%20CPE%20Matching%20for%20Identification%20of%20Vulnerable%20Asset%20Configurations.pdf)
-- Universal-Software-Product-Indentity (Thomas Schmidt, FIRSTCON23)
+- Universal-Software-Product-Identity (Thomas Schmidt, FIRSTCON23)
     - https://www.first.org/resources/papers/conf2023/FIRSTCON23-TLPCLEAR-Schmidt-Manion-Universal-Software-Product-Indentity.pdf  
       downloaded as
       [FIRSTCON23-TLPCLEAR-Schmidt-Manion-Universal-Software-Product-Indentity.pdf](documents/FIRSTCON23-TLPCLEAR-Schmidt-Manion-Universal-Software-Product-Indentity.pdf)
