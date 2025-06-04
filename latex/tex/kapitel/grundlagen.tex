@@ -97,15 +97,18 @@ Einige Mechanismen für die Erkennung von Produkten werden in \autoref{sec:produ
 % Intrinsic vs extrinsic naming scheme
 % warum gibt es so viele formate (jeder sein use-case)
 
-Um Schwachstellmanagement wie in \autoref{sec:grundlagen-vms} beschrieben effektiv durchführen zu können, muss Software in Software-Inventaren auf eine Weise angegeben sein, die eine Korrelation dieser Software mit anderen Informationen wie bekannten Schwachstellen erlaubt.
-Das Ziel muss es sein, dass verschiedene Akteure wie Konsumenten von \acrshortpl{vdb}, Inventarwerkzeuge und Sicherheitsexperten mit der Darstellung der Software genau wissen, dass sie über dieselbe Software reden.
-In der Realität existieren jedoch viele heterogene Lösungen zur Software-Identifikation, die eine unterschiedliche Granularität oder Fokus haben und sich darum nicht einfach gegenseitig ineinander überführen lassen \autocite{CISA2023}.
+Die genaue Identifikation von Softwareprodukten stellt eine grundlegende Voraussetzung für ein Schwachstellenmanagement wie in \autoref{sec:grundlagen-vms} beschrieben dar.
+Um bekannte Schwachstellen aus \acrshortpl{vdb} korrekt mit Software-Inventaren abgleichen zu können, müssen Produktidentifikatoren so beschaffen sein, dass eine unmissverständliche Zuordnung dieser Software von anderen Parteien oder mit Informationen wie bekannten Schwachstellen möglich ist.
+% Um Schwachstellmanagement wie in \autoref{sec:grundlagen-vms} beschrieben effektiv durchführen zu können, muss Software in Software-Inventaren auf eine Weise angegeben sein, die eine Korrelation dieser Software mit anderen Informationen wie bekannten Schwachstellen erlaubt.
+% Das Ziel muss es sein, dass verschiedene Akteure wie Konsumenten von \acrshortpl{vdb}, Inventarwerkzeuge und Sicherheitsexperten mit der Darstellung der Software genau wissen, dass sie über dieselbe Software reden.
+In der Praxis ist dieses Ziel jedoch aufgrund der vielen heterogenen Lösungen zur Software-Identifikation kaum zu erreichen.
+Sie haben jeweils eine unterschiedliche Granularität oder einen anderen Fokus und lassen sich darum nicht einfach gegenseitig ineinander überführen \autocite{CISA2023}.
 
 Ein grundlegendes Problem bei der Identifikation ist die Unterscheidung zwischen einem \textit{Namen} und einer eindeutigen \textit{Identität} \autocite{Manion_Proell_Schmidt2023}.
 Anhand eines Beispiels aus der Chemie:
-Natriumchlorid ist eine kubische Kristallstruktur und kann mit \textit{NaCl} als identifizierende Verhältnisformel vollständig nur aufgrund seiner intrinsischen Eigenschaften beschrieben werden.
+Natriumchlorid ist eine kubische Kristallstruktur und kann mit \textit{NaCl} als identifizierende Verhältnisformel vollständig nur aufgrund seiner inherenten Eigenschaften beschrieben werden.
 Allerdings gibt es noch weitere Systeme, wie chemische Stoffe angegeben werden können.
-Authoritative Systeme wie CAS-Nummern definieren einen extrinsischen, künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
+Authoritative Systeme wie CAS-Nummern definieren einen autoritativen, künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
 Die \textit{Identität} ist die eigentliche Zusammensetzung von Natriumchlorid, NaCl und 7647-14-5 sind Namen, die dieser Struktur gegeben wurden.
 
 Ebenso verhält es sich mit Software.
@@ -115,21 +118,54 @@ Neue Hersteller treten in den Markt, ziehen sich zurück, werden aufgekauft oder
 Projekte und Produkte können in komplexen Beziehungen stehen und transformieren sich stets weiter.
 Diese Gefüge lassen sich nicht mit den bisherigen häufig eingesetzen Identifikationsstandards abbilden \autocite{Manion_Proell_Schmidt2023}.
 
-Der Begriff \enquote{Produktidentifikationsstandard-Ökosystem} wird wie in \autocite{CISA2023} dazu verwendet, um zu verdeutlichen, dass es nicht einfach ausreicht, ein technisches Format zur Beschreibung von Softwareprodukten zu definieren.
-Vielmehr ist ein Ökosystem welches von der Industrie akzeptiert und deren Regeln durchgängig angewendet werden notwendig, das auch Prozesse zur Erstellung, Verbreitung und Nutzung solcher Identifikatoren umfasst.
+Der Begriff \enquote{Produktidentifikationsstandard-\textit{Ökosystem}} wird wie von \citeauthor{CISA2023} dazu verwendet, um zu verdeutlichen, dass es nicht einfach ausreicht, ein technisches Format zur Beschreibung von Softwareprodukten zu definieren.
+Vielmehr ist ein Ökosystem welches von der Industrie akzeptiert und deren Regeln durchgängig angewendet werden notwendig, das auch Prozesse zur Erstellung, Verbreitung und Nutzung solcher Identifikatoren umfasst \autocite{CISA2023}.
+Produktidentifikatoren müssen in allen relevanten Kontexten und Zeitpunkten verfügbar sein, sei es durch die Weitergabe dieser Identifikatoren durch Hersteller und Zwischenherstellern, oder indem sich die Identifikatoren aus der Software selbst herleiten lassen.
+Zudem muss das Ökosystem alle Nutzungskontexte und Granularitätsstufen unterstützen die in der Realität auftreten können, Softwarevarianten bis zu allgemeinen Produktfamilien.
 
---- TODO: check but it's quite all right:
+Im Folgenden werden Produktidentifikationsstandards in zwei Kategorien differenziert, in den Abschnitten danach wird diese Unterscheidung als Grundlage für die Bewertung existierender Ansätze verwendet.
 
-Ein solches Ökosystem muss verschiedene Anforderungen erfüllen, um eine effektive Korrelation von Daten – etwa zwischen Software-Inventaren und Schwachstellendatenbanken – zu ermöglichen.
-Dabei identifiziert \textcite{CISA2023} zwei zentrale Anforderungen: Erstens müssen Produktidentifikatoren in allen relevanten Kontexten und Zeitpunkten verfügbar sein.
-Das bedeutet, dass sowohl beim Erstellen von Inventareinträgen als auch beim Verfassen von Schwachstellenberichten die richtigen Identifikatoren bekannt und zugreifbar sein müssen.
-Zweitens muss das Ökosystem unterschiedliche Granularitätsanforderungen unterstützen – von sehr spezifischen Softwarevarianten bis hin zu generischen Produktfamilien.
+\paragraph{Inherente Identifikatoren} % inherente, eigenschaftsbasierte, intrinsische
+oder auch eigenschaftsbasierter Identifikatoren können von allen Parteien deterministisch aus einer Software abgeleitet werden.
+\citeauthor{CISA2023} sieht als das Kriterium für diese Art, dass sich die Identifikatoren ausschließlich aufgrund von den Dateien der Software berechnet werden kann, wie etwa SHA1 oder SHA256 mit Standards wie OmniBOR\footnote{\url{https://omnibor.io}}.
+Hashes haben die Herausforderungen, dass nicht immer klar ist, welche Datei(en) der Generierungsfunktion gegeben werden sollen, und, dass diese bekannt und öffentlich verwendbar sein muss.
 
-Die Heterogenität bestehender Identifikationsschemata – wie etwa \acrshort{cpe}, \acrshort{purl} oder interne IDs in proprietären Systemen – erschwert jedoch die breite Korrelation zwischen verschiedenen Datensätzen und Tools.
-Während einige dieser Standards in bestimmten Kontexten erfolgreich angewendet werden (z.,B. \acrshort{purl} in Paketmanagern), scheitern sie häufig daran, produktübergreifend und interoperabel eingesetzt werden zu können.
-Ein zukunftsfähiges Identifikationssystem muss daher eine flexible Ausdrucksstärke besitzen, um sowohl präzise als auch generische Identifikationen zu ermöglichen, interoperabel einsetzbar sein und durch geeignete Governance-Mechanismen gestützt werden.
+Hashes von Dateien und Projekten werden jedoch selten von den bei der \metaeffektsp eingesetzten \acrshortpl{vdb} zur Produktidentifikation verwendet, darum haben diese wenig Relevanz.
+In dieser Arbeit wird zusätzlich auch \acrshort{purl} als inherente Identifikator gesehen, da in den Software-Inventaren der \metaeffektsp recht eindeutig \acrshortpl{purl} abgeleitet werden können.
 
-Solch ein System würde nicht nur die Effizienz im Schwachstellenmanagement deutlich erhöhen, sondern auch die Grundlage für eine skalierbare Automatisierung im Bereich Software-Sicherheit und Lieferketten-Transparenz schaffen.
+\paragraph{Autoritative Identifikatoren} % definierte, extrinsische
+werden durch eine bestimmte Partei explizit einem Softwareprodukt zugewiesen und sind damit eine von außen vergebene Referenz auf ein Produkt.
+Anders als bei inhärenten Identifikatoren gibt es bei autoritativen Identifikatoren nicht die Möglichkeit, diese ohne das Wissen einer äußeren Quelle zu erfahren.
+Es muss also entweder selbst einen solchen Identifikator erzeugt und in einem Register, registriert werden oder auf einen im Register vorhandenen zurückgegriffen werden.
+Parteien, die für das Erzeugen, Registrieren und Verwalten von Identifikatoren verantwortlich sind, werden \enquote{Identifier-Generatoren} genannt \autocite{CISA2023}.
+Generatoren können sich auf manuelle oder automatische Prozesse beziehen.
+
+Damit ein Identifier im Ökosystem effektiv verwendet werden kann, muss er zunächst erzeugt werden, denn eine Software besitzt keinen autoritativen Identifikator solange nicht eine entsprechende Partei diese Bindung festlegt und verbreitet.
+Die Herausforderung liegt also nicht in der jeweiligen Syntax der Standards, sondern in der Organisation, Existenz und Genauigkeit der Verbindungen zwischen Identifikator und Software.
+Dies geschieht typischerweise durch zentrale Datenbanken (wie bei \acrshort{cpe}) oder durch Mitführung in der Software selbst (wie bei \acrfull{swid}) \autocite{CISA2023}.
+
+Autoritative Identifikatoren stellen einige weitere Herausforderungen dar:
+
+\begin{itemize}
+    \item Die Wiederverwendung von autoritativen Identifikatoren durch verschiedene Generatoren, die denselben Bezeichner fälschlicherweise für unterschiedliche Software vergeben, entstehen Falsch-Positive Schwachstell-Identifikationen in späteren Phasen des \acrshort{vms} \autocite{CISA2023}.
+    Dies kann leicht durch identische Namen einer Software beim Abgleich von Datenbanken mit den Identifikatoren passieren, oder durch falsche Erwartungen auf Seiten beider Generatoren.
+    Betrachtet man beispielsweise die Software \texttt{proton-j-0.27.3.jar}, so könnte bei einem ersten Blick der \acrshort{cpe}-Identifikator \texttt{cpe:/a:proton\_project:proton} vom Namen her passend erscheinen.
+    Bei genauerer Betrachtung bezieht sich dieser Identifikator allerdings auf eine Web-Applikation und kein Java-Projekt.
+    Erst nach einer weiteren Analyse von potenziellen Identifikatoren stellt sich heraus, dass \texttt{cpe:/a:apache:qpid\_proton-j} die richtige Wahl für die das Apache-Projekt ist.
+
+    \item Wenn für dieselbe Software mehrfach ein neuer Identifier vergeben wird (Überidentifikation), entstehen Falsch-Negative Lücken in der Schwachstell-Identifikation, da die doppelten Datenpunkte nicht eindeutig zusammengeführt werden können \autocite{CISA2023}.
+    Ein Beispiel sind die \acrshort{cpe} für Cyrus SASL\footnote{\url{https://github.com/cyrusimap/cyrus-sasl}}, die ihre Haupt-\acrshort{cpe} \texttt{cpe:/a:cyrusimap:cyrus-sasl} besitzen, jedoch daneben auch noch eine Reihe an weiteren von anderen Generatoren registriert wurden, die dasselbe Produkt meinen:
+    \texttt{cpe:/a:carnegie\_mellon\_university:cyrus-sasl, cpe:/a:cmu:cyrus-sasl, cpe:/a:cyrusimap:cyrus\_sasl, cpe:/a:cyrus:sasl} wurden von Forschern an der \acrfull{cmu} einmal mit ihren ausgeschriebenen Namen und einmal mit ihrem Kürzel vergeben um sich als Entdecker einer Schwachstelle in diesem Produkt zu verewigen, aber auch Doppelregistrierungen mit kleinen Unterschieden wie dem Ersetzen eines Bindestrichs mit einem Underscore sind häufig zu finden.
+
+    \item Fehlerhaft registrierte Identifikatoren (Rechtschreibfehler, nicht existierende Produkte, \ldots) könne nicht einfach aus den Daten entfernt oder korrigiert werden, da andere Systeme diese bereits konsumiert haben könnten und durch den Weitertransport an Dritte muss die Erwartung der Existenz dieser aufrechterhalten werden.
+    Ein Beispiel sind die \acrshort{cpe} für Python, bei diesen wurde bei der Erstellung zunächst eine falsch benannte \texttt{cpe:2.3:a:python:py\textit{ht}on} registriert und kurz darauf mit der \texttt{cpe:2.3:a:python:python} korrigiert.
+    Die Existenz der falschen \acrshort{cpe} wird für immer in dem Datensatz vorhanden sein.
+
+    \item Die Verbreitung der Identifikatoren ist ein weiteres Hindernis, eine zentrale Datenbank wäre Ideal, falls jedoch ein wahrlich allumfassendes Register an Software dieser Welt erstellt werden soll, wird die Pflege auf globaler Ebene herausfordernd.
+    Die Koordination von Identifier-Generatoren ist wie in den anderen Punkten erwähnt realistisch kaum umsetzbar, und von jedem Generator zu fordern, eine eigene Infrastruktur für etwas aufzubauen, was für die meisten nur ein Hintergedanke ist, ist ebenfalls nicht möglich \autocite{CISA2023}.
+\end{itemize}
+
+Für ein funktionierendes Ökosystem autoritativer Identifikatoren sind neben dem Format also vor allem die umliegenden Prozesse zur Erzeugung, zur Veröffentlichung und zur Verteilung der Identifikatoren im gesamten Lebenszyklus von Software entscheidend.
 
 \subsection{CPE}
 
