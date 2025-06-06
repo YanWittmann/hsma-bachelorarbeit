@@ -126,12 +126,16 @@ Zudem muss das Ökosystem alle Nutzungskontexte und Granularitätsstufen unterst
 Im Folgenden werden Produktidentifikationsstandards in zwei Kategorien differenziert, in den Abschnitten danach wird diese Unterscheidung als Grundlage für die Bewertung existierender Ansätze verwendet.
 
 \paragraph{Inherente Identifikatoren} % inherente, eigenschaftsbasierte, intrinsische
-oder auch eigenschaftsbasierter Identifikatoren können von allen Parteien deterministisch aus einer Software abgeleitet werden.
-\citeauthor{CISA2023} sieht als das Kriterium für diese Art, dass sich die Identifikatoren ausschließlich aufgrund von den Dateien der Software berechnet werden kann, wie etwa SHA1 oder SHA256 mit Standards wie OmniBOR\footnote{\url{https://omnibor.io}}.
-Hashes haben die Herausforderungen, dass nicht immer klar ist, welche Datei(en) der Generierungsfunktion gegeben werden sollen, und, dass diese bekannt und öffentlich verwendbar sein muss.
+oder auch eigenschaftsbasierter Identifikatoren lassen sich direkt deterministisch aus einem Software-Artefakt selbst ableiten, ohne weitere namensgebende Register oder zentrale Organisationen zu benötigen.
+\citeauthor{CISA2023} sieht als das Kriterium für diese Art, dass sich die Identifikatoren ausschließlich aufgrund von den Dateien der Software berechnet werden kann.
+Kryptografische Hashwerte wie etwa SHA1 oder SHA256 mit Standards wie OmniBOR\footnote{\url{https://omnibor.io}} sind die bekannteste Form von inhärenten Identifikatoren.
 
-Hashes von Dateien und Projekten werden jedoch selten von den bei der \metaeffektsp eingesetzten \acrshortpl{vdb} zur Produktidentifikation verwendet, darum haben diese wenig Relevanz.
-In dieser Arbeit wird zusätzlich auch \acrshort{purl} als inherente Identifikator gesehen, da in den Software-Inventaren der \metaeffektsp recht eindeutig \acrshortpl{purl} abgeleitet werden können.
+In der Praxis bestehen jedoch mehrere Herausforderungen:
+Erstens ist in Softwareprojekten oft unklar, auf welche Datei oder welche Menge sich eine Hashfunktion ausgeführt werden muss, um den relevanten Hash zu erhalten.
+Zweitens können Builds durch Metainformationen, Timestamps oder Umgebungsfaktoren voneinander abweichen, obwohl funktional dieselbe identische Software verwendet wird \autocite{CISA2023}.
+Drittens arbeiten die aktuell bei der \metaeffektsp eingesettzen \acrshortpl{vdb}, wie die \acrshort{nvd}, nicht mit Dateihashes zur Produktidentifikation, und bringen somit keinen effektiven Mehrwert.
+
+In dieser Arbeit wird zusätzlich auch \acrshort{purl} als inherente Identifikator gesehen, da ein großer Teil der Software-Artefakte in den Inventaren der \metaeffektsp sich eindeutig \acrshortpl{purl} zuweisen lassen.
 
 \paragraph{Autoritative Identifikatoren} % definierte, extrinsische
 werden durch eine bestimmte Partei explizit einem Softwareprodukt zugewiesen und sind damit eine von außen vergebene Referenz auf ein Produkt.
@@ -165,14 +169,64 @@ Autoritative Identifikatoren stellen einige weitere Herausforderungen dar:
     Die Koordination von Identifier-Generatoren ist wie in den anderen Punkten erwähnt realistisch kaum umsetzbar, und von jedem Generator zu fordern, eine eigene Infrastruktur für etwas aufzubauen, was für die meisten nur ein Hintergedanke ist, ist ebenfalls nicht möglich \autocite{CISA2023}.
 \end{itemize}
 
+Diese Herausforderungen sind Teil der Begründung, warum heutzutage eine solche Vielfalt an Standards nebeneinander ko-existieren und die jeweils nur einen kleineren Aspekt oder eine Untermenge der Menge an Produkten adressieren.
 Für ein funktionierendes Ökosystem autoritativer Identifikatoren sind neben dem Format also vor allem die umliegenden Prozesse zur Erzeugung, zur Veröffentlichung und zur Verteilung der Identifikatoren im gesamten Lebenszyklus von Software entscheidend.
 
-\subsection{CPE}
+\subsection{\acrfull{cpe}}
 
 % Sanguino_Uetz_2017
 % “2.1. Common Platform Enumeration (CPE) CPE is a method that specifies a naming scheme for applications, hardware devices, and operating systems. CPE is part of the Security Content Automation Protocol (SCAP)5 standard, which was proposed by the National Institute of Standards and Technology (NIST). Currently, there exist two versions of the CPE specification: CPE 2.2 and CPE 2.3. Version 2.3 defines a stack formed by five specifications, including the CPE naming specification [4] and the CPE dictionary specification [5].” (Sanguino and Uetz, 2017, p. 3)
 % “3. CPE Dictionary and CVE Feeds Analysis” “This section discusses issues that we found in the official CPE dictionary9 and CVE feeds10” (Sanguino and Uetz, 2017, p. 6)
-% the above paper also talks quite well about CVE
+% the above paper also talks quite well about CVE \autocite{Sanguino_Uetz_2017}
+
+\acrshort{cpe} ist ein im \acrfull{scap}\footnote{\url{https://scap.nist.gov}}-Standard von \acrshort{nist} veröffentlichter autoritativer Produktidentifikationsstandard, der ein Schema zur Benennung von Applikationen, Hardware und Betriebssystemen bereitstellt.
+Die zwei aktuellen Versionen der Spezifikationen sind \acrshort{cpe} 2.2 und \acrshort{cpe} 2.3, welche sich in den für diese Arbeit relevanten Attribute stark ähneln und darum außer der unterschiedlichen textuellen Schreibweise als gleich behandelt werden.
+Version 2.3 wird durch fünf getrennte Spezifikationen definiert, die jeweils einen Aspekt in den Fokus nehmen, von denen die \acrshort{cpe} Naming Specification \autocite{Cheikes_Waltermire_Scarfone_2011} und \acrshort{cpe} Matching Specification \autocite{Parmelee_Booth_Waltermire_Scarfone_2011} die relevantesten sind.
+
+Die \acrshort{cpe} 2.3 Naming Specification definiert eine Menge an Attribut-Wert-Paaren, die sich \textit{\acrfull{wfn}} nennen.
+Diese Attribute sind: \texttt{part, vendor, product, version, update, edition, language, sw edition, target sw, target hw, other}.
+Die Menge an \acrshort{wfn}-Attribute einer \acrshort{cpe} können über einen Prozess namens \enquote{string binding} je nach Spezifikationsversion entweder für 2.2 in \enquote{URI strings} (Beispiele in \autoref{lst:initial-cpe-examples-format-string}) oder für 2.3 in \enquote{Formatted strings} (Beispiele in \autoref{lst:initial-cpe-examples-uri}) als textuelle Schreibweise verteilt werden.
+
+\begin{lstlisting}[caption=Beispielhafte \acrshort{wfn} als \acrshort{cpe} 2.3 Format Strings,label=lst:initial-cpe-examples-format-string]
+cpe:2.3:a:apache:tomcat:7.0.48:*:*:*:*:*:*:*
+cpe:2.3:a:log4js_project:log4js:5.2.0:*:*:*:*:node.js:*:*
+cpe:2.3:o:linux:linux_kernel:5.1.21:*:*:*:*:*:*:*
+cpe:2.3:h:hp:s1000-e_vpn_firewall_appliance:jd272a:*:*:*:*:*:*:*
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Beispielhafte \acrshort{wfn} als \acrshort{cpe} 2.2 URI,label=lst:initial-cpe-examples-uri]
+cpe:/a:apache:tomcat:7.0.48
+cpe:/a:log4js_project:log4js:5.2.0::~~~node.js~~
+cpe:/o:linux:linux_kernel:5.1.21
+cpe:/h:hp:s1000-e_vpn_firewall_appliance:jd272a
+\end{lstlisting}
+
+Die relevantesten Attribute zur Identifikation eines Produkts sind \texttt{part}, \texttt{vendor} und \texttt{product}, ergänzt durch \texttt{version} und \texttt{update} für Versionsangaben \autocite{Cheikes_Waltermire_Scarfone_2011}.
+Eine Analyse des offiziellen \acrshort{nvd} \acrshort{cpe} Dictionary\footnote{\url{https://nvd.nist.gov/products/cpe}} zeigt, dass zusätzliche Attributfelder neben dieser Hauptidentifikatoren nur in etwa 26\,\% der Einträge verwendet werden, die genaue Verteilung dieser optionalen Attribute ist in \autoref{tab:cpe-attribute-verteilung} dargestellt.
+Die erweiterten Attributfelder sind also zwar technisch vorgesehen, werden aber in der Praxis nur begrenzt verwendet und sind meist auf den Wert \enquote{\texttt{ANY}} (\enquote{\texttt{*}}) gesetzt, um anzugeben, dass bei diesen Attributen jeder Wert bei einem Match gültig wäre.
+Ein weiterer logischer Wert ist \enquote{\texttt{NA}} (\enquote{\texttt{-}}), bei dem explizit kein Wert in der zu vergleichenden \acrshort{cpe} stehen darf, um erfolgreich gematched zu werden \autocite{Parmelee_Booth_Waltermire_Scarfone_2011}.
+
+% OrderedDict([('target_sw', 23.37), ('sw_edition', 3.72), ('edition', 0.72), ('target_hw', 0.43), ('language', 0.04), ('other', 0.01)])
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lr}
+        \toprule
+        \textbf{Attribut}   & \textbf{Anteil an allen CPEs} \\
+        \midrule
+        \texttt{target sw}  & 23{,}37\,\%                   \\
+        \texttt{sw edition} & 3{,}72\,\%                    \\
+        \texttt{edition}    & 0{,}72\,\%                    \\
+        \texttt{target hw}  & 0{,}43\,\%                    \\
+        \texttt{language}   & 0{,}04\,\%                    \\
+        \texttt{other}      & 0{,}01\,\%                    \\
+        \bottomrule
+    \end{tabular}
+    \caption{Verwendung erweiterter CPE-Attribute im NVD Dictionary}
+    \label{tab:cpe-attribute-verteilung}
+\end{table}
+
+
+\texttt{part} kann drei Werte annehmen: \texttt{a} für \enquote{Application}, \texttt{h} für \enquote{Hardware} und \texttt{o} für \enquote{Operating System}.
 
 \paragraph{Probleme mit CPE}
 
