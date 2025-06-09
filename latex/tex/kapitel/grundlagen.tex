@@ -118,6 +118,10 @@ Neue Hersteller treten in den Markt, ziehen sich zurück, werden aufgekauft oder
 Projekte und Produkte können in komplexen Beziehungen stehen und transformieren sich stets weiter.
 Diese Gefüge lassen sich nicht mit den bisherigen häufig eingesetzen Identifikationsstandards abbilden \autocite{Manion_Proell_Schmidt2023}.
 
+In dieser Arbeit wird der Begriff \textit{Produkt} für abgrenzbare Software- oder Hardware-Artefakte (z.B. \texttt{Log4J-API}) verwendet; der Begriff \textit{Repräsentation} bezeichnet eine standardisierte Darstellung desselben Produkts (wie \texttt{cpe:/a:apache:log4j}, \texttt{pkg:maven/org.apache.logging.log4j/log4j-api} oder \texttt{log4j-api-2.23.0.jar}).
+Während sich ein Produkt auf konzeptioneller Ebene bewegt und exakt von anderen Produkten abgrenzen lässt, können Repräsentationen eine unterschiedlich scharfe Blase aufspannen und sich mehr oder weniger spezifisch auf ein oder mehrere tatsächliche Produkte beziehen.
+So steht \texttt{cpe:/a:apache:log4j} nicht nur für die \texttt{Log4J-API}, sondern für das gesamte Log4j-Projekt inklusive aller seiner Module, während sich \texttt{pkg:maven/org.apache.logging.log4j/log4j-api} konkret auf das Java-Artefakt auf Maven Central\footnote{\url{https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.0}} bezieht.
+
 Der Begriff \enquote{Produktidentifikationsstandard-\textit{Ökosystem}} wird wie von \citeauthor{CISA2023} dazu verwendet, um zu verdeutlichen, dass es nicht einfach ausreicht, ein technisches Format zur Beschreibung von Softwareprodukten zu definieren.
 Vielmehr ist ein Ökosystem welches von der Industrie akzeptiert und deren Regeln durchgängig angewendet werden notwendig, das auch Prozesse zur Erstellung, Verbreitung und Nutzung solcher Identifikatoren umfasst \autocite{CISA2023}.
 Produktidentifikatoren müssen in allen relevanten Kontexten und Zeitpunkten verfügbar sein, sei es durch die Weitergabe dieser Identifikatoren durch Hersteller und Zwischenherstellern, oder indem sich die Identifikatoren aus der Software selbst herleiten lassen.
@@ -305,6 +309,8 @@ Zu viele Attribute:
 %    basically eine zusammenfassung von untersch. papers zum thema
 
 \subsection{PURL}
+
+
 
 \subsection{MSRC Product-Ids}
 

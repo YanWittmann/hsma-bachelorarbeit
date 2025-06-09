@@ -4,6 +4,7 @@
 \section{Methode zu Erhebung der Anforderungen}
 
 Zur Herleitung der Anforderungen an das neue Korrelationssystem wird zunächst die proprietäre Produktmodellierung der \metaeffektsp beschrieben, die in den meisten Fällen als Ausgangspunkt der Produktidentifikation dienen wird.
+Aus diesem werden die unterschiedlichen relevanten Software-Ökosysteme vorgestellt und wie sich diese in den Software-Inventaren darstellt.
 Anschließend wird der intern entwickelten Schwachstellenscanners vorgestellt, und das darin bisher verwendete Korrelationsformat zur Zuordnung von Komponenten mit ihren anderen Repräsentationen.
 Das bestehende Format wird anschließend auf seine Schwächen und Herausforderungen untersucht, woraus die Anforderungen an das neue Korrelationsformat abgeleitet werden.
 
@@ -37,12 +38,43 @@ Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inven
 
 Da das Datenmodell tabellarisch angeordnet ist und damit in Tabelleneditoren mit mehreren Tabellenblättern abbildbar ist, wird es häufig in menschenlesbarer Form als \texttt{.xlsx} oder ähnlichen Formaten exportiert.
 
+\subsection{Analyse bestehender Softwareinventare}
+
+Da die Darstellungsweisen von Artefakten unterschiedlicher Software-Ökosysteme in den \metaeffekt-Software-Inventaren nicht vollständig normiert sind, wurde ein Datensatz mit den Artefakten aus 1820 realen Software-Inventaren von unterschiedlichen Quellen in einer Datenbank aggregiert und auf Muster untersucht.
+Es stellt sich heraus, dass in den meisten Fällen die Art eines Artefakts durch eine Kombination von drei Attributen ableiten lässt: \texttt{Type}, \texttt{Component Source Type} und \texttt{Ecosystem}.
+Nicht immer sind alle gesetzt, und manchmal kommt es auf die Kombination mehrerer an.
+
+Das Attribut \texttt{Ecosystem} in Artefakten entspricht dem \texttt{type}-Attribut in \acrshortpl{purl} und kann von den erzeugenden Prozessen nur dann aufgefüllt werden, wenn auch eine \acrshort{purl} angegeben ist.
+Fehlt dieses, kann meist \texttt{Component Source Type} für eine allgemeine Klassifikation und \texttt{Type} für die spezifischere Einordnung in ein zweistufiges hierarchisches Modell verwendet werden.
+Leider wurden in dem Datensatz oft Artefakte komplett ohne Typ-Information gefunden, in diesen Fällen müssen weitere Algorithmen zur Erkennung etwa basierend auf Dateiendungen oder anderen Attributen entwickelt werden.
+
+Ein Auszug aus den Werten des \texttt{Ecosystem}-Attributs:
+\texttt{npm}, \texttt{gem}, \texttt{github}, \texttt{cpan}, \texttt{wut}, \texttt{docker}, \texttt{internal}, \texttt{conan}, \texttt{deb}, \texttt{nuget}, \texttt{generic}, \texttt{maven}, \texttt{rpm}, \texttt{pypi}, \texttt{golang}, \texttt{apk}.
+
+Die beobachteten Werte aus den Attributen \texttt{Component Source Type} und \texttt{Type} reichen von Ökosystemen und Dateitypen bis hin zu Begriffen aus der Betriebssystem- und Gerätetreiberdomäne.
+Da sich einige Typen in unterschiedlichen Schreibweisen oder Bedeutungen wiederholen, kann von einer stark heterogenen Entstehung der Artefakte ausgegangen werden.
+Die folgenden Kombinationen aus \texttt{Component Source Type} und \texttt{Type} konnten im Datensatz gefunden werden:
+
+\begin{itemize}
+    \itemsep0em
+    \item \texttt{generic-version → package}
+    \item \texttt{java-runtime → package}
+    \item \texttt{pwa-module → web-module}
+    \item \texttt{bower-module → web-module}
+    \item \texttt{npm-module → nodejs-module, web-module}
+    \item \texttt{jar-module → module}
+
+    \item \texttt{<empty> → (hardware/drivers) storage controller, imaging hardware, operating-system, audio hardware, power driver, mouse, Universal Serial Bus controller driver, data storage, multimedia output device, device connector, firmware driver, storage driver, printer driver, power supply, extension module, disk drives driver, printer, input device, audio driver, computer driver, display driver, processing core, driver, sensor, multimedia driver, appliance, security token, sound hardware, network driver, mouse driver, usb controller driver, security device driver, Bluetooth driver, keyboard, controller, operating system, display, imaging driver, port driver, security hardware, input device driver, system device driver, keyboard driver, print queue driver, processor driver, software device driver, networking hardware, board}
+    \item \texttt{<empty> → (other) package, python-module, nodejs-module, bios, file}
+\end{itemize}
+
+Bei einer Sichtung des Quellcodes einiger Entstehungsquellen von Artefakten konnte wenigstens die große Auflistung der Hardware- und Betriebssystemtypen in dem Windows-Inventar-Extraktor System gefunden werden, die restlichen sind über diverse Extraktoren verteilt und damit nicht einheitlich nachvollziehbar.
+
 \section{Analyse des Schwachstellenscanners der \metaeffektlg}
 
 % “The results show that the method describe” (Sanguino and Uetz, 2017, p. 22) Sanguino_Uetz_2017
 %   auf diese art und weise die shortcomings unseres scanners beschreiben
 % vor allem problematisch wenn es keine CPE gibt weil dann oft doch eine gefunden wird
-
 
 
 \section{Aktuelles Korrelationsformat}
