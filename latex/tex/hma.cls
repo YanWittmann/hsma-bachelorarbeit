@@ -653,3 +653,13 @@ intoc=true]%
 	%	\space to proceed, ignoring \protect\foo.
 	%}
 %\fi%
+
+\lstdefinestyle{yaml}{
+	basicstyle=\ttfamily\footnotesize\color{black},
+	rulecolor=\color{black},
+	morecomment=[l]{\#},
+	commentstyle=\color{gray},
+	string=[s]{"}{"},
+	stringstyle=\color{blue},
+	showstringspaces=false
+}
