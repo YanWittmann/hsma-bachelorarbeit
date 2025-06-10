@@ -107,6 +107,7 @@ Die \texttt{affects}-Sektion eines Eintrages muss immer vorhanden sein und legt 
 Dabei wird in einer Listenstruktur eine Menge an Attribut-Wert-Paaren angegeben, die auf der Ebene der Liste logisch als ODER-Verknüpfung interpretiert werden und die Attribute innerhalb der Liste mit einer UND-Verknüpfung verbunden sind.
 Das bedeutet, dass bereits ein zutreffendes Listenelement ausreicht, um einen Treffer zu erzielen, aber innerhalb jedes Elements müssen alle angegebenen Attribut-Werte-Paare auf das zu prüfende Artefakt zutreffen.
 Die betroffenen Attribute können beliebige Felder aus einem Artefakt sein (etwa \texttt{Id}, \texttt{Component}, \texttt{Group Id}, \texttt{Type}, \ldots).
+Es ist dadurch möglich domänenübergreifende Selektionskriterien zu formulieren.
 
 Optional kann ein \texttt{ignores}-Block definiert werden, der vom Aufbau her der \texttt{affects}-Sektion entspricht, aber die Logik umkehrt.
 Sobald einer der Listeneinträge mit einem Artefakt erfolgreich verglichen wurde, wird das Artefakt von dem Eintrag ausgeschlossen.
@@ -198,6 +199,11 @@ Zusätzlich wird für das EOL-Ökosystem die entsprechende Produkt-Id \texttt{wi
 
 \subsection{Correlation Utilities als Tool zur Korrelationsarbeit}
 
+Da der Prozess ein gesamtes Software-Inventar durchzuarbeiten ohne weitere unterstützung von Tools recht aufwendig ist, wurden die \enquote{Correlation Utilities} entwickelt um den Prozess zu unterstützen.
+Als eine Spring Boot Anwendung im Backend mit einem modularen und anpassbaren kachelbasierten Frontend kann hier ein Inventar in eine Tabellarische Form geladen und die Artefakte nach und nach durchgearbeitet werden.
+In \autoref{fig:correlation-utilities-demo} kann die entsprechende Nutzeroberfläche gesehen werden.
+Diese besteht links oben aus der Tabelle der Artefakte, mit farbigen Status-Indikatoren pro Zeile um schnell nach relevanten Metriken filtern zu können und einer Detailsicht mit allen Attributen des ausgewählten Artefakts unten.
+Hier werden zudem über Web-Requests und lokale Datenbankabfragen im Backend diverse weitere nützliche Informationen und Links aggregiert und Internetsuchen vorbereitet, damit diese nicht über repetitive manuelle Suchen selbst durchgeführt werden müssen.
 
 \begin{figure}
     \centering
@@ -205,6 +211,16 @@ Zusätzlich wird für das EOL-Ökosystem die entsprechende Produkt-Id \texttt{wi
     \caption{Das Artefakt \texttt{log4j-core-2.14.0.jar} in den Correlation Utilities}
     \label{fig:correlation-utilities-demo}
 \end{figure}
+
+Auf der rechten Seite sind oben die vorhandenen Korrelationsdaten zu sehen, die auf das aktuelle Artefakt zutreffen und über eine Integration mit IntelliJ IDEA können über einen Klick die Einträge automatisch in der \acrfull{ide} geöffnet werden.
+Zudem wird aufgrund von einigen bekannten Mustern ein neuer Korrelationseintrag mit Referenzen auf reale Daten vorgeschlagen, der mit einem Klick kopiert werden kann.
+Die Daten werden automatisch bei Änderungen in den Dateien neu geladen und ausgewertet.
+
+Unten rechts ist eine Datenbankabfragesicht, in der dedizierte Abfragen auf die lokalen Daten gemacht werden können, wie etwa \acrshort{cpe}-Versionen oder Referenzen zu finden oder nach Schwachstellen oder anderen Repräsentationen zu suchen.
+
+% TODO: actually perform test, ask Julian
+% \smallskip
+% Nach einem internen Test hat sich herausgestellt, dass Mitarbeiter mit den Utilities mehr als 2.5-mal so schnell die selbe Arbeit in höherer Ergebnisqualität durchführen konnten, wie wenn sie dieses Tool nicht verwendet hätten.
 
 
 \section{Schwächen und Herausforderungen des aktuellen Korrelationsformats}
