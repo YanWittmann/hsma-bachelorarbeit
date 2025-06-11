@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[colorlinks]{hyperref}
+\usepackage[acronym]{glossaries}
+
+\makeglossaries
+
+\newacronym{html}{HTML}{HyperText Markup Language}
+\newacronym{css}{CSS}{Cascading Style Sheets}
+
+\let\oldacrshort\acrshort
+\renewcommand*{\acrshort}[1]{\hyperlink{gls:#1}{\oldacrshort{#1}}}
+
+\begin{document}
+
+    This is an acronym: \acrshort{html} and another: \acrshort{css}.
+
+    \printglossaries
+
+\end{document}
+
+% pdflatex glossary-links.tex
+% makeglossaries glossary-links
+% pdflatex glossary-links.tex
+% pdflatex glossary-links.tex

@@ -198,14 +198,14 @@ Die Schreibweise dieser \acrshort{wfn} unterscheidet sich je nach Spezifikations
 Über einen Prozess namens \enquote{string binding} werden die \acrshort{wfn}-Attribute je nach Spezifikationsversion für 2.2 in \enquote{URI-Strings} (Beispiele in \autoref{lst:initial-cpe-examples-format-string}) oder für 2.3 in \enquote{Formatted Strings} (Beispiele in \autoref{lst:initial-cpe-examples-uri}) als textuelle Schreibweise dargestellt \autocite{Cheikes_Waltermire_Scarfone_2011}.
 In dieser Arbeit werden die beiden Versionen des Standards aufgrund des großen Überlappens der Attribut-Mengen neben der unterschiedlichen string bindings in der zugrundeliegenden Semantik der verwendeten Attribute als identisch behandelt.
 
-\begin{lstlisting}[caption=Beispielhafte \acrshort{wfn} als \acrshort{cpe} 2.3 Format Strings,label=lst:initial-cpe-examples-format-string,language=]
+\begin{lstlisting}[caption=Beispielhafte WFN als CPE 2.3 Format Strings,label=lst:initial-cpe-examples-format-string]
 cpe:2.3:a:apache:tomcat:7.0.48:*:*:*:*:*:*:*
 cpe:2.3:a:log4js_project:log4js:5.2.0:*:*:*:*:node.js:*:*
 cpe:2.3:o:linux:linux_kernel:5.1.21:*:*:*:*:*:*:*
 cpe:2.3:h:hp:s1000-e_vpn_firewall_appliance:jd272a:*:*:*:*:*:*:*
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Beispielhafte \acrshort{wfn} als \acrshort{cpe} 2.2 URI,label=lst:initial-cpe-examples-uri,language=]
+\begin{lstlisting}[caption=Beispielhafte WFN als CPE 2.2 URI,label=lst:initial-cpe-examples-uri]
 cpe:/a:apache:tomcat:7.0.48
 cpe:/a:log4js_project:log4js:5.2.0::~~~node.js~~
 cpe:/o:linux:linux_kernel:5.1.21
@@ -270,7 +270,7 @@ Neben den allgemeinen Herausforderungen von autoritativen Identifikatoren (\auto
     Einige Beispiele vergangener fehlerhafter \acrshortpl{cpe} werden mit ihren korrigierten Gegenstücken in \autoref{lst:invalid-cpe-strings-in-dictionary} aufgeführt.
 \end{itemize}
 
-\begin{lstlisting}[caption=Ungültige \acrshort{cpe} 2.3 Format Strings aus dem \acrshort{nvd} \acrshort{cpe} Dictionary und ihre korrigierten Gegenstücke,label=lst:invalid-cpe-strings-in-dictionary,language=]
+\begin{lstlisting}[caption=Ungültige CPE 2.3 Format Strings aus dem NVD CPE Dictionary und ihre korrigierten Gegenstücke,label=lst:invalid-cpe-strings-in-dictionary]
 Fehlendes "part"-Attribut:
    cpe:2.3:sainwp:onestore_sites:*:*:*:*:*:*:wordpress:*:*
    cpe:2.3:a:sainwp:onestore_sites:*:*:*:*:*:wordpress:*:*

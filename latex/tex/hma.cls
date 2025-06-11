@@ -275,7 +275,7 @@ intoc=true]%
 
 
 
-\RequirePackage[acronym,symbols, toc]{glossaries}
+\RequirePackage[acronym,symbols,toc,hyperfirst]{glossaries}
 
 \renewcommand*{\glspostdescription}{}
 
@@ -601,7 +601,7 @@ intoc=true]%
 
 \AtEndDocument{
 	% Abkürzungsverzeichnis ausgeben
-	\printglossary[type=\acronymtype, nonumberlist, title=\hsmaabbreviations,style=long]
+	\printglossary[type=\acronymtype, nonumberlist, title=\hsmaabbreviations, style=long]
 
 	\ifglossar
 		% Glossar ausgeben
@@ -618,7 +618,7 @@ intoc=true]%
 	\ifsymbols
 		% Symbolverzeichnis ausgeben
 		% Wenn Sie kein Symbolverzeichnis haben, kommentieren Sie die folgende Zeile aus
-		\printglossary[type=symbolslist,style=symbunitlong,title=\hsmalistofsymbols]
+		\printglossary[type=symbolslist, style=symbunitlong, title=\hsmalistofsymbols]
 	\fi
 
 	\ifsourcecode
@@ -663,3 +663,10 @@ intoc=true]%
 	stringstyle=\color{blue},
 	showstringspaces=false
 }
+
+\RequirePackage{pdfcomment}
+
+\let\acrshortplain\acrshort
+\renewcommand*{\acrshort}[1]{\pdftooltip{\acrshortplain{#1}}{\glsentrylong{#1}}}
+\let\acrshortplainpl\acrshortpl
+\renewcommand*{\acrshortpl}[1]{\pdftooltip{\acrshortplainpl{#1}}{\glsentrylong{#1}}}
