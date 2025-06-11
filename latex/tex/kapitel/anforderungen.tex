@@ -140,6 +140,34 @@ Ein Konsens, der sich über die Zeit aus Gründen der Nachvollziehbarkeit geform
 Dieser Kommentar kann beliebige Begründungen enthalten, etwa Verweise auf Dokumentationen, URLs zu Projektseiten oder kurze Erklärungen, warum etwa eine bestimmte \acrshort{cpe} als passend oder unpassend eingestuft wurde.
 Bei späteren Revisionen und Diskussionen im Team erleichtert das die Nachvollziehbarkeit vergangener Entscheidungen.
 
+\paragraph{Inkrementelle Korrelationseinträge}
+werden ermöglicht, da für ein Artefakt alle Korrelationseinträge im Datensatz ausgewertet werden und nicht einfach bei einem ersten zutreffenden gestoppt wird.
+Dadurch können aufeinanderfolgende Korrelationseinträge definiert werden, die nacheinander auf ein Artefakt angewendet werden, um einen gewünschten Effekt zu erzielen.
+
+Ein beispielhafter Anwendungsfall betrifft Artefakte mit dem Namensbestandteil \enquote{git} (vgl. \autoref{lst:correlation-incremental-git-example}).
+Oft wird auf Artefakten die \acrshort{cpe} \texttt{cpe:/a:github:github} durch die CPE URI Derivation automatisch hinzugefügt, die den Text-Schnipsel \texttt{git} in ihrem Namen enthalten.
+Oft wird durch die automatische \acrshort{cpe} URI Derivation die \acrshort{cpe} \texttt{cpe:/a:github:github} zugewiesen, die den GitHub Enterprise Server\footnote{\url{https://docs.github.com/en/enterprise-server/admin/all-releases}} referenziert.
+Dieser kann allerdings auf diese Weise nicht in den Software-Inventaren der \metaeffektsp vorkommen kann, deaktiviert ein generischer Eintrag diese \acrshort{cpe} für alle Artefakte, die \enquote{git} in egal welchem Attribut enthalten.
+Ein spezifischer Folgeeintrag darunter führt die tatsächliche \texttt{git}-Kommandozeilenapplikation auf, bei der dann die falsche \texttt{cpe:/a:github:github} nicht mehr behandelt werden muss, sondern nur noch die konkreten git-spezifischen \acrshortpl{cpe} aufgeführt werden können.
+
+So können allgemeine Muster an einer Stelle behandelt werden und artefaktspezifische Regeln ohne diese isoliert aufgeführt werden können.
+Diese Trennung verhindert Redundanzen und vereinfacht spätere Anpassungen.
+In \autoref{fig:correlation-utilities-demo} können oben rechts weitere Beispiele dieser allgemeinen Einträge gefunden werden.
+
+\begin{lstlisting}[style=yaml,caption={Inkrementelle Korrelationseinträge für das Kommandozeilentool git},label={lst:correlation-incremental-git-example}]
+- affects:
+    - any: "*git*/i"
+  append:
+    Inapplicable CPE URIs: cpe:/a:github:github
+
+- affects:
+    - Component: git
+      Type: package
+  append:
+    Inapplicable CPE URIs: cpe:/a:codesys:git, cpe:/a:cygwin:git, cpe:/a:git:git-shell, cpe:/a:gitforwindows:git, cpe:/a:jenkins:git
+    Additional CPE URIs: cpe:/a:git:git, cpe:/a:git-scm:git, cpe:/a:git_project:git
+\end{lstlisting}
+
 \subsection{Beispiele zu Korrelationsdaten}
 
 \paragraph{Beispiel 1: snappy-1.1.8}
@@ -198,7 +226,7 @@ Zusätzlich wird für das EOL-Ökosystem die entsprechende Produkt-Id \texttt{wi
 
 \subsection{Correlation Utilities als Tool zur Korrelationsarbeit}
 
-Die \textit{Correlation Utilities} sind ein spezialisiertes Experten-Werkzeug zur Analyse von Software-Inventaren im Rahmen der Erstellung und Pflege von Korrelationsdaten.
+Die \enquote{Correlation Utilities} sind ein spezialisiertes Experten-Werkzeug zur Analyse von Software-Inventaren im Rahmen der Erstellung und Pflege von Korrelationsdaten.
 Ein Software-Inventar mit dem Ziel der korrekten Schwachstellenzuordnung manuell durchzuarbeiten ist ein komplexer und zeitintensiver Prozess.
 Die Correlation Utilities stellen eine dedizierte Benutzeroberfläche dar, mit der die spezifischen Aufgabenbereiche dieser Arbeit unterstützt werden.
 
@@ -223,28 +251,101 @@ Unten rechts kann eine integrierte Abfrageschnittstelle zu den lokalen Datenbank
 
 % TODO: actually perform test, ask Julian
 % \smallskip
-% Nach einem internen Test hat sich herausgestellt, dass Mitarbeiter mit den Utilities mehr als 2.5-mal so schnell die selbe Arbeit in höherer Ergebnisqualität durchführen konnten, wie wenn sie dieses Tool nicht verwendet hätten.
+% Nach einem internen Test hat sich herausgestellt, dass Mitarbeiter mit den Utilities mehr als 2.5-mal so schnell dieselbe Arbeit in höherer Ergebnisqualität durchführen konnten, wie wenn sie dieses Tool nicht verwendet hätten.
 
+\paragraph{Fallunterscheidungen je Artefakt}
 Für den allgemeinen Arbeitsablauf mit diesem Tool gibt es pro Artefakt mehrere Fälle, die auftreten können:
 
 \begin{itemize}
-    \item Wenn das Artefakt \enquote{Derived CPE URIs} hat, die nicht von einem der weiteren \acrshort{cpe}-Attribute (Additional, Ignores, \ldots) abgedeckt sind, dann müssen diese auf ihre Richtigkeit geprüft und je nach Entscheidung zu einem der manuellen Attribute hinzugefügt werden.
-    Diese Art von \acrshort{cpe} auf einem Artefakt nennt sich im Tool \enquote{Untouched CPEs}, da sie auf diesem Artefakt noch nicht behandelt wurden.
-    Doch nicht nur die automatisch hinzugefügten \acrshort{cpe} müssen untersucht werden, es muss auch nach zusätzlichen \acrshortpl{cpe} im Internet oder den lokalen Datenbanken gesucht werden um sicherzustellen, dass alle korrekten \acrshort{cpe} gefunden werden.
-    Entweder wird ein vorhandener Korrelationseintrag ergänzt, oder ein neuer angelegt.
+    \item Wenn das Artefakt \enquote{Derived CPE URIs} hat, die nicht von einem der weiteren \acrshort{cpe}-Attribute (Additional, Ignores, \ldots) abgedeckt sind, dann bedeutet dies, dass die \acrshortpl{cpe} noch nicht manuell behandelt und geprüft wurden.
+    Diese Art von \acrshort{cpe} auf einem Artefakt nennt sich im Tool \enquote{Untouched CPEs}.
+    Nachdem sie auf ihre Richtigkeit geprüft wurden, muss die Entscheidung über einen vorhandenen oder neuen Korrelationseintrag in einem der manuellen \acrshort{cpe}-Attribute festgehalten werden.
+    Doch nicht nur die automatisch hinzugefügten \acrshort{cpe} müssen untersucht werden, es muss auch nach zusätzlichen \acrshortpl{cpe} im Internet oder den lokalen Datenbanken gesucht werden, um sicherzustellen, dass alle korrekten \acrshort{cpe} gefunden werden.
+
+    \item Wenn das Artefakt nur manuelle \acrshort{cpe}-Attribute gesetzt hat, dann handelt es sich bei diesem Artefakt um ein bereits bekanntes, welches in der Vergangenheit einmal bearbeitet wurde.
+    In den meisten Fällen ist hier keine neue Arbeit nötig.
+    Manchmal jedoch gibt es Fälle, in denen ein Artefakt seit der letzten Analyse eine neue \acrshort{cpe} zugewiesen bekommen hat, etwas bei dem vorherigen Durchgang übersehen wurde, oder es sich um eine Fehlidentifikation in den Korrelationsdaten handelt und diese fehlerhaft hinzugefügt wurde.
+    Je nach Attribut-Kombination sind unterschiedliche Fälle wahrscheinlicher, für welche eine Person mit der Zeit ein Gefühl bekommt.
 
     \item Wenn das Artefakt überhaupt keine \acrshort{cpe}-Information hat, dann muss manuell nachgeprüft werden, ob es zusätzliche gibt, die diesem Produkt entsprechen.
     Wenn eine oder mehrere passende gefunden werden, wird mit diesen ein neuer Korrelationseintrag angelegt.
-
-    \item Wenn das Artefakt nur manuelle \acrshort{cpe}-Attribute gesetzt hat, dann handelt es sich bei diesem Artefakt um ein bereits bekanntes welches bereits bearbeitet wurde.
-    In den meisten Fällen ist hier keine neue Arbeit nötig, jedoch gibt es manchmal Fälle, in denen ein Artefakt in der Zwischenzeit eine neue \acrshort{cpe} zugewiesen bekommen hat, etwas bei dem vorherigen Durchgang übersehen wurde, oder es sich um eine Fehlidentifikation in den Korrelationsdaten durch einen zu breit aufgespannten Matching-Raum handelt und diese fehlerhaft hinzugefügt wurde.
-    Je nach Attribut-Kombination sind unterschiedliche Fälle wahrscheinlicher, hierfür bekommt man ein Gefühl über die Zeit in der man mit dem Tool arbeitet.
 \end{itemize}
 
 Vor allem bei einem ersten Durchlauf eines Software-Inventars treten die ersten beiden Fälle häufig auf, aber auch bei erneuten Analysen bekannter Inventare müssen die Artefakte auf ihre Richtigkeit geprüft werden.
 
 
 \section{Schwächen und Herausforderungen des aktuellen Korrelationsformats}
+
+\subsection{Unspezifische Identifikation von Artefakten}
+
+% Currently, there are many entries (almost all) that rely on the * wildcard in the Id field to match components version-agnostically. This is not a maintainable approach, since shorter or more common identifiers tend to either be overloaded with multiple components sharing a name, or beginning with the other’s full name. For example:
+% - affects:
+%     - Id: auth-*.jar
+%
+% would not only affect an artifact auth-1.2.3.jar, but also auth-registration-helpers-1.2.3.jar. To currently mitigate this, an ignores entry has to be added to the original entry for every single one of these cases.
+% - affects:
+%     - Id: auth-*.jar
+%   ignores:
+%     - Id: auth-registration-helpers-*.jar
+%
+% Fields like the Component cannot be used reliably, since they are often hand-filled or not standardized. Fields like the PURL are more common these days, but still not available on every generated inventory. The artifact Type is still not a normalized field, although it hopefully soon will be (
+% AE-556: [Artifact Analysis] Define [Artifact Type] / [Component Source Type], create Data Types and apply consistently across code baseTo Do).
+% It would be nice if there was a smarter preprocessing step, that would attempt to recover this kind of information in a normalized way, based on several different criteria. The ones listed below are merely examples to illustrate what could be done, this is to be defined:
+%     Actual component name
+%         Check if there is a PURL and whether it matches with either Component or the Id
+%         Check whether the Id contains the Component
+%         Fallback to Id
+%     Actual component type / ecosystem
+%         Consists of a component category (web-module) and a subcategory (nodejs-module)
+%         This will be available more generally in the future, but for now this information would have to be guessed from the available fields Type, PURL, etc.
+%         This information would be very useful to limit the matching of an entry to a single ecosystem, without affecting others.
+%     Version
+%         The version field is already fairly normalized, but maybe add a nicer way to compare versions with the component version instead of the huge entry that is currently required for this
+% These computed values can be used in the component identification as listed below to reduce the ambiguity in matching and reduce the complexity of the data.
+%
+% Basically: Enable better, ecosystem-specific matching of artifacts.
+% Simply to get the idea across, something like this:
+% - affects:
+%   - matcher type: maven
+%     group id: com.x
+%     artifact id: some-artifact
+
+\subsection{Duplizierte Artefakt-Selektoren}
+
+% doppelt weil aufeinander aufbauende einträge
+% wenn ein feld unterschiedlich gleich neuer eintrag
+%   vererbung als lösung
+
+\subsection{Große und unübersichtliche YAML-Dateien}
+
+% Find a way to better split the entries into multiple files. The 6000-lines files are not only tedious to work with, but also require unnecessarily large amounts of computational power to render, with a notable slowdown of the IDE in use.
+% Maybe, as suggested below, YAML files could not even be required for this, maybe another data format would be better suited. We will see.
+
+\subsection{Begründung wird oft nicht ausgefüllt, ist nicht spezifisch genug um sie nachzuvollziehen und nicht maschienenlesbar}
+
+% The current “reason” format is a simple, unstructured text comment. It is not machine-readable or evaluate-able in any way.
+% The current format has a loosely defined arrow reasoning chain syntax that looks like this (fake values) cpe:/a:apache:commons_io --> https://github.com/apache/commons-io --> "library for doing IO operations" --> same library as artifact
+% Since the content is only a simple text comment in a YAML file, it is impossible for the parser to extract this information and use it somehow to generate more descriptive views on the reason a connection between components and product identifiers has been made.
+% This new format should therefore be in a machine-readable format inside the data structure of the connections. This makes it harder for a human correlation assistant to create the data, therefore the user should not have to edit this reason manually, but rather via a UI that they can click “apply” on or similar.
+
+\subsection{Fälle ohne Aktion können nicht dokumentiert werden}
+
+% If an artifact lacks any CPE or other identifiers, a correlation assistant may have already put in significant effort to reach this point. He might have had to make quite the research or other logical conclusions.
+% But, in the current system, such cases \textit{cannot} at all be put into the correlation files. A separate (non-normalized or used) file would have to be used to keep this knowledge. But such an additional system does not exist yet, so nothing is done to document the effort and the information is lost.
+% The next time a person sees this artifact and either does not remember the effort from last time, or is a completely new person with a fresh perspective, they cannot build on the research that was already made.
+
+\subsection{Schlechtes Testframework, wenig Unterstützung für automatisierte Kontrolle}
+
+% The current correlation system does have a “validation” format that allows for the manual creation of test cases for the created correlation entries, but it’s quite tedious to use.
+% It would be much nicer, if the system used to create the correlation data (e.g. correlation utilities) would automatically (or with the press of a button) record the artifact the correlation was created on, the before and after states and create a test case with an expected result based on that.
+% Through the more documentation-heavy new format, these tests may also already be self-documenting.
+
+\subsection{Generierte YAML-Dateien}
+
+% The generated directory contains several automatically generated YAML correlation files, based on the data that is present in the index when generating.
+% These need to be converted into the new format somehow.
+
+% \subsection{Reihenfolge-Abhängige Anwendung von Einträgen}
 
 
 \section{Auflistung der Anforderungen}
