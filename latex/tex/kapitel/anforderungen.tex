@@ -172,7 +172,6 @@ In der Praxis würde nun noch ein weiterer Eintrag für die PHP-Bibliothek angel
 \end{lstlisting}
 
 \paragraph{Beispiel 2: Microsoft Windows 10 (Version 21H2)}
-
 Auch nicht-\acrshort{cpe}-Attribute können auf Artefakten ergänzt werden.
 In dem Beispiel in \autoref{lst:correlation-win-10-21H2} wird eine Microsoft-Produkt-Id zu dem Betriebssystem Windows 10 in der Version 21H2 zugeordnet.
 Der \href{https://github.com/org-metaeffekt/metaeffekt-documentation/blob/bd184b2889d5421b5a71dcd26c1ac0ffc63d07e7/metaeffekt-vulnerability-management/data-mirror/msrc/understanding-data.md}{Dokumentationeintrag zu den Microsoft-Datenquellen} und in \autoref{subsec:msrc-product-ids} wird das Microsoft-Produktidentifikator-Ökosystem näher erklärt, aber prinzipiell haben alle versionierten Produkte in der Microsoft-Datenbank eine eindeutige numerische Id, unter der Schwachstellen registriert werden.
@@ -199,11 +198,17 @@ Zusätzlich wird für das EOL-Ökosystem die entsprechende Produkt-Id \texttt{wi
 
 \subsection{Correlation Utilities als Tool zur Korrelationsarbeit}
 
-Da der Prozess ein gesamtes Software-Inventar durchzuarbeiten ohne weitere unterstützung von Tools recht aufwendig ist, wurden die \enquote{Correlation Utilities} entwickelt um den Prozess zu unterstützen.
-Als eine Spring Boot Anwendung im Backend mit einem modularen und anpassbaren kachelbasierten Frontend kann hier ein Inventar in eine Tabellarische Form geladen und die Artefakte nach und nach durchgearbeitet werden.
-In \autoref{fig:correlation-utilities-demo} kann die entsprechende Nutzeroberfläche gesehen werden.
-Diese besteht links oben aus der Tabelle der Artefakte, mit farbigen Status-Indikatoren pro Zeile um schnell nach relevanten Metriken filtern zu können und einer Detailsicht mit allen Attributen des ausgewählten Artefakts unten.
-Hier werden zudem über Web-Requests und lokale Datenbankabfragen im Backend diverse weitere nützliche Informationen und Links aggregiert und Internetsuchen vorbereitet, damit diese nicht über repetitive manuelle Suchen selbst durchgeführt werden müssen.
+Die \textit{Correlation Utilities} sind ein spezialisiertes Experten-Werkzeug zur Analyse von Software-Inventaren im Rahmen der Erstellung und Pflege von Korrelationsdaten.
+Ein Software-Inventar mit dem Ziel der korrekten Schwachstellenzuordnung manuell durchzuarbeiten ist ein komplexer und zeitintensiver Prozess.
+Die Correlation Utilities stellen eine dedizierte Benutzeroberfläche dar, mit der die spezifischen Aufgabenbereiche dieser Arbeit unterstützt werden.
+
+Technisch besteht das Werkzeug aus einer Spring-Boot-basierten Backend-Anwendung und einem Frontend, das über kachelartige Widgets dynamisch vom Nutzer angeordnet werden kann.
+Eine typische Sitzung beginnt mit der Auswahl eines Inventars und dem automatisierten Anreichern von Schwachstellinformationen und begibt sich dann auf den Prozess, jedes Artefakt in dem Inventar auf seine \acrshort{cpe}-Zuordnungen einzeln zu prüfen und Korrekturen durch das Anlegen von neuen Korrelationseinträgen vorzunehmen.
+
+In \autoref{fig:correlation-utilities-demo} kann eine beispielhaft angeordnete Nutzeroberfläche gesehen werden.
+Die Benutzeroberfläche in dieser Anordnung besteht links oben aus der Tabelle der Artefakte, mit farbigen Status-Indikatoren pro Zeile um schnell nach relevanten Metriken filtern zu können.
+Links unten ist ein Widget zu sehen, das eine Detailsicht mit allen Attributen des aktuell ausgewählten Artefakts anzeigt.
+Hier werden zudem über Web-Requests und lokale Datenbankabfragen diverse weitere Informationen, Links und Internetsuchen aggregiert und für den Nutzer vorbereitet.
 
 \begin{figure}
     \centering
@@ -212,15 +217,31 @@ Hier werden zudem über Web-Requests und lokale Datenbankabfragen im Backend div
     \label{fig:correlation-utilities-demo}
 \end{figure}
 
-Auf der rechten Seite sind oben die vorhandenen Korrelationsdaten zu sehen, die auf das aktuelle Artefakt zutreffen und über eine Integration mit IntelliJ IDEA können über einen Klick die Einträge automatisch in der \acrfull{ide} geöffnet werden.
-Zudem wird aufgrund von einigen bekannten Mustern ein neuer Korrelationseintrag mit Referenzen auf reale Daten vorgeschlagen, der mit einem Klick kopiert werden kann.
-Die Daten werden automatisch bei Änderungen in den Dateien neu geladen und ausgewertet.
-
-Unten rechts ist eine Datenbankabfragesicht, in der dedizierte Abfragen auf die lokalen Daten gemacht werden können, wie etwa \acrshort{cpe}-Versionen oder Referenzen zu finden oder nach Schwachstellen oder anderen Repräsentationen zu suchen.
+Ein weiteres Widget auf der rechten Seite zeigt, welche Korrelationseinträge auf das aktuelle Artefakt angewendet wurden und erlaubt über eine Integration mit IntelliJ IDEA den direkten Zugriff auf die Korrelationseinträge im Editor und schlägt auf der Basis von einigen bekannten Mustern neue Einträge vor, die mit einem Klick übernommen werden können.
+Die Korrelationseinträge werden automatisch bei Änderungen in den Dateien neu geladen und ausgewertet.
+Unten rechts kann eine integrierte Abfrageschnittstelle zu den lokalen Datenbanken gefunden werden, über die Abfragen etwa zu \acrshortpl{cpe}, \acrshortpl{cve} oder Produktversionen getätigt werden können.
 
 % TODO: actually perform test, ask Julian
 % \smallskip
 % Nach einem internen Test hat sich herausgestellt, dass Mitarbeiter mit den Utilities mehr als 2.5-mal so schnell die selbe Arbeit in höherer Ergebnisqualität durchführen konnten, wie wenn sie dieses Tool nicht verwendet hätten.
+
+Für den allgemeinen Arbeitsablauf mit diesem Tool gibt es pro Artefakt mehrere Fälle, die auftreten können:
+
+\begin{itemize}
+    \item Wenn das Artefakt \enquote{Derived CPE URIs} hat, die nicht von einem der weiteren \acrshort{cpe}-Attribute (Additional, Ignores, \ldots) abgedeckt sind, dann müssen diese auf ihre Richtigkeit geprüft und je nach Entscheidung zu einem der manuellen Attribute hinzugefügt werden.
+    Diese Art von \acrshort{cpe} auf einem Artefakt nennt sich im Tool \enquote{Untouched CPEs}, da sie auf diesem Artefakt noch nicht behandelt wurden.
+    Doch nicht nur die automatisch hinzugefügten \acrshort{cpe} müssen untersucht werden, es muss auch nach zusätzlichen \acrshortpl{cpe} im Internet oder den lokalen Datenbanken gesucht werden um sicherzustellen, dass alle korrekten \acrshort{cpe} gefunden werden.
+    Entweder wird ein vorhandener Korrelationseintrag ergänzt, oder ein neuer angelegt.
+
+    \item Wenn das Artefakt überhaupt keine \acrshort{cpe}-Information hat, dann muss manuell nachgeprüft werden, ob es zusätzliche gibt, die diesem Produkt entsprechen.
+    Wenn eine oder mehrere passende gefunden werden, wird mit diesen ein neuer Korrelationseintrag angelegt.
+
+    \item Wenn das Artefakt nur manuelle \acrshort{cpe}-Attribute gesetzt hat, dann handelt es sich bei diesem Artefakt um ein bereits bekanntes welches bereits bearbeitet wurde.
+    In den meisten Fällen ist hier keine neue Arbeit nötig, jedoch gibt es manchmal Fälle, in denen ein Artefakt in der Zwischenzeit eine neue \acrshort{cpe} zugewiesen bekommen hat, etwas bei dem vorherigen Durchgang übersehen wurde, oder es sich um eine Fehlidentifikation in den Korrelationsdaten durch einen zu breit aufgespannten Matching-Raum handelt und diese fehlerhaft hinzugefügt wurde.
+    Je nach Attribut-Kombination sind unterschiedliche Fälle wahrscheinlicher, hierfür bekommt man ein Gefühl über die Zeit in der man mit dem Tool arbeitet.
+\end{itemize}
+
+Vor allem bei einem ersten Durchlauf eines Software-Inventars treten die ersten beiden Fälle häufig auf, aber auch bei erneuten Analysen bekannter Inventare müssen die Artefakte auf ihre Richtigkeit geprüft werden.
 
 
 \section{Schwächen und Herausforderungen des aktuellen Korrelationsformats}
