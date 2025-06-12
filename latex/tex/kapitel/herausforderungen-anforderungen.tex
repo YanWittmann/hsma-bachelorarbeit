@@ -1,0 +1,209 @@
+\section{Schwächen und Herausforderungen des aktuellen Korrelationsformats}\label{sec:current-correlation-weaknesses}
+
+% https://metaeffekt.atlassian.net/wiki/spaces/KM/pages/3037888514/TBD+New+Correlation+System
+
+Das aktuelle Korrelationsformat hat die letzten Jahre genügend gut funktioniert, um weiterhin verwendbar zu bleiben.
+Trotz der hohen Anzahl von über 6400 Korrelationseinträgen von denen die meisten reguläre Ausdrücke auf mehreren Artefaktfeldern prüfen können auch große Software-Inventare in wenigen Sekunden durch alle Einträge geprüft werden (300 Artefakte durchgearbeitet in 3 Sekunden, inklusive Auslesen der Dateien aus dem Dateisystem und Parsen der Einträge).
+
+\subsection{C-01: Unspezifische Identifikation von Artefakten}\label{subsec:c-01-unspezifische-identifikation-von-artefakten}
+
+% Currently, there are many entries (almost all) that rely on the * wildcard in the Id field to match components version-agnostically. This is not a maintainable approach, since shorter or more common identifiers tend to either be overloaded with multiple components sharing a name, or beginning with the other’s full name. For example:
+% - affects:
+%     - Id: auth-*.jar
+%
+% would not only affect an artifact auth-1.2.3.jar, but also auth-registration-helpers-1.2.3.jar. To currently mitigate this, an ignores entry has to be added to the original entry for every single one of these cases.
+% - affects:
+%     - Id: auth-*.jar
+%   ignores:
+%     - Id: auth-registration-helpers-*.jar
+%
+% Fields like the Component cannot be used reliably, since they are often hand-filled or not standardized. Fields like the PURL are more common these days, but still not available on every generated inventory. The artifact Type is still not a normalized field, although it hopefully soon will be (
+
+Wie in \autoref{sec:metaeffekt-inventory-format} erwähnt ist die \texttt{Id} eines Artefakts das einzige Attribut, welches zuverlässig unabhängig des Software-Ökosystems immer gesetzt ist.
+Daher dient es in den meisten Korrelationseinträgen auch als Hauptmerkmal, anhand von dem ein Artefakt identifiziert wird.
+Leider ist die \texttt{Id} nicht besonders Matching-Freundlich, da sie Versionen und Dateiendungen enthält, sodass bei einem Vergleich nicht auf Gleichheit geprüft werden kann.
+
+Die meisten existierenden Einträge verlassen sich daher auf den Platzhalter (\texttt{*}) im Feld \texttt{Id}, um versionierungsunabhängig zu matchen.
+Dieser Ansatz ist aber nicht nachhaltig, da kürzere oder häufig vorkommende Bezeichner von Artefakten zu Mehrdeutigkeiten führen:
+So würde ein Eintrag für \texttt{auth-*.jar} sowohl \texttt{auth-1.2.3.jar} als auch \texttt{auth-registration-helpers-1.2.3.jar} erfassen, zur Abhilfe müssen manuell \texttt{ignores}-Einträge für jede Ausnahme erstellt werden.
+Felder wie \texttt{Component} mit ihren konkreten Komponentenbezeichnern sind bedauerlicherweise ebenfalls unzuverlässig, da sie teils manuell gepflegt und teils automatisch abgeleitet werden und über Inventare nicht immer einheitlich sind.
+Obwohl \acrshort{purl}-basierte Identifikation in den \metaeffekt-Inventaren zunimmt, ist sie bei weitem noch nicht flächendeckend genug verfügbar um diese als Hauptkriterium verwenden zu können.
+
+\subsection{C-02: Uneindeutige Artefakt Typinformation}\label{subsec:c-02-uneindeutige-artefakt-typinformation}
+
+% AE-556: [Artifact Analysis] Define [Artifact Type] / [Component Source Type], create Data Types and apply consistently across code baseTo Do).
+% It would be nice if there was a smarter preprocessing step, that would attempt to recover this kind of information in a normalized way, based on several different criteria. The ones listed below are merely examples to illustrate what could be done, this is to be defined:
+%     Actual component name
+%         Check if there is a PURL and whether it matches with either Component or the Id
+%         Check whether the Id contains the Component
+%         Fallback to Id
+%     Actual component type / ecosystem
+%         Consists of a component category (web-module) and a subcategory (nodejs-module)
+%         This will be available more generally in the future, but for now this information would have to be guessed from the available fields Type, PURL, etc.
+%         This information would be very useful to limit the matching of an entry to a single ecosystem, without affecting others.
+%     Version
+%         The version field is already fairly normalized, but maybe add a nicer way to compare versions with the component version instead of the huge entry that is currently required for this
+% These computed values can be used in the component identification as listed below to reduce the ambiguity in matching and reduce the complexity of the data.
+%
+% Basically: Enable better, ecosystem-specific matching of artifacts.
+% Simply to get the idea across, something like this:
+% - affects:
+%   - matcher type: maven
+%     group id: com.x
+%     artifact id: some-artifact
+
+In \autoref{subsec:analysis-ae-software-inventories} wurden die drei Inventar-Attribute \texttt{Type}, \texttt{Component Source Type} und \texttt{Ecosystem} identifiziert, auf denen der Typ eines Artefakts \textit{meist} basiert.
+Jedoch haben diese mehrere Probleme:
+
+\begin{itemize}
+    \item Typbezeichnungen sind auch innerhalb Ökosystemen in manchen Fällen inkonsistent zu sich selbst, indem die Attribute für dasselbe Ökosystem unterschiedliche Wertekombinationen verwenden.
+    So sind etwa \texttt{web-module → npm-module}, \texttt{nodejs-module → npm-module} und \texttt{npm-module → <empty>} alle gültige Darstellungsformen für den Typ eines NPM-Moduls.
+    Dies verhindert eine normalisierte Klassifikation und erklärt die Notwendigkeit für Ausdrücke wie \texttt{Type: /(web|nodejs|npm)-module/} in der Abfragelogik in den Korrelationseinträgen um alle Ausprägungen mit einem Eintrag abdecken zu können.
+
+    \item Je nach Erzeugungsquelle und den konkreten Ursprüngen der Inventare haben Artefakte nicht immer Typ-Informationen angeheftet.
+    So kann man sich nicht immer darauf verlassen, dass ein Typ vorhanden ist und muss auf andere, implizitere Eigenschaften wie Dateiendungen (\texttt{.jar} bei Java-Artefakten) prüfen.
+
+    \item Viele Software-Ökosysteme und Typen haben in den \metaeffekt-Systemen keinen offiziellen Typ, auf den geprüft werden kann oder der gesetzt sein könnte.
+    Hierzu zählen etwa Ruby Gems \footnote{\url{https://rubygems.org}} oder Rust mit Crate\footnote{\url{https://crates.io}}, aber auch viele weitere die nicht eindeutig identifiziert werden können.
+\end{itemize}
+
+Eine Normalisierung dieser Felder ist seit einiger Zeit geplant, jedoch ist hierzu noch keine Arbeit geschehen.
+
+\subsection{C-03: Duplizierte Artefakt-Selektoren}\label{subsec:c-03-duplizierte-artefakt-selektoren}
+
+% doppelt weil aufeinander aufbauende einträge
+% wenn ein feld unterschiedlich gleich neuer eintrag
+%   vererbung als lösung
+
+Häufig müssen ähnliche Artefakt-Selektoren für unterschiedliche Korrelationseinträge dupliziert werden.
+Aktuell existiert kein Mechanismus zur Vererbung oder Wiederverwendung von Attributen zwischen Korrelationseinträgen.
+Wenn sich also eine Produktidentifikation in nur einem Attribut unterscheidet, müssen zwei getrennte Einträge mit fast komplett identischen Attributmengen erstellt werden.
+Die einzelnen Attribute, die als Determinate für die übrigen Attributwerte dienen, können leicht variieren und führen so zu redundanten Einträgen mit hohem Wartungsaufwand.
+
+Wie im Beispiel in \autoref{lst:duplicate-artifact-selectors} zu sehen ist, unterscheidet sich die Attributmenge nur in einem Attribut, der \texttt{Architecture}.
+Dennoch müssen alleine für diese zwei \enquote{MS Product IDs} zwei nahezu identische Korrelationseinträge gepflegt werden, und in der Realität gibt es wesentlich mehr, die hier angegeben werden müssen.
+
+\begin{lstlisting}[style=yaml,caption={Zwei Korrelationseinträge mit nahezu identischen Attributen},label={lst:duplicate-artifact-selectors}]
+- affects:
+    - Id: Microsoft Windows 10
+      Version: 10.0.19044
+      Type: operating system
+      Architecture: "64"
+  append:
+    MS Product ID: "11931"
+
+- affects:
+    - Id: Microsoft Windows 10
+      Version: 10.0.19044
+      Type: operating system
+      Architecture: "32"
+  append:
+    MS Product ID: "11929"
+\end{lstlisting}
+
+\subsection{C-04: Große und unübersichtliche YAML-Dateien}\label{subsec:c-04-groe-und-unubersichtliche-yaml-dateien}
+
+% Find a way to better split the entries into multiple files. The 6000-lines files are not only tedious to work with, but also require unnecessarily large amounts of computational power to render, with a notable slowdown of the IDE in use.
+% Maybe, as suggested below, YAML files could not even be required for this, maybe another data format would be better suited. We will see.
+
+Der aktuelle Korrelationsdatensatz der \metaeffektsp umfasst fast 30000 Zeilen an \acrshort{yaml}, die manuell erstellt wurden.
+Die Performanz ist wie bereits festgestellt kein Problem, eher die Übersichtlichkeit über diese großen Datenmengen.
+
+\subsection{C-05: Begründung wird oft nicht ausgefüllt, ist nicht spezifisch genug um sie nachzuvollziehen und nicht maschinenlesbar}\label{subsec:c-05-reason-not-good-enough}
+
+% The current “reason” format is a simple, unstructured text comment. It is not machine-readable or evaluate-able in any way.
+% The current format has a loosely defined arrow reasoning chain syntax that looks like this (fake values) cpe:/a:apache:commons_io --> https://github.com/apache/commons-io --> "library for doing IO operations" --> same library as artifact
+% Since the content is only a simple text comment in a YAML file, it is impossible for the parser to extract this information and use it somehow to generate more descriptive views on the reason a connection between components and product identifiers has been made.
+% This new format should therefore be in a machine-readable format inside the data structure of the connections. This makes it harder for a human correlation assistant to create the data, therefore the user should not have to edit this reason manually, but rather via a UI that they can click “apply” on or similar.
+
+Wann auch immer ein neuer Eintrag erstellt, eine neue Identifikation hinzugefügt, oder eine weitere Entscheidung gefällt wird, sollen die entsprechenden Teammitglieder eine textuelle Begründung verfassen, anhand der sich diese später nachvollziehen lassen kann.
+Es wurde zudem ein Konsens geschlossen, dass eine schrittbasierte-Syntax verwendet wird, die jeden Schritt in der Herleitungskette einer Information mit einem \enquote{\texttt{-->}} trennt.
+Die aktuelle \enquote{reason}-Dokumentation besteht allerdings nur aus einem unstrukturierten Textkommentar über dem Korrelationseintrag im \acrshort{yaml}.
+Diese sind nicht maschinenlesbar, oft unvollständig oder vage und werden manchmal aus diversen Gründen nicht angelegt, was die spätere Nachvollziehbarkeit nicht fördert.
+
+Beispielketten können sein:
+
+\begin{itemize}
+    \itemsep0em
+    \item \texttt{cpe:/a:apache:commons\_io --> https://github.com/apache/commons-io --> "library for IO operations" --> same as artifact}
+    \item \texttt{cpe:/a:golang:crypto --> https://github.com/golang/crypto / https://golang.org/x/crypto --> by golang (Go, [mirror] Go supplementary cryptography libraries) --> version range matches artifact}
+    \item \texttt{cpe:/a:setorinformatica:sil --> CVE-2024-22633 --> https://tomiodarim.io/posts/cve-2024-22632-3 --> "Setor Informatica is a Brazilian company that develops software for the Brazilian market" / "Smart System for Laboratories (S.I.L.)" --> they reported a vulnerability for another S.I.L. software --> cpe is applicable}
+\end{itemize}
+
+\subsection{C-06: Fälle ohne Aktion können nicht dokumentiert werden}\label{subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden}
+
+% If an artifact lacks any CPE or other identifiers, a correlation assistant may have already put in significant effort to reach this point. He might have had to make quite the research or other logical conclusions.
+% But, in the current system, such cases \textit{cannot} at all be put into the correlation files. A separate (non-normalized or used) file would have to be used to keep this knowledge. But such an additional system does not exist yet, so nothing is done to document the effort and the information is lost.
+% The next time a person sees this artifact and either does not remember the effort from last time, or is a completely new person with a fresh perspective, they cannot build on the research that was already made.
+
+Wenn eine Person ein Artefakt ohne \acrshort{cpe} darauf analysiert, ob diese Abwesenheit korrekt ist, oder ob noch Angaben fehlen und es sich herausstellt, dass das Artefakt tatsächlich keiner \acrshort{cpe} zuordenbar ist, kann der Forschungsaufwand hierfür im aktuellen System nicht dokumentiert werden.
+Das liegt daran, dass ein Korrelationseintrag nur dann gültig ist, wenn er eine Selektion und eine Modifikations-Aktion definiert, und damit gibt es keinen Eintrag, auf den die Erkenntnisse notiert werden könnten.
+Diese Wissenslücke führt zu wiederholtem Aufwand bei erneuten Analysen desselben Artefakts, da das Wissen über die korrekte Abwesenheit verloren gegangen ist.
+
+\subsection{C-07: Schlechtes Testframework, wenig Unterstützung für automatisierte Kontrolle}\label{subsec:c-07-test-framework}
+
+% The current correlation system does have a “validation” format that allows for the manual creation of test cases for the created correlation entries, but it’s quite tedious to use.
+% It would be much nicer, if the system used to create the correlation data (e.g. correlation utilities) would automatically (or with the press of a button) record the artifact the correlation was created on, the before and after states and create a test case with an expected result based on that.
+% Through the more documentation-heavy new format, these tests may also already be self-documenting.
+
+Existierende Testfälle für Korrelationseinträge werden manuell in einem separaten Validierungsformat gepflegt, was in seiner Konfiguration aufwendig ist.
+Dieser Aufwand führt dazu, dass es in der Realität nicht von den Mitarbeitern verwendet wird, und so nur ein sehr kleiner Datensatz an automatisierbaren Testfällen existiert.
+
+\subsection{C-08: Generierte YAML-Dateien}\label{subsec:c-08-generated-correlation-data}
+
+% The generated directory contains several automatically generated YAML correlation files, based on the data that is present in the index when generating.
+% These need to be converted into the new format somehow.
+
+Die automatisch generierten \acrshort{yaml}-Dateien, wie in \autoref{subsec:old-generated-correlation-data} gezeigt, müssen bei Datenänderungen manuell neu generiert werden, was nicht intransparent ist.
+Zudem haben sich, vor allem bei den JRE/JDK-Generatoren einige Probleme mit der Abbildung auf das aktuelle Korrelationssystem gezeigt, die nur über die Verwendung von inkrementellen Korrelationseinträgen und dem Attribut \texttt{CPE URIs} (welches nicht mehr verwendet werden soll) gelöst werden konnten.
+Da eine der Anforderungen an das neue Korrelationssystem ist, weitere dynamische Quellen zu integrieren, muss dieses Konzept für generierte Daten von Anfang an mitgedacht werden.
+
+\subsection{C-09: Teilen öffentlicher Anteile}\label{subsec:c-09-sharing-of-public-data}
+
+% darüber reden, dass der terms metadata-datensatz ja auch mit dem Kosmos https://github.com/org-metaeffekt/metaeffekt-kosmos die öffentlichen aspekte freigibt
+% man könnte das hier ja genau so machen, aber im moment ist alles ein gemischter datensatz
+% im neuen inkrementellen konzept soll das am besten über mehrere datenquellen auftrennbar sein
+% daten die aus öffentlichen datenquellen abgeleitet wurden
+
+Der aktuelle Korrelationsdatensatz besteht im Moment zu einem Teil aus den generierten Korrelationseinträgen aus öffentlichen Datenquellen, und zum anderen aus unternehmensintern für spezifische Kunden recherchierten Daten.
+Da diese Daten direkt nebeneinander in den gleichen Verzeichnissen liegen, erschwert dies die Auftrennung.
+Da in dem manuellen Teil dieses Datensatzes viel Firmenzeit geflossen ist, stellt dieser einen der lizenzierbaren Bausteine der \metaeffektsp dar und ist damit nur kostenpflichtig erwerblich.
+
+Analog zum bereits existierenden \enquote{\metaeffekt-kosmos}-Projekt\footnote{\url{https://github.com/org-metaeffekt/metaeffekt-kosmos}}, welches den Open-Source-Anteil der \metaeffekt-Lizenzdatenbank öffentlich frei verfügbar zugänglich macht, könnte ein Konzept eingeführt werden, bei dem die automatisch generierten Einträge ohne die manuellen Arbeiten auf eine ähnliche Weise verfügbar gemacht werden, damit jeder eine gewisse Grundqualität der Ergebnisse erhält.
+So können firmeninterne Ergänzungen weiterhin in einem separaten, nicht öffentlichen Datensatz verteilt werden.
+
+\subsection{C-10: Reihenfolge-Abhängige Anwendung von Einträgen}\label{subsec:c-10-order-dependency}
+
+% Die inkrementelle Anwendung von Korrelationseinträgen erfordert eine strenge Reihenfolge, die aktuell nur durch die Position in der \acrshort{yaml}-Datei gesteuert wird. Änderungen in der Eintragsreihenfolge können unbeabsichtigte Seiteneffekte verursachen. Explizite Abhängigkeitsdeklarationen oder eine deklarative Priorisierungslogik (anstatt impliziter Dateiordnung) würden Robustheit und Verständlichkeit erhöhen.
+
+Das aktuelle System für Korrelationseinträge verarbeitet die Daten inkrementell (siehe \autoref{par:incremental-correlation-entries}), d.h.\ jeder Eintrag baut potenziell auf dem Zustand auf, der durch vorherige Einträge erarbeitet wurde.
+Da diese Abhängigkeiten zwischen Einträgen nicht explizit deklariert werden müssen, ergibt sich die Reihenfolge innerhalb einer \acrshort{yaml}-Datei wenigstens noch basierend auf der Position innerhalb der Datei, Dateiübergreifend jedoch ist die Verarbeitungsreihenfolge arbiträr basierend auf der Ordnung, die das Dateisystem dem Programm übergibt.
+Dies macht das System empfindlich gegenüber Umordnungen der Einträge, vor allem wenn über Dateien hinweg absichtlich oder unabsichtlich Abhängigkeiten erstellt wurden.
+
+Ein Beispiel für eine solche Situation ist in \autoref{lst:correlation-order-depdendency-example} dargestellt, deren beide Korrelationseinträge in zwei separaten Dateien aufgeführt sind.
+Der erste Eintrag ergänzt eine Liste an \acrshortpl{cpe} ganz allgemein für \texttt{redis}-Artefakte in dem \texttt{Additional CPE URIs}-Attribut.
+Der zweite hat nun das Ziel, diese für das Python-Modul \enquote{redis}\footnote{\url{https://pypi.org/project/redis}} als nicht zutreffend zu markieren.
+Dafür müssen die \acrshort{cpe} über das \texttt{remove}-Schlüsselwort zunächst wieder aus dem \texttt{Additional CPE URIs}-Attribut entfernt, und dann explizit als \texttt{Inapplicable CPE URIs} für das Python-Modul gesetzt werden.
+Wenn nun die Verarbeitungsreihenfolge der Einträge sich durch eine Verschiebung oder Umbenennung der Dateien ändert, dann wird auch diese Logik nicht mehr korrekt greifen können.
+
+\begin{lstlisting}[style=yaml,caption={Korrelationseinträge in zwei unterschiedlichen Dateien, die aufeinander aufbauen},label={lst:correlation-order-depdendency-example}]
+- affects:
+    - Id: redis-*/i
+      Component: redis/i
+  append:
+    Additional CPE URIs: cpe:/a:redis:redis, cpe:/a:redislabs:redis, cpe:/a:pivotal_software:redis
+    EOL Id: redis
+- affects:
+    - Id: redis-*/i
+      Type: python-module
+  remove:
+    Additional CPE URIs: cpe:/a:redis:redis, cpe:/a:redislabs:redis, cpe:/a:pivotal_software:redis
+  append:
+    Inapplicable CPE URIs: cpe:/a:redis:redis, cpe:/a:redislabs:redis, cpe:/a:pivotal_software:redis
+    Additional CPE URIs: cpe:/a:redis:redis-py
+\end{lstlisting}
+
+
+\section{Auflistung der Anforderungen}
+
+% “4.3. Data Types in Falcon” ([Cheramangalath et al., 2016, p. 6](zotero://select/library/items/4DG8G9J3)) ([pdf](zotero://open-pdf/library/items/QNYKYEH4?page=6&annotation=C7MKFAUG))

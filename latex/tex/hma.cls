@@ -654,6 +654,13 @@ intoc=true]%
 	%}
 %\fi%
 
+\RequirePackage{pdfcomment}
+
+\let\acrshortplain\acrshort
+\renewcommand*{\acrshort}[1]{\pdftooltip{\acrshortplain{#1}}{\glsentrylong{#1}}}
+\let\acrshortplainpl\acrshortpl
+\renewcommand*{\acrshortpl}[1]{\pdftooltip{\acrshortplainpl{#1}}{\glsentrylong{#1}}}
+
 \lstdefinestyle{yaml}{
 	basicstyle=\ttfamily\footnotesize\color{black},
 	rulecolor=\color{black},
@@ -664,9 +671,16 @@ intoc=true]%
 	showstringspaces=false
 }
 
-\RequirePackage{pdfcomment}
-
-\let\acrshortplain\acrshort
-\renewcommand*{\acrshort}[1]{\pdftooltip{\acrshortplain{#1}}{\glsentrylong{#1}}}
-\let\acrshortplainpl\acrshortpl
-\renewcommand*{\acrshortpl}[1]{\pdftooltip{\acrshortplainpl{#1}}{\glsentrylong{#1}}}
+\lstdefinestyle{json}{
+	basicstyle=\ttfamily\footnotesize\color{black},
+	rulecolor=\color{black},
+	morecomment=[l]{//},
+	commentstyle=\color{gray},
+	string=[s]{"}{"},
+	stringstyle=\color{blue},
+	showstringspaces=false,
+	morestring=[b]',
+	morestring=[b]",
+	keywordstyle=\color{green!50!black},
+	keywords={true,false,null}
+}
