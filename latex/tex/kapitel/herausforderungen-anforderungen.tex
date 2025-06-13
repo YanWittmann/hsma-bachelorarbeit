@@ -5,7 +5,7 @@
 Das aktuelle Korrelationsformat hat die letzten Jahre genügend gut funktioniert, um weiterhin verwendbar zu bleiben.
 Trotz der hohen Anzahl von über 6400 Korrelationseinträgen von denen die meisten reguläre Ausdrücke auf mehreren Artefaktfeldern prüfen können auch große Software-Inventare in wenigen Sekunden durch alle Einträge geprüft werden (300 Artefakte durchgearbeitet in 3 Sekunden, inklusive Auslesen der Dateien aus dem Dateisystem und Parsen der Einträge).
 
-\subsection{C-01: Unspezifische Identifikation von Artefakten}\label{subsec:c-01-unspezifische-identifikation-von-artefakten}
+\subsection{C-01: Übergeneralisierung in Artefakt-Selektoren}\label{subsec:c-01-unspezifische-identifikation-von-artefakten}
 
 % Currently, there are many entries (almost all) that rely on the * wildcard in the Id field to match components version-agnostically. This is not a maintainable approach, since shorter or more common identifiers tend to either be overloaded with multiple components sharing a name, or beginning with the other’s full name. For example:
 % - affects:
@@ -29,7 +29,7 @@ So würde ein Eintrag für \texttt{auth-*.jar} sowohl \texttt{auth-1.2.3.jar} al
 Felder wie \texttt{Component} mit ihren konkreten Komponentenbezeichnern sind bedauerlicherweise ebenfalls unzuverlässig, da sie teils manuell gepflegt und teils automatisch abgeleitet werden und über Inventare nicht immer einheitlich sind.
 Obwohl \acrshort{purl}-basierte Identifikation in den \metaeffekt-Inventaren zunimmt, ist sie bei weitem noch nicht flächendeckend genug verfügbar um diese als Hauptkriterium verwenden zu können.
 
-\subsection{C-02: Uneindeutige Artefakt Typinformation}\label{subsec:c-02-uneindeutige-artefakt-typinformation}
+\subsection{C-02: Inkonsistente und fehlende Artefakt-Typisierung}\label{subsec:c-02-uneindeutige-artefakt-typinformation}
 
 % AE-556: [Artifact Analysis] Define [Artifact Type] / [Component Source Type], create Data Types and apply consistently across code baseTo Do).
 % It would be nice if there was a smarter preprocessing step, that would attempt to recover this kind of information in a normalized way, based on several different criteria. The ones listed below are merely examples to illustrate what could be done, this is to be defined:
@@ -101,7 +101,7 @@ Dennoch müssen alleine für diese zwei \enquote{MS Product IDs} zwei nahezu ide
     MS Product ID: "11929"
 \end{lstlisting}
 
-\subsection{C-04: Große und unübersichtliche YAML-Dateien}\label{subsec:c-04-groe-und-unubersichtliche-yaml-dateien}
+\subsection{C-04: Große Korrelationsdateien als Wartungsproblem}\label{subsec:c-04-groe-und-unubersichtliche-yaml-dateien}
 
 % Find a way to better split the entries into multiple files. The 6000-lines files are not only tedious to work with, but also require unnecessarily large amounts of computational power to render, with a notable slowdown of the IDE in use.
 % Maybe, as suggested below, YAML files could not even be required for this, maybe another data format would be better suited. We will see.
@@ -109,7 +109,7 @@ Dennoch müssen alleine für diese zwei \enquote{MS Product IDs} zwei nahezu ide
 Der aktuelle Korrelationsdatensatz der \metaeffektsp umfasst fast 30000 Zeilen an \acrshort{yaml}, die manuell erstellt wurden.
 Die Performanz ist wie bereits festgestellt kein Problem, eher die Übersichtlichkeit über diese großen Datenmengen.
 
-\subsection{C-05: Begründung wird oft nicht ausgefüllt, ist nicht spezifisch genug um sie nachzuvollziehen und nicht maschinenlesbar}\label{subsec:c-05-reason-not-good-enough}
+\subsection{C-05: Unstrukturierte und unklare Entscheidungsbegründungen}\label{subsec:c-05-reason-not-good-enough}
 
 % The current “reason” format is a simple, unstructured text comment. It is not machine-readable or evaluate-able in any way.
 % The current format has a loosely defined arrow reasoning chain syntax that looks like this (fake values) cpe:/a:apache:commons_io --> https://github.com/apache/commons-io --> "library for doing IO operations" --> same library as artifact
@@ -130,7 +130,7 @@ Beispielketten können sein:
     \item \texttt{cpe:/a:setorinformatica:sil --> CVE-2024-22633 --> https://tomiodarim.io/posts/cve-2024-22632-3 --> "Setor Informatica is a Brazilian company that develops software for the Brazilian market" / "Smart System for Laboratories (S.I.L.)" --> they reported a vulnerability for another S.I.L. software --> cpe is applicable}
 \end{itemize}
 
-\subsection{C-06: Fälle ohne Aktion können nicht dokumentiert werden}\label{subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden}
+\subsection{C-06: Mangelhafte Unterstützung automatisierter Tests}\label{subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden}
 
 % If an artifact lacks any CPE or other identifiers, a correlation assistant may have already put in significant effort to reach this point. He might have had to make quite the research or other logical conclusions.
 % But, in the current system, such cases \textit{cannot} at all be put into the correlation files. A separate (non-normalized or used) file would have to be used to keep this knowledge. But such an additional system does not exist yet, so nothing is done to document the effort and the information is lost.
@@ -172,7 +172,7 @@ Da in dem manuellen Teil dieses Datensatzes viel Firmenzeit geflossen ist, stell
 Analog zum bereits existierenden \enquote{\metaeffekt-kosmos}-Projekt\footnote{\url{https://github.com/org-metaeffekt/metaeffekt-kosmos}}, welches den Open-Source-Anteil der \metaeffekt-Lizenzdatenbank öffentlich frei verfügbar zugänglich macht, könnte ein Konzept eingeführt werden, bei dem die automatisch generierten Einträge ohne die manuellen Arbeiten auf eine ähnliche Weise verfügbar gemacht werden, damit jeder eine gewisse Grundqualität der Ergebnisse erhält.
 So können firmeninterne Ergänzungen weiterhin in einem separaten, nicht öffentlichen Datensatz verteilt werden.
 
-\subsection{C-10: Reihenfolge-Abhängige Anwendung von Einträgen}\label{subsec:c-10-order-dependency}
+\subsection{C-10: Reihenfolgenbedingte Seiteneffekte von Einträgen}\label{subsec:c-10-order-dependency}
 
 % Die inkrementelle Anwendung von Korrelationseinträgen erfordert eine strenge Reihenfolge, die aktuell nur durch die Position in der \acrshort{yaml}-Datei gesteuert wird. Änderungen in der Eintragsreihenfolge können unbeabsichtigte Seiteneffekte verursachen. Explizite Abhängigkeitsdeklarationen oder eine deklarative Priorisierungslogik (anstatt impliziter Dateiordnung) würden Robustheit und Verständlichkeit erhöhen.
 
@@ -207,3 +207,5 @@ Wenn nun die Verarbeitungsreihenfolge der Einträge sich durch eine Verschiebung
 \section{Auflistung der Anforderungen}
 
 % “4.3. Data Types in Falcon” ([Cheramangalath et al., 2016, p. 6](zotero://select/library/items/4DG8G9J3)) ([pdf](zotero://open-pdf/library/items/QNYKYEH4?page=6&annotation=C7MKFAUG))
+
+% liste an möglichen Werten für ein Feld (OR)
