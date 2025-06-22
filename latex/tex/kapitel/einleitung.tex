@@ -3,14 +3,15 @@
 
 \section{Hintergrund und Motivation}\label{sec:hintergrund-motivation}
 
-\acrfull{oss} hat die Art und Weise, wie moderne Software entwickelt, verteilt und eingesetzt wird, verändert.
-Als Grundlage für digitale Infrastrukturen findet sie in nahezu allen Branchen Anwendung:
-Laut dem Open Source Monitor des Bitkom e.V.\ nutzen 69\,\% der deutschen Unternehmen \acrshort{oss} in ihren Lösungen\ \autocite{OpenSourceMonitorWintergerst}.
+Moderne Software wird zunehmend aus einer Vielzahl kleinerer Bestandteile zusammengesetzt, was die Art und Weise, wie Software entwickelt, verteilt und betrieben wird, grundlegend verändert hat.
+Ein großer Anteil dieser Komponenten basiert auf \acrfull{oss} und dient damit als Grundlage digitaler Infrastrukturen in nahezu allen Branchen:
+Laut dem Open Source Monitor des Bitkom e.V.\ setzen 69\% der deutschen Unternehmen \acrshort{oss} in ihren Lösungen ein\ \autocite{OpenSourceMonitorWintergerst}.
 
-Mit dem zunehmenden Einsatz von \acrshort{oss} steigen jedoch auch die Anforderungen an deren sichere und nachvollziehbare Verwendung in Unternehmenssoftware.
-Der geplante \acrfull{cra} der Europäischen Union, der ab dem 11.\ Dezember 2027 vollständig in Kraft tritt,
-verpflichtet Unternehmen bereits ab dem 11.\ Juni 2026 dazu, Schwachstellen und Sicherheitsvorfälle zu dokumentieren und sicherzustellen, dass das Produkt keine bekannten ausnutzbaren Schwachstellen beinhaltet.
-Eine aktiv ausgenutzte Schwachstelle in einem Produkt stellt nach dem \acrshort{cra} einen Sicherheitsvorfall dar, der innerhalb von 72 Stunden den zuständigen Behörden gemeldet werden muss\ \autocite{eu2024cra}.
+Mit der wachsenden Abhängigkeit von \acrshort{oss} steigt jedoch auch die Verantwortung für deren sichere und nachvollziehbare Verwendung.
+In dem bereits verabschiedeten \acrfull{cra} der Europäischen Union geht es um die Cybersicherheit von Produkten mit digitalen Elementen und berücksichtigt dabei auch \acrshort{oss}-Komponenten.
+Ab dem 11.\ Juni 2026 sind Unternehmen verpflichtet, bekannte Schwachstellen in ihrer Software-Lösung und den verwendeten Komponenten zu identifizieren und Sicherheitsvorfälle zu dokumentieren.
+Spätestens ab dem 11.\ Dezember 2027 sind alle Vorgaben des \acrshort{cra} verbindlich.
+Eine aktiv ausgenutzte Schwachstelle ist nach dem \acrshort{cra} ein meldepflichtiger Sicherheitsvorfall und muss innerhalb von 72 Stunden an die zuständigen Behörden gemeldet werden\ \autocite{eu2024cra}.
 
 Eine der am weitesten verbreiteten Quellen für Schwachstelleninformationen ist das \acrfull{cve}-System, das als Bestandteil der \acrfull{nvd} des \acrfull{nist}\footnote{\url{https://nvd.nist.gov/vuln}} mit derzeit fast 300.000 Einträgen die umfangreichste öffentlich zugängliche Schwachstellendatenbank darstellt\ \autocite{nvd12mai2025dashboard}.
 Diese große Anzahl an erfassten Schwachstellen und der kontinuierliche Zuwachs machen es in Kombination mit den kurzen Meldefristen des \acrshort{cra} unmöglich, den Prozess der Schwachstellensuche rein manuell abzubilden.
@@ -28,7 +29,8 @@ Dies macht es unmöglich, sich ausschließlich auf die Ergebnisse dieser automat
 Das Problem beschränkt sich jedoch nicht auf die \acrshort{nvd} mit ihren \acrshort{cpe}, auch Produktbezeichner aus anderen Quellen wie die \acrfull{osv}-Datenbank\footnote{\url{https://osv.dev}}, den \acrfull{msrc} Update Guides\footnote{\url{https://msrc.microsoft.com/update-guide}}, endoflife.date\footnote{\url{https://endoflife.date}} und weitere lassen sich nicht ohne weiteres gegenseitig zuordnen.
 
 Die \metaeffekt\ entwickelt seit mehreren Jahren ein eigenes \acrshort{vms}, bei dem die Abbildung von Komponenten auf verschiedene Produktbezeichner ein zentrales Problem darstellt.
-Bisher wurde dafür ein YAML-basiertes \enquote{Korrelationsformat} genutzt, das Teammitgliedern manuelle Anpassungen der automatisierten Zuordnungen ermöglicht, jedoch zunehmend an seine Grenzen stößt.
+Dafür wurde bisher ein \acrshort{yaml}-basiertes \enquote{Korrelationsformat} verwendet, das manuelle Anpassungen an den automatisierte Zuordnungen ermöglicht.
+Dieses Format stößt jedoch zunehmend an seine Grenzen, weshalb mit dieser Arbeit ein neues Format entworfen und eingeführt werden soll, das das bestehende System ersetzt.
 
 
 \section{Zielsetzung und Forschungsfrage}\label{sec:ziel-forschungsfrage}
@@ -38,14 +40,16 @@ Bisher wurde dafür ein YAML-basiertes \enquote{Korrelationsformat} genutzt, das
 Der erste Schritt eines \acrshort{vms}, die Abbildung von Komponenten auf \acrshort{vdb}-spezifischen Repräsentationen\ \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}, lässt sich auf folgende Kernfrage reduzieren:
 
 \begin{quote}
-    Wie lässt sich für eine gegebene Komponente ermitteln, welche \acrshort{vdb}-spezifischen Repräsentationen existieren, um diese in Schwachstellenabfragen nutzen zu können?
+    Um Schwachstellenabfragen für eine Komponente durchführen zu können, muss ermittelt werden, unter welchen \acrshort{vdb}-spezifischen Repräsentationen diese Komponente noch geführt wird.
+    Wie kann diese Zuordnung zuverlässig hergestellt werden?
 \end{quote}
 
 Diese Fragestellung präsentiert bei genauerer Untersuchung zwei Herausforderungen:
 
 \begin{enumerate}
-    \item Kein einzelnes Schema (z.B. \acrshort{cpe}) deckt alle Komponenten oder \acrshort{vdb} vollständig ab, es ist also die Erfassung von Abbildungen der Komponenten in mehrere Schemata nötig um ein umfassendes Bild der Schwachstellen zu erhalten.
-    \item Automatische Zuordnungen sind oft unvollständig oder inkonsistent, während manuelle Pflege einen großen Pflegeaufwand mit sich bringt.
+    \item Kein einzelnes Schema (z.B. \acrshort{cpe}) deckt alle Komponenten oder \acrshort{vdb} vollständig ab.
+    Es ist also die Erfassung von Abbildungen der Komponenten in mehrere Schemata nötig um ein umfassendes Bild der Schwachstellen zu erhalten.
+    \item Automatische Zuordnungen sind oft unvollständig oder inkonsistent, während manuelle Pflege einen großen Aufwand mit sich bringt.
 \end{enumerate}
 
 Basierend auf diesen und weiteren Erkenntnissen über die letzten Jahre hat diese Arbeit als Ziel, ein neues System für die \metaeffektsp zu entwickeln und zu implementieren, das das alte Korrelationsformat ablösen wird.
@@ -56,21 +60,21 @@ Das neue System soll eine bidirektionale Abbildung zwischen verschiedenen Produk
 Dies führt zu der Forschungsfrage dieser Arbeit:
 
 \begin{quote}
-    Wie muss ein Produkt-Graph strukturiert sein, der heterogene Repräsentationen von Software- und Hardwarekomponenten (wie \acrfull{cpe} oder \acrfull{purl}) bidirektional verknüpft und
+    Wie muss ein Produkt-zentrischer Graph strukturiert sein, der heterogene Repräsentationen von Software- und Hardwarekomponenten (wie \acrfull{cpe} oder \acrfull{purl}) verknüpft und
     dabei sowohl manuelle Korrekturen, als auch die automatische integration von importierten Daten aus Schwachstellendatenbanken ermöglicht?
 \end{quote}
 
 
 \section{Aufbau der Arbeit}\label{sec:arbeit-aufbau}
 
-Diese Arbeit gliedert sich in sechs thematische Abschnitte, die vom den theoretischen Grundlagen über die praktische Umsetzung zu der Auswertung der Ergebnisse führen:
+Diese Arbeit gliedert sich in sechs thematische Abschnitte, die von den theoretischen Grundlagen über die praktische Umsetzung zu der Auswertung der Ergebnisse führen:
 
 \paragraph{\autoref{ch:grundlagen}: Grundlagen}
-Zunächst werden die relevanten Produktidentifikationsstandards (\acrshort{cpe}, \acrshort{purl}, \acrshort{osv}, \acrshort{msrc}-IDs, \ldots) analysiert und bestehende Mapping-Algorithmen evaluiert.
+Zunächst werden die relevanten Produktidentifikationsstandards (\acrshort{cpe}, \acrshort{purl}, \acrshort{msrc}-IDs, \acrshort{eol}) analysiert und bestehende Mapping-Algorithmen evaluiert.
 Darauf aufbauend wird die interne Produktmodellierung der \metaeffektsp sowie der aktuelle Schwachstellenscanner untersucht.
 
 \paragraph{\autoref{ch:anforderungen}: Anforderungsanalyse}
-Ausgehend vom bestehenden YAML-basierten Korrelationsformat werden dessen Schwächen erfasst und daraus Anforderungen für das neue System abgeleitet.
+Ausgehend vom bestehenden \acrshort{yaml}-basierten Korrelationsformat werden dessen Schwächen erfasst und daraus Anforderungen für das neue System abgeleitet.
 Besonderes Augenmerk liegt dabei auf Datenkonsistenz, Automatisierbarkeit und Prüfbarkeit.
 
 \paragraph{\autoref{sec:modellierungsansatz}: Konzeption}
@@ -78,8 +82,8 @@ Basierend auf den Anforderungen wird das neue Korrelationsformat entworfen.
 Dies umfasst die Erstellung des Modells, die Spezifikation der Schnittstellen zu externen Datenquellen sowie die Integration in bestehende Prozesse der \metaeffekt.
 
 \paragraph{\autoref{sec:implementierung}: Implementierung}
-Aus der Konzeption wird die technische Umsetzung des Systems abgeleitet.
-Durch konkrete Anwendungsbeispiele wird die Funktionsweise vorgestellt.
+Auf Grundlage der Konzeption folgt die technische Umsetzung des Systems.
+Anwendungsbeispiele veranschaulichen dabei die Funktionsweise davon.
 
 \paragraph{\autoref{ch:evaluation}: Evaluation}
 Eine methodische Überprüfung bewertet das System anhand zuvor definierter Kriterien.

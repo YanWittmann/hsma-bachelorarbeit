@@ -1,0 +1,68 @@
+\section{Interne Produktmodellierung der \metaeffektlg}\label{sec:metaeffekt-inventory-format}
+
+Wie alle Datentypen im Inventar basieren auch Artefakte auf Key-Value-Pairs, einer frei definierbaren Zuordnung von Textschlüsseln zu Textwerten.
+Dieses Format wurde gewählt, um möglichst einfach Änderungen und neue Felder einführen zu können, ohne Schemata definieren und ändern zu müssen.
+Komplexere Werte als flache Texte werden z.B.\ automatisch als JSON-Objekte serialisiert und beim Einlesen wieder als Objekte deserialisiert.
+
+Für Artefakte ist die zugrundeliegende Struktur mit einigen Basis-Feldern für alle Software-Ökosysteme die gleiche, jedoch unterscheidet sich je nach Ökosystem die tatsächliche Verwendung der Felder.
+Jedes Ökosystem hat somit eine übliche Menge an Feldern, mit denen eine Komponente beschrieben wird, die typischerweise ausgefüllt werden.
+
+Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inventory-artifact-entries} dargestellt.
+
+\begin{table}[ht]
+    \caption{Beispielhafte Artefakteinträge in einem Software-Inventar}
+    \label{tab:inventory-artifact-entries}
+    \centering
+    \begin{tabular}{llll}
+        \toprule
+        \textbf{Id}                  & \textbf{Component}         & \textbf{Group Id}        & \textbf{Version} \\
+        \midrule
+        commons-codec-1.15.jar       & Apache Commons Codec       & commons-codec            & 1.15             \\
+        commons-collections4-4.1.jar & Apache Commons Collections & org.apache.commons       & 4.1              \\
+        slf4j-api-1.7.36.jar         & SLF4J                      & org.slf4j                & 1.7.36           \\
+        log4j-api-2.14.0.jar         & Apache Log4j               & org.apache.logging.log4j & 2.14.0           \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Die \texttt{Id} eines Artefakts ist das einzige Attribut, welches auf einem Artefakt immer gesetzt sein muss.
+Sie ist meist einfach der Dateiname, wie er im Dateisystem vorgefunden wurde, inklusive Versionen und Dateiendungen.
+
+Da das Datenmodell tabellarisch angeordnet ist und damit in Tabelleneditoren mit mehreren Tabellenblättern abbildbar ist, wird es häufig in menschenlesbarer Form als \texttt{.xlsx} oder ähnlichen Formaten exportiert.
+
+\subsection{Analyse bestehender Softwareinventare}\label{subsec:analysis-ae-software-inventories}
+
+Da die Darstellungsweisen von Artefakten unterschiedlicher Software-Ökosysteme in den \metaeffekt-Software-Inventaren nicht vollständig normiert sind, wurde ein Datensatz mit den Artefakten aus 1820 realen Software-Inventaren von unterschiedlichen Quellen in einer Datenbank aggregiert und auf Muster untersucht.
+% Component Source Type --> Specific Type
+Es stellt sich heraus, dass in den meisten Fällen die Art eines Artefakts durch eine Kombination von drei Attributen ableiten lässt: \texttt{Type}, \texttt{Specific Type} und \texttt{Ecosystem}.
+Nicht immer sind alle gesetzt, und manchmal kommt es auf die Kombination mehrerer an.
+
+Das Attribut \texttt{Ecosystem} in Artefakten entspricht dem \texttt{type}-Attribut in \acrshortpl{purl} und kann von den erzeugenden Prozessen nur dann aufgefüllt werden, wenn auch eine \acrshort{purl} angegeben ist.
+Fehlt dieses, kann meist \texttt{Specific Type} für eine allgemeine Klassifikation und \texttt{Type} für die spezifischere Einordnung in ein zweistufiges hierarchisches Modell verwendet werden.
+Leider wurden in dem Datensatz oft Artefakte komplett ohne Typ-Information gefunden, in diesen Fällen müssen weitere Algorithmen zur Erkennung etwa basierend auf Dateiendungen oder anderen Attributen entwickelt werden.
+
+Ein Auszug aus den Werten des \texttt{Ecosystem}-Attributs:
+\texttt{npm}, \texttt{gem}, \texttt{github}, \texttt{cpan}, \texttt{wut}, \texttt{docker}, \texttt{conan}, \texttt{deb}, \texttt{nuget}, \texttt{generic}, \texttt{maven}, \texttt{rpm}, \texttt{pypi}, \texttt{golang}, \texttt{apk}.
+
+Die beobachteten Werte aus den Attributen \texttt{Specific Type} und \texttt{Type} reichen von Ökosystemen und Dateitypen bis hin zu Begriffen aus der Betriebssystem- und Gerätetreiberdomäne.
+Da sich einige Typen in unterschiedlichen Schreibweisen oder Bedeutungen wiederholen, kann von einer stark heterogenen Entstehung der Artefakte ausgegangen werden.
+Die folgenden Kombinationen aus \texttt{Type} → \texttt{Specific Type} konnten im Datensatz gefunden werden:
+
+\begin{itemize}
+    \itemsep0em
+
+    \item \texttt{package → generic-version, java-runtime, <empty>}
+    \item \texttt{web-module → pwa-module, bower-module, npm-module, <empty>}
+    \item \texttt{nodejs-module → npm-module, <empty>} (Alte Schreibweise, kommt so nur in legacy-Inventaren vor)
+    \item \texttt{module → jar-module}
+    % FIXME-KKL: review
+    %  was genau sollte ich hier reviewen?
+    \item \texttt{package, python-module, nodejs-module, bios, file → <empty>}
+    \item \texttt{operating system → <empty>}
+    \item \texttt{(hardware/drivers) storage controller, imaging hardware, operating-system, audio hardware, power driver, mouse, Universal Serial Bus controller driver, data storage, multimedia output device, device connector, firmware driver, storage driver, printer driver, power supply, extension module, disk drives driver, printer, input device, audio driver, computer driver, display driver, processing core, driver, sensor, multimedia driver, appliance, security token, sound hardware, network driver, mouse driver, usb controller driver, security device driver, Bluetooth driver, keyboard, controller, operating system, display, imaging driver, port driver, security hardware, input device driver, system device driver, keyboard driver, print queue driver, processor driver, software device driver, networking hardware, board → <empty>}
+    \item \texttt{<empty>}
+\end{itemize}
+
+Bei einer Sichtung des Quellcodes einiger Entstehungsquellen von Artefakten konnte die große Auflistung der Hardware- und Betriebssystemtypen in dem Windows-Inventar-Extraktor System gefunden werden, die restlichen sind über diverse Extraktoren verteilt oder werden extern aufgefüllt und damit nicht einheitlich.
+
+% TODO: erkennungsrichtlinien für einzelne ökosysteme

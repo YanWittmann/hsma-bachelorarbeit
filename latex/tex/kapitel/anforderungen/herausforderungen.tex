@@ -52,7 +52,7 @@ Obwohl \acrshort{purl}-basierte Identifikation in den \metaeffekt-Inventaren zun
 %     group id: com.x
 %     artifact id: some-artifact
 
-In \autoref{subsec:analysis-ae-software-inventories} wurden die drei Inventar-Attribute \texttt{Type}, \texttt{Component Source Type} und \texttt{Ecosystem} identifiziert, auf denen der Typ eines Artefakts \textit{meist} basiert.
+In \autoref{subsec:analysis-ae-software-inventories} wurden die drei Inventar-Attribute \texttt{Type}, \texttt{Specific Type} und \texttt{Ecosystem} identifiziert, auf denen der Typ eines Artefakts \textit{meist} basiert.
 Jedoch haben diese mehrere Probleme:
 
 \begin{itemize}
@@ -116,7 +116,7 @@ Die Performanz ist wie bereits festgestellt kein Problem, eher die Übersichtlic
 % Since the content is only a simple text comment in a YAML file, it is impossible for the parser to extract this information and use it somehow to generate more descriptive views on the reason a connection between components and product identifiers has been made.
 % This new format should therefore be in a machine-readable format inside the data structure of the connections. This makes it harder for a human correlation assistant to create the data, therefore the user should not have to edit this reason manually, but rather via a UI that they can click “apply” on or similar.
 
-Wann auch immer ein neuer Eintrag erstellt, eine neue Identifikation hinzugefügt, oder eine weitere Entscheidung gefällt wird, sollen die entsprechenden Teammitglieder eine textuelle Begründung verfassen, anhand der sich diese später nachvollziehen lassen kann.
+Wann auch immer ein neuer Eintrag erstellt, eine neue Identifikation hinzugefügt, oder allgemein eine Entscheidung gefällt wird, sollen die entsprechenden Teammitglieder eine textuelle Begründung verfassen, anhand der sich diese später nachvollziehen lassen kann.
 Es wurde zudem ein Konsens geschlossen, dass eine schrittbasierte-Syntax verwendet wird, die jeden Schritt in der Herleitungskette einer Information mit einem \enquote{\texttt{-->}} trennt.
 Die aktuelle \enquote{reason}-Dokumentation besteht allerdings nur aus einem unstrukturierten Textkommentar über dem Korrelationseintrag im \acrshort{yaml}.
 Diese sind nicht maschinenlesbar, oft unvollständig oder vage und werden manchmal aus diversen Gründen nicht angelegt, was die spätere Nachvollziehbarkeit nicht fördert.
@@ -203,9 +203,11 @@ Wenn nun die Verarbeitungsreihenfolge der Einträge sich durch eine Verschiebung
     Additional CPE URIs: cpe:/a:redis:redis-py
 \end{lstlisting}
 
+\subsection{C-11: YAML-Eintrag Lokalisierung}\label{subsec:c-11-finding-yaml-entries}
 
-\section{Auflistung der Anforderungen}
+Die Correlation Utilities, wie in \autoref{subsec:correlation-utilities} vorgestellt, erlauben es mit einem Klick auf einen Korrelationseintrag zu diesem in der entsprechenden \acrshort{yaml}-Datei zu springen.
+Das Problem hierbei liegt darin, dass das aus dem \acrshort{yaml} erzeugten Datenmodell von sich aus keine Referenz mehr auf die Zeilennummern der Datei enthält.
+Weiterhin werden einige Transformationen an den Attributen vorgenommen, wie etwa das Parsen der unterschiedlichen Darstellungsweisen für reguläre Ausdrücke, sodass nicht mehr einfach so die Originalinhalte mit dem Datenmodell abgeglichen werden können.
+Es wird daher im Quelltext der \acrshort{yaml}-Dateien Zeile für Zeile jeder Eintrag nach gewissen Schlüsselwörtern aus dem Datenmodell abgesucht, und der mit der höchsten Übereinstimmungsrate wird ausgewählt.
 
-% “4.3. Data Types in Falcon” ([Cheramangalath et al., 2016, p. 6](zotero://select/library/items/4DG8G9J3)) ([pdf](zotero://open-pdf/library/items/QNYKYEH4?page=6&annotation=C7MKFAUG))
-
-% liste an möglichen Werten für ein Feld (OR)
+Dieser Prozess funktioniert bei einer großen Anzahl der Einträge, jedoch kann es bei sehr ähnlichen Einträgen oder jenen, die viele komplizierte reguläre Ausdrücke verwenden passieren, dass die Zuordnung nicht erfolgreich ausgewertet wird.

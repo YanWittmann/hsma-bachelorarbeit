@@ -8,19 +8,19 @@
 Der Begriff \enquote{Schwäche} in einer Software-Komponente bezeichnet einen intrinsischen Fehler, Defekt oder eine problematische Eigenschaft, die unter bestimmten Bedingungen in einer Software oder Hardware zu unerwünschtem Verhalten führen kann \autocite{Ross_Winstead_McEvilley_2022}.
 Schwächen beschreibende grundlegende Fehlermuster, die unabhängig von spezifischen Implementierungen oder Angriffsszenarien existieren.
 
-Das \acrfull{cwe}-Projekt\footnote{\url{https://cwe.mitre.org/about/index.html}}, unter der Leitung der MITRE Corporation, stellt einen großen Katalog solcher Software-Schwächen dar.
+Das \acrfull{cwe}-Projekt\footnote{\url{https://cwe.mitre.org/about/index.html}}, unter der Leitung der MITRE Corporation, stellt einen großen Katalog solcher Software- und Hardware-Schwächen dar.
 Als Community-getriebenes Projekt ordnet es Schwächen in einem hierarchischen System als \acrshort{cwe}-Einträge an, die verschiedene Abstraktionsebenen abdecken\ \autocite{wu2016cwe}.
 Die Klassifikation reicht von abstrakteren Kategorien (\verb+CWE-20+: Improper Input Validation\footnote{\url{https://cwe.mitre.org/data/definitions/20.html}}) bis zu konkreteren Implementierungsfehlern (\verb+CWE-125+: Out-of-bounds Read\footnote{\url{https://cwe.mitre.org/data/definitions/125.html}}).
 
 \paragraph{Schwachstelle (Vulnerability)}
 
 Während Schwächen allgemeine Fehlermuster beschreiben, stellt eine Schwachstelle eine konkrete Ausprägung einer Schwäche in einem spezifischen System oder Produkt dar.
-Sie beeinträchtigt die zentralen \acrshort{ciavuln}-Sicherheitsziele (Confidentiality (Vertraulichkeit), Integrity (Integrität) oder Availability (Verfügbarkeit)) und stellen eine Verletzung formeller oder impliziter Sicherheitsanforderungen dar.
+Sie beeinträchtigt die zentralen \acrshort{ciavuln}-Schutzziele (Confidentiality (Vertraulichkeit), Integrity (Integrität) und Availability (Verfügbarkeit)) und stellt eine Verletzung formeller oder impliziter Sicherheitsanforderungen dar.
 Das \acrshort{cve}-Programm, betrieben durch die MITRE Corporation und unterstützt von US-Behörden wie der \acrfull{cisa}, bietet einen weltweit anerkannten Standard zur Identifikation und Beschreibung von öffentlich bekannten Schwachstellen.
-Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.B.\ \verb+CVE-2024-12345+) und wird in Kooperation mit autorisierten \acrfull{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
+Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.B.\ \verb+CVE-2024-12345+) und wird in Kooperation mit autorisierten \acrfullpl{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
 Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api} von der \acrshort{nvd} öffentlich zur Verfügung gestellt\footnote{\url{https://nvd.nist.gov/developers/vulnerabilities}}.
 
-Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen betrachtet, andere ähnliche Standards werden als \nameref{par:security-advisories} behandelt.
+Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen betrachtet, andere ähnliche Quellen werden als \nameref{par:security-advisories} behandelt.
 
 \paragraph{Security Advisories}\label{par:security-advisories}
 
@@ -46,6 +46,10 @@ Manuelle Methoden sind jedoch vor allem bei wiederholten Durchläufen inkonsiste
 Die Aktualisierung von \acrshortpl{sbom} ist nötig, wenn z.B.\ bei neuen Versionen sich die Zusammensetzung einer Software verändert.
 Daher wird die Erzeugung von \acrshortpl{sbom} in der Regel projektweit durch Werkzeuge, die Quellcode, Projektdateien oder Container analysieren, durchgeführt \autocite{Bi_Xia_Xing_Lu_Zhu_2023}.
 
+Eine \acrshort{sbom} ist eine zentrale Anforderung der Technischen Richtlinie TR-03183 des \acrfull{bsi}, die in dieser formale und technische Vorgaben für die Erstellung von Software-Inventaren definiert.
+Diese Richtlinie soll Hersteller dabei unterstützen, in der Software-Lieferkette die Transparenz zu erhöhen und Rückverfolgbarkeit zu ermöglichen.
+Damit will sie zur Verbesserung der Sicherheit und des Risikomanagements beitragen \autocite{BSI_TR03183}.
+
 Die Qualität eines Software-Inventars ist für eine erfolgreiche Sicherheitsanalyse wichtig, da die Zuordnung bekannter Schwachstellen zu konkreten Software-Komponenten von der Genauigkeit und Vollständigkeit des Inventars abhängt.
 Fehlende oder ungenaue Angaben zu Produktnamen und Versionen können durch die inhaltliche oder formale Abweichung von Produktrepräsentationen zwischen Inventaren und \acrshortpl{vdb} zu falsch-positiven oder falsch-negativen Schwachstellenzuweisungen führen \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
 
@@ -53,7 +57,9 @@ Zur einheitlichen Darstellung und Verbreitung solcher Inventare haben sich mehre
 
 \paragraph{\acrfull{spdx}}\footnote{\url{https://spdx.dev}}
 wurde ursprünglich für das Lizenzmanagement entwickelt und stellt heute einen häufig eingesetzten Standard zur Beschreibung von Software-Inventaren dar.
-Der Fokus des Projekts liegt noch immer auf der Darstellung lizenzrechtlicher Informationen, jedoch lassen sich mit \acrshort{spdx} auch Komponenten, Abhängigkeiten und Beziehungen detailliert beschreiben \autocite{spdxOverview1june2024}.
+Der Fokus des Projekts lag bis Version 2.3 hauptsächlich auf lizenzrechtlichen Informationen.
+Mit Version 3.0 wurde der Standard auf weitere Aspekte erweitert um diese besser Abbilden zu können, vor allem im Kontext von Schwachstellanalysen.
+Heute ermöglicht \acrshort{spdx} nicht nur die Darstellung von Lizenzen, sondern auch die Beschreibung von Komponenten, und deren Abhängigkeiten oder Beziehungen \autocite{spdxOverview1june2024}.
 \acrshort{spdx} wird von der Linux Foundation gepflegt und ist unter \texttt{ISO/IEC 5962:2021}\footnote{\url{https://www.iso.org/standard/81870.html}} international standardisiert.
 
 \paragraph{CycloneDX}\footnote{\url{https://cyclonedx.org}}
@@ -74,18 +80,29 @@ Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellen
 
 \section{\acrlongpl{vms}}\label{sec:grundlagen-vms}
 
-Vulnerability Management (Schwachstellenmanagement) beschreibt den wiederkehrenden Prozess zur Erkennung von Sicherheitslücken in IT-Systemen.
-Ziel ist es, Schwachstellen vor auslieferung des Systems zu identifizieren, nach Risiko zu bewerten und durch Patches oder Gegenmaßnahmen zu mitigieren.
-Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Scanning, (2) Schwachstellenerkennung, (3) Analyse und (4) Reporting.
-In der Praxis werden dabei zunächst Schwachstellen durch Abgleich mit bekannten \acrshortpl{vdb} identifiziert und mit Metadaten angereichert, um eine automatisierte Priorisierung und Reihenfolge des Vorgehens abzuleiten, bevor die manuelle Behebung durch Patches oder Workarounds erfolgt und schließlich die Wirksamkeit der Korrekturmaßnahmen überprüft wird \autocite{foreman2019vulnerabilityManagement}.
+% FIXME-KKL: 2 (Schwachstellen-Korrelation)
+%  der Begriff der Korrelation würde dann aber mit dem zu überarbeitendem Korrelationssystem überladen sein
 
-Schwachstellmanagement als Prozess verwendet somit die priorisierte Liste an Schwachstellen eines Schwachstellenscans, um dann durch manuelle Bewertungsprozesse bis zu einem durch Rahmenbedingungen gesetzen Score-Limit die Schwachstellen auszuwerten und zu bewerten \autocite{foreman2019vulnerabilityManagement}.
+Vulnerability Management (Schwachstellenmanagement) beschreibt einen zyklischen Prozess zur Identifikation, Bewertung, Behebung und Kommunikation von Schwachstellen in IT-Systemen.
+Ziel ist es, Sicherheitslücken möglichst frühzeitig, idealerweise vor Auslieferung, zu erkennen, nach Risiko einzuordnen und durch geeignete Maßnahmen wie Patches oder Konfigurationsanpassungen zu mitigieren.
+Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Scanning, (2) Schwachstellenerkennung, (3) Analyse und (4) Reporting \autocite{foreman2019vulnerabilityManagement}.
 
-Die Identifikation von Schwachstellen ist also nur der erste Schritt in einem vollständigen Schachstellmanagement.
-Diesen manuell regelmäßig durchzuführen ist zeitaufwendig, ein \acrshort{vms} automatisiert darum durch den Abgleich mit \acrshortpl{vdb} (wie \acrshort{cve} mit \acrshort{cpe} der \acrshort{nvd}) zur Identifikation von Schwachstellen und der Priorisierung bereits wesentliche aufwendige Schritte des Schwachstellenmanagements \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
+In der Praxis beginnt dieser Prozess mit der automatisierten Erkennung potenzieller Schwachstellen durch den Abgleich von Software-Inventaren mit Einträgen aus bekannten \acrshortpl{vdb}, wie der \acrshort{nvd}.
+Dieser Schritt identifiziert Schwachstellen, die auf den gegebenen Komponenten grundsätzlich infrage kommen, trifft aber noch keine Aussage über eine tatsächliche Betroffenheit, sodass auch nicht relevante Schwachstellen zunächst erfasst werden.
+Daher folgt die Triage, in der jede gefundene Schwachstelle kontextbezogen auf ihre Anwendbarkeit geprüft wird (\enquote{Applicable} und \enquote{Not Applicable}).
 
-Die Effektivität eines \acrshort{vms} hängt dabei stark von der Qualität der zugrundeliegenden Software-Inventare und Produktidentifikationsmechanismen ab (vgl. \autoref{sec:def-inventories}).
-Einige Mechanismen für die Erkennung von Produkten werden in \autoref{sec:produktidentifikationsstandards-herausforderungen} vorgestellt und es wird festgestellt, dass diese für die genaue Erkennung zu Fehleranfällig sind und es meist einem manuellen Korrekturschritt bedarf.
+Auf Grundlage der verbleibenden relevanten Schwachstellen erfolgt eine Bewertung, bei der Faktoren wie Schweregrad, Angriffsvektor, Ausnutzbarkeit und Rahmenbedingungen berücksichtigt werden, um Prioritäten für das weitere Vorgehen zu setzen.
+Diese Bewertung stellt immer eine Momentaufnahme des identifizierten Risikos dar und dient als Grundlage für Entscheidungen für die nächsten Maßnahmen.
+Auch das Reporting zeigt damit nur den aktuellen Stand.
+Die eigentliche Behebung, durch Maßnahmen wie z.B.\ Aktualisierungen oder Konfigurationsänderungen, ist davon entkoppelt.
+Sie findet in separaten operativen Prozessen und kann sich auch über längere Zeiträume erstrecken.
+
+Die Identifikation von Schwachstellen ist damit nur der erste Schritt in einem vollständigen Schwachstellenmanagement.
+Diesen manuell regelmäßig durchzuführen ist zeitaufwendig.
+Ein \acrshort{vms} automatisiert mit der Identifikation von Schwachstellen durch den Abgleich von Software-Inventaren mit \acrshortpl{vdb} wie \acrshort{cve} und \acrshort{cpe} der \acrshort{nvd} und die Priorisierung dieser also bereits wesentliche Schritte des Schwachstellenmanagements \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
+Die Qualität der Ergebnisse eines \acrshort{vms} hängt allerdings wesentlich von der Genauigkeit der Produktidentifikation ab.
+Die Herausforderungen, die Mechanismen wie \acrshort{cpe} in der Praxis stellen (vgl.\ \autoref{subsec:cpe-description}), verhindern jedoch die vollständige Automatisierung mit verlässlichen Ergebnissen.
+Daher ist meist ein manueller Eingriff oder eine Ergänzung automatisierter Ergebnisse um zusätzliche Informationen nötig (vgl. \autoref{sec:produktidentifikationsstandards-herausforderungen}).
 
 
 \section{Produktidentifikationsstandards, Formate und ihre Herausforderungen}\label{sec:produktidentifikationsstandards-herausforderungen}
@@ -97,19 +114,22 @@ Einige Mechanismen für die Erkennung von Produkten werden in \autoref{sec:produ
 % Intrinsic vs extrinsic naming scheme
 % warum gibt es so viele formate (jeder sein use-case)
 
-Die genaue Identifikation von Softwareprodukten stellt eine grundlegende Voraussetzung für ein Schwachstellenmanagement wie in \autoref{sec:grundlagen-vms} beschrieben dar.
-Um bekannte Schwachstellen aus \acrshortpl{vdb} korrekt mit Software-Inventaren abgleichen zu können, müssen Produktidentifikatoren so beschaffen sein, dass eine unmissverständliche Zuordnung dieser Software von anderen Parteien oder mit Informationen wie bekannten Schwachstellen möglich ist.
+Die genaue Identifikation von Softwareprodukten stellt eine grundlegende Voraussetzung für ein Schwachstellenmanagement wie in \autoref{sec:grundlagen-vms} beschrieben, dar.
+Um bekannte Schwachstellen aus \acrshortpl{vdb} korrekt mit Software-Inventaren abgleichen zu können, müssen Produktidentifikatoren so beschaffen sein, dass eine unmissverständliche Zuordnung dieser Software von anderen Parteien oder mit Informationen, wie bekannten Schwachstellen, möglich ist.
 % Um Schwachstellmanagement wie in \autoref{sec:grundlagen-vms} beschrieben effektiv durchführen zu können, muss Software in Software-Inventaren auf eine Weise angegeben sein, die eine Korrelation dieser Software mit anderen Informationen wie bekannten Schwachstellen erlaubt.
 % Das Ziel muss es sein, dass verschiedene Akteure wie Konsumenten von \acrshortpl{vdb}, Inventarwerkzeuge und Sicherheitsexperten mit der Darstellung der Software genau wissen, dass sie über dieselbe Software reden.
 In der Praxis ist dieses Ziel jedoch aufgrund der vielen heterogenen Lösungen zur Software-Identifikation kaum zu erreichen.
-Sie haben jeweils eine unterschiedliche Granularität oder einen anderen Fokus und lassen sich darum nicht einfach gegenseitig ineinander überführen \autocite{CISA2023}.
+Sie haben jeweils eine unterschiedliche Granularität, ein anderes Abstraktionslevel oder einen anderen Fokus und lassen sich darum nicht einfach gegenseitig ineinander überführen \autocite{CISA2023}.
 
 Ein grundlegendes Problem bei der Identifikation ist die Unterscheidung zwischen einem \textit{Namen} und einer eindeutigen \textit{Identität} \autocite{Manion_Proell_Schmidt2023}.
 Anhand eines Beispiels aus der Chemie:
-Natriumchlorid ist eine kubische Kristallstruktur und kann mit \textit{NaCl} als identifizierende Verhältnisformel vollständig nur aufgrund seiner inherenten Eigenschaften beschrieben werden.
-Allerdings gibt es noch weitere Systeme, wie chemische Stoffe angegeben werden können.
-Authoritative Systeme wie CAS-Nummern definieren einen autoritativen, künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
-Die \textit{Identität} ist die eigentliche Zusammensetzung von Natriumchlorid, NaCl und 7647-14-5 sind Namen, die dieser Struktur gegeben wurden.
+
+\begin{quote}
+    Natriumchlorid ist eine kubische Kristallstruktur und kann mit \textit{NaCl} als identifizierende Verhältnisformel vollständig nur aufgrund seiner inherenten Eigenschaften beschrieben werden.
+    Allerdings gibt es noch weitere Systeme, wie chemische Stoffe angegeben werden können.
+    Authoritative Systeme wie CAS-Nummern definieren einen autoritativen, künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
+    Die \textit{Identität} ist die eigentliche Zusammensetzung von Natriumchlorid, NaCl und 7647-14-5 sind Namen, die dieser Struktur gegeben wurden.
+\end{quote}
 
 Ebenso verhält es sich mit Software.
 Ein zu benennendes Artefakt kann sich auf eine oder mehrere Dateien beziehen, aber auch auf ein Betriebssystem, Hardware, eine Sammlung an Projekten und weiteren, beliebigen Inhalten.
@@ -118,14 +138,15 @@ Neue Hersteller treten in den Markt, ziehen sich zurück, werden aufgekauft oder
 Projekte und Produkte können in komplexen Beziehungen stehen und transformieren sich stets weiter.
 Diese Gefüge lassen sich nicht mit den bisherigen häufig eingesetzen Identifikationsstandards abbilden \autocite{Manion_Proell_Schmidt2023}.
 
-In dieser Arbeit wird der Begriff \textit{Produkt} für abgrenzbare Software- oder Hardware-Artefakte (z.B. \texttt{Log4J-API}) verwendet; der Begriff \textit{Repräsentation} bezeichnet eine standardisierte Darstellung desselben Produkts (wie \texttt{cpe:/a:apache:log4j}, \texttt{pkg:maven/org.apache.logging.log4j/log4j-api} oder \texttt{log4j-api-2.23.0.jar}).
+In dieser Arbeit wird der Begriff \textit{Produkt} für abgrenzbare Software- oder Hardware-Artefakte (z.B.\ das \acrshort{api}-Modul von Log4J\footnote{\url{https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api}}) verwendet; der Begriff \textit{Repräsentation} bezeichnet eine standardisierte Darstellung desselben Produkts oder spezifischer Bestandteile (wie \texttt{cpe:/a:apache:log4j}, \texttt{pkg:maven/org.apache.logging.log4j/log4j-api} oder in der Ausprägung als Datei \texttt{log4j-api-2.23.0.jar}).
 Während sich ein Produkt auf konzeptioneller Ebene bewegt und exakt von anderen Produkten abgrenzen lässt, können Repräsentationen eine unterschiedlich scharfe Blase aufspannen und sich mehr oder weniger spezifisch auf ein oder mehrere tatsächliche Produkte beziehen.
 So steht \texttt{cpe:/a:apache:log4j} nicht nur für die \texttt{Log4J-API}, sondern für das gesamte Log4j-Projekt inklusive aller seiner Module, während sich \texttt{pkg:maven/org.apache.logging.log4j/log4j-api} konkret auf das Java-Artefakt auf Maven Central\footnote{\url{https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.0}} bezieht.
 
 Der Begriff \enquote{Produktidentifikationsstandard-\textit{Ökosystem}} wird wie von \citeauthor{CISA2023} dazu verwendet, um zu verdeutlichen, dass es nicht einfach ausreicht, ein technisches Format zur Beschreibung von Softwareprodukten zu definieren.
-Vielmehr ist ein Ökosystem welches von der Industrie akzeptiert und deren Regeln durchgängig angewendet werden notwendig, das auch Prozesse zur Erstellung, Verbreitung und Nutzung solcher Identifikatoren umfasst \autocite{CISA2023}.
-Produktidentifikatoren müssen in allen relevanten Kontexten und Zeitpunkten verfügbar sein, sei es durch die Weitergabe dieser Identifikatoren durch Hersteller und Zwischenherstellern, oder indem sich die Identifikatoren aus der Software selbst herleiten lassen.
-Zudem muss das Ökosystem alle Nutzungskontexte und Granularitätsstufen unterstützen die in der Realität auftreten können, Softwarevarianten bis zu allgemeinen Produktfamilien.
+Vielmehr ist ein Ökosystem notwendig, das von der Industrie akzeptiert wird und dessen Regeln durchgängig angewendet werden, das auch Prozesse zur Erstellung, Verbreitung und Nutzung solcher Identifikatoren umfasst \autocite{CISA2023}.
+Produktidentifikatoren müssen in allen relevanten Kontexten und Zeitpunkten verfügbar sein, sei es durch die Weitergabe dieser Identifikatoren durch Hersteller und Zwischenherstellern oder indem sich die Identifikatoren aus der Software selbst herleiten lassen.
+Zudem muss das Ökosystem alle Nutzungskontexte und Granularitätsstufen unterstützen, die in der Realität auftreten können, von Softwarevarianten bis zu allgemeinen Produktfamilien.
+Dabei dürfen aufgrund der unterschiedlichen Abstraktionsebenen keine Daten so extrapoliert werden, dass eine falsche Aussage abgeleitet wird.
 
 Im Folgenden werden Produktidentifikationsstandards in zwei Kategorien differenziert, in den Abschnitten danach wird diese Unterscheidung als Grundlage für die Bewertung existierender Ansätze verwendet.
 
@@ -146,7 +167,7 @@ In der Praxis bestehen jedoch mehrere Herausforderungen:
 In dieser Arbeit wird zusätzlich auch \acrshort{purl} als inherente Identifikator gesehen, da ein großer Teil der Software-Artefakte in den Inventaren der \metaeffektsp sich eindeutig \acrshortpl{purl} zuweisen lassen.
 
 \paragraph{Autoritative Identifikatoren}\label{par:authorative-identifiers} % definierte, extrinsische
-werden durch eine bestimmte Partei explizit einem Softwareprodukt zugewiesen und sind damit eine von außen vergebene Referenz auf ein Produkt.
+werden durch einen bestimmten Akteur explizit einem Softwareprodukt zugewiesen und sind damit eine von außen vergebene Referenz auf ein Produkt.
 Anders als bei inhärenten Identifikatoren gibt es bei autoritativen Identifikatoren nicht die Möglichkeit, diese ohne das Wissen einer äußeren Quelle zu erfahren.
 Es muss also entweder selbst einen solchen Identifikator erzeugt und in einem Register, registriert werden oder auf einen im Register vorhandenen zurückgegriffen werden.
 Parteien, die für das Erzeugen, Registrieren und Verwalten von Identifikatoren verantwortlich sind, werden \enquote{Identifier-Generatoren} genannt \autocite{CISA2023}.
@@ -163,7 +184,7 @@ Autoritative Identifikatoren stellen einige weitere Herausforderungen dar:
     Dies kann leicht durch identische Namen einer Software beim Abgleich von Datenbanken mit den Identifikatoren passieren, oder durch falsche Erwartungen auf Seiten beider Generatoren.
     Betrachtet man beispielsweise die Software \texttt{proton-j-0.27.3.jar}, so könnte bei einem ersten Blick der \acrshort{cpe}-Identifikator \texttt{cpe:/a:proton\_project:proton} vom Namen her passend erscheinen.
     Bei genauerer Betrachtung bezieht sich dieser Identifikator allerdings auf eine Web-Applikation und kein Java-Projekt.
-    Erst nach einer weiteren Analyse von potenziellen Identifikatoren stellt sich heraus, dass \texttt{cpe:/a:apache:qpid\_proton-j} die richtige Wahl für die das Apache-Projekt ist.
+    Erst nach einer weiteren Analyse von potenziellen Identifikatoren stellt sich heraus, dass \texttt{cpe:/a:apache:qpid\_proton-j} die richtige Wahl für das Apache-Projekt ist.
 
     \item Wenn für dieselbe Software mehrfach ein neuer Identifier vergeben wird (Überidentifikation), entstehen Falsch-Negative Lücken in der Schwachstell-Identifikation, da die doppelten Datenpunkte nicht eindeutig zusammengeführt werden können \autocite{CISA2023}.
     Ein Beispiel sind die \acrshort{cpe} für Cyrus SASL\footnote{\url{https://github.com/cyrusimap/cyrus-sasl}}, die ihre Haupt-\acrshort{cpe} \texttt{cpe:/a:cyrusimap:cyrus-sasl} besitzen, jedoch daneben auch noch eine Reihe an weiteren von anderen Generatoren registriert wurden, die dasselbe Produkt meinen:
@@ -173,14 +194,14 @@ Autoritative Identifikatoren stellen einige weitere Herausforderungen dar:
     Ein Beispiel sind die \acrshort{cpe} für Python, bei diesen wurde bei der Erstellung zunächst eine falsch benannte \texttt{cpe:2.3:a:python:py\textit{ht}on} registriert und kurz darauf mit der \texttt{cpe:2.3:a:python:python} korrigiert.
     Die Existenz der falschen \acrshort{cpe} wird für immer in dem Datensatz vorhanden sein.
 
-    \item Die Verbreitung der Identifikatoren ist ein weiteres Hindernis, eine zentrale Datenbank wäre Ideal, falls jedoch ein wahrlich allumfassendes Register an Software dieser Welt erstellt werden soll, wird die Pflege auf globaler Ebene herausfordernd.
+    \item Die Verbreitung der Identifikatoren ist ein weiteres Hindernis, eine zentrale Datenbank wäre ideal, falls jedoch ein wahrlich allumfassendes Register an Software dieser Welt erstellt werden soll, wird die Pflege auf globaler Ebene herausfordernd.
     Die Koordination von Identifier-Generatoren ist wie in den anderen Punkten erwähnt realistisch kaum umsetzbar, und von jedem Generator zu fordern, eine eigene Infrastruktur für etwas aufzubauen, was für die meisten nur ein Hintergedanke ist, ist ebenfalls nicht möglich \autocite{CISA2023}.
 \end{itemize}
 
-Diese Herausforderungen sind Teil der Begründung, warum heutzutage eine solche Vielfalt an Standards nebeneinander ko-existieren und die jeweils nur einen kleineren Aspekt oder eine Untermenge der Menge an Produkten adressieren.
+Diese Herausforderungen sind Teil der Begründung, warum heutzutage eine solche Vielfalt an Ansätzen nebeneinander ko-existieren und die jeweils nur einen kleineren Aspekt oder eine Untermenge der Menge an Produkten adressieren.
 Für ein funktionierendes Ökosystem autoritativer Identifikatoren sind neben dem Format also vor allem die umliegenden Prozesse zur Erzeugung, zur Veröffentlichung und zur Verteilung der Identifikatoren im gesamten Lebenszyklus von Software entscheidend.
 
-\subsection{\acrfull{cpe}}
+\subsection{\acrfull{cpe}}\label{subsec:cpe-description}
 
 % Sanguino_Uetz_2017
 % “2.1. Common Platform Enumeration (CPE) CPE is a method that specifies a naming scheme for applications, hardware devices, and operating systems. CPE is part of the Security Content Automation Protocol (SCAP)5 standard, which was proposed by the National Institute of Standards and Technology (NIST). Currently, there exist two versions of the CPE specification: CPE 2.2 and CPE 2.3. Version 2.3 defines a stack formed by five specifications, including the CPE naming specification [4] and the CPE dictionary specification [5].” (Sanguino and Uetz, 2017, p. 3)
@@ -265,8 +286,8 @@ Neben den allgemeinen Herausforderungen von autoritativen Identifikatoren (\auto
     Das heißt, dass ein automatisiertes \acrshort{vms} selbst testen muss, ob eine zu prüfende \acrshort{cpe} selbst deprecated ist, oder andere deprecated, um diese weiteren \acrshortpl{cpe} als Aliase zur Suche verwenden zu können \autocite{Sanguino_Uetz_2017}.
     Ein Beispiel ist die \texttt{cpe:/a:adobe:flash\_playe\_for\_linux:9.0.115.0}, die keine \acrshortpl{cve} referenziert, sondern nur die korrigierten \texttt{cpe:/a:adobe:flash\_playe\textit{r}\_for\_linux:9.0.115.0} verknüpft ist.
 
-    \item Zudem werden selten auch \acrshort{cpe} registriert, die nicht der Nomenklatur der \acrshort{cpe}-Spezifikation folgen.
-    Diese ungültigen \acrshortpl{cpe} führen im besten Fall nur dazu, dass sie die zugeordneten Schwachstellen unauffindbar machen \autocite{Takahashi_Miyamoto_Nakao_2016}, im schlimmsten, dass das \acrshort{vms} nicht mit den Identifikatoren zurechtkommt und den Prozess der Schwachstellensuche aufgrund eines Fehlers abbricht.
+    \item Zudem werden selten auch \acrshortpl{cpe} registriert, die nicht der Nomenklatur der \acrshort{cpe}-Spezifikation folgen.
+    Diese ungültigen \acrshortpl{cpe} führen im besten Fall nur dazu, dass sie die zugeordneten Schwachstellen unauffindbar machen \autocite{Takahashi_Miyamoto_Nakao_2016}, im schlimmsten Fall, dass das \acrshort{vms} nicht mit den Identifikatoren zurechtkommt und den Prozess der Schwachstellensuche aufgrund eines Fehlers abbricht.
     Einige Beispiele vergangener fehlerhafter \acrshortpl{cpe} werden mit ihren korrigierten Gegenstücken in \autoref{lst:invalid-cpe-strings-in-dictionary} aufgeführt.
 \end{itemize}
 
@@ -309,8 +330,6 @@ Zu viele Attribute:
 %    basically eine zusammenfassung von untersch. papers zum thema
 
 \subsection{PURL}
-
-
 
 \subsection{MSRC Product-Ids}\label{subsec:msrc-product-ids}
 
