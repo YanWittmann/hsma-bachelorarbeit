@@ -89,6 +89,10 @@ Dennoch müssen alleine für diese zwei \enquote{MS Product IDs} zwei nahezu ide
       Version: 10.0.19044
       Type: operating system
       Architecture: "64"
+    - Id: Windows 10  # no "Microsoft"
+      Version: 10.0.19044
+      Type: operating system
+      Architecture: "64"
   append:
     MS Product ID: "11931"
 
@@ -100,6 +104,10 @@ Dennoch müssen alleine für diese zwei \enquote{MS Product IDs} zwei nahezu ide
   append:
     MS Product ID: "11929"
 \end{lstlisting}
+
+Dieses Beispiel offenbart ein weiteres Problem der Artefakt-Matcher:
+Pro Attribut ist nur ein Wertvergleich möglich.
+Sobald es also zwei oder mehr Varianten für ein Feld existieren, müssen entweder reguläre Ausdrücke verwendet, oder der gesamte Eintrag dupliziert werden.
 
 \subsection{C-04: Große Korrelationsdateien als Wartungsproblem}\label{subsec:c-04-groe-und-unubersichtliche-yaml-dateien}
 
@@ -130,7 +138,7 @@ Beispielketten können sein:
     \item \texttt{cpe:/a:setorinformatica:sil --> CVE-2024-22633 --> https://tomiodarim.io/posts/cve-2024-22632-3 --> "Setor Informatica is a Brazilian company that develops software for the Brazilian market" / "Smart System for Laboratories (S.I.L.)" --> they reported a vulnerability for another S.I.L. software --> cpe is applicable}
 \end{itemize}
 
-\subsection{C-06: Mangelhafte Unterstützung automatisierter Tests}\label{subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden}
+\subsection{C-06: Keine Einträge für Negatividentifikationen}\label{subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden}
 
 % If an artifact lacks any CPE or other identifiers, a correlation assistant may have already put in significant effort to reach this point. He might have had to make quite the research or other logical conclusions.
 % But, in the current system, such cases \textit{cannot} at all be put into the correlation files. A separate (non-normalized or used) file would have to be used to keep this knowledge. But such an additional system does not exist yet, so nothing is done to document the effort and the information is lost.
@@ -203,7 +211,7 @@ Wenn nun die Verarbeitungsreihenfolge der Einträge sich durch eine Verschiebung
     Additional CPE URIs: cpe:/a:redis:redis-py
 \end{lstlisting}
 
-\subsection{C-11: YAML-Eintrag Lokalisierung}\label{subsec:c-11-finding-yaml-entries}
+\subsection{C-11: YAML-Eintrag finden}\label{subsec:c-11-finding-yaml-entries}
 
 Die Correlation Utilities, wie in \autoref{subsec:correlation-utilities} vorgestellt, erlauben es mit einem Klick auf einen Korrelationseintrag zu diesem in der entsprechenden \acrshort{yaml}-Datei zu springen.
 Das Problem hierbei liegt darin, dass das aus dem \acrshort{yaml} erzeugten Datenmodell von sich aus keine Referenz mehr auf die Zeilennummern der Datei enthält.

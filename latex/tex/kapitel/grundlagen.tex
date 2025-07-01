@@ -80,9 +80,6 @@ Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellen
 
 \section{\acrlongpl{vms}}\label{sec:grundlagen-vms}
 
-% FIXME-KKL: 2 (Schwachstellen-Korrelation)
-%  der Begriff der Korrelation würde dann aber mit dem zu überarbeitendem Korrelationssystem überladen sein
-
 Vulnerability Management (Schwachstellenmanagement) beschreibt einen zyklischen Prozess zur Identifikation, Bewertung, Behebung und Kommunikation von Schwachstellen in IT-Systemen.
 Ziel ist es, Sicherheitslücken möglichst frühzeitig, idealerweise vor Auslieferung, zu erkennen, nach Risiko einzuordnen und durch geeignete Maßnahmen wie Patches oder Konfigurationsanpassungen zu mitigieren.
 Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Scanning, (2) Schwachstellenerkennung, (3) Analyse und (4) Reporting \autocite{foreman2019vulnerabilityManagement}.
@@ -107,17 +104,10 @@ Daher ist meist ein manueller Eingriff oder eine Ergänzung automatisierter Erge
 
 \section{Produktidentifikationsstandards, Formate und ihre Herausforderungen}\label{sec:produktidentifikationsstandards-herausforderungen}
 
-\subsection{Produkte und ihre Repräsentation}
-
-% erst mal allgemein darüber reden worum es geht
-% Name ≠ Identity
-% Intrinsic vs extrinsic naming scheme
-% warum gibt es so viele formate (jeder sein use-case)
+\subsection{Produkte und ihre Repräsentation}\label{subsec:produkte-vs-reprasentation}
 
 Die genaue Identifikation von Softwareprodukten stellt eine grundlegende Voraussetzung für ein Schwachstellenmanagement wie in \autoref{sec:grundlagen-vms} beschrieben, dar.
 Um bekannte Schwachstellen aus \acrshortpl{vdb} korrekt mit Software-Inventaren abgleichen zu können, müssen Produktidentifikatoren so beschaffen sein, dass eine unmissverständliche Zuordnung dieser Software von anderen Parteien oder mit Informationen, wie bekannten Schwachstellen, möglich ist.
-% Um Schwachstellmanagement wie in \autoref{sec:grundlagen-vms} beschrieben effektiv durchführen zu können, muss Software in Software-Inventaren auf eine Weise angegeben sein, die eine Korrelation dieser Software mit anderen Informationen wie bekannten Schwachstellen erlaubt.
-% Das Ziel muss es sein, dass verschiedene Akteure wie Konsumenten von \acrshortpl{vdb}, Inventarwerkzeuge und Sicherheitsexperten mit der Darstellung der Software genau wissen, dass sie über dieselbe Software reden.
 In der Praxis ist dieses Ziel jedoch aufgrund der vielen heterogenen Lösungen zur Software-Identifikation kaum zu erreichen.
 Sie haben jeweils eine unterschiedliche Granularität, ein anderes Abstraktionslevel oder einen anderen Fokus und lassen sich darum nicht einfach gegenseitig ineinander überführen \autocite{CISA2023}.
 
@@ -131,16 +121,23 @@ Anhand eines Beispiels aus der Chemie:
     Die \textit{Identität} ist die eigentliche Zusammensetzung von Natriumchlorid, NaCl und 7647-14-5 sind Namen, die dieser Struktur gegeben wurden.
 \end{quote}
 
-Ebenso verhält es sich mit Software.
-Ein zu benennendes Artefakt kann sich auf eine oder mehrere Dateien beziehen, aber auch auf ein Betriebssystem, Hardware, eine Sammlung an Projekten und weiteren, beliebigen Inhalten.
-Die Bezüge der Hersteller zu den Artefakten können jederzeit ändern:
-Neue Hersteller treten in den Markt, ziehen sich zurück, werden aufgekauft oder zusammengeführt, aber auch alleine die Projekte können geforkt, archiviert oder aufgegeben werden.
-Projekte und Produkte können in komplexen Beziehungen stehen und transformieren sich stets weiter.
-Diese Gefüge lassen sich nicht mit den bisherigen häufig eingesetzen Identifikationsstandards abbilden \autocite{Manion_Proell_Schmidt2023}.
+Für Software gilt eine ähnliche Unterscheidung.
+Ein benanntes Artefakt kann sich auf eine oder mehrere Dateien beziehen, aber auch auf ein Betriebssystem, Hardware, eine Sammlung an Projekten und weiteren, beliebigen Inhalten.
+Vergebene Bezeichner sind aber weder stabil noch universell, da sich Marktstrukturen, Projektzugehörigkeiten, Herstellerverhältnisse stetig ändern können und weitere Produktweiterentwicklungen nicht ausgeschlossen sind.
+Die Bezüge der Hersteller zu den Artefakten können sich also jederzeit ändern und die geläufigen Identifikationsstandards scheitern daran, diese Komplexität abbilden \autocite{Manion_Proell_Schmidt2023}.
 
-In dieser Arbeit wird der Begriff \textit{Produkt} für abgrenzbare Software- oder Hardware-Artefakte (z.B.\ das \acrshort{api}-Modul von Log4J\footnote{\url{https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api}}) verwendet; der Begriff \textit{Repräsentation} bezeichnet eine standardisierte Darstellung desselben Produkts oder spezifischer Bestandteile (wie \texttt{cpe:/a:apache:log4j}, \texttt{pkg:maven/org.apache.logging.log4j/log4j-api} oder in der Ausprägung als Datei \texttt{log4j-api-2.23.0.jar}).
-Während sich ein Produkt auf konzeptioneller Ebene bewegt und exakt von anderen Produkten abgrenzen lässt, können Repräsentationen eine unterschiedlich scharfe Blase aufspannen und sich mehr oder weniger spezifisch auf ein oder mehrere tatsächliche Produkte beziehen.
-So steht \texttt{cpe:/a:apache:log4j} nicht nur für die \texttt{Log4J-API}, sondern für das gesamte Log4j-Projekt inklusive aller seiner Module, während sich \texttt{pkg:maven/org.apache.logging.log4j/log4j-api} konkret auf das Java-Artefakt auf Maven Central\footnote{\url{https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.0}} bezieht.
+In dieser Arbeit wird der Begriff \textit{Produkt} als ein eindeutig abgrenzbares Software- oder Hardware-Artefakt eingesetzt, das unabhängig von seiner Repräsentation eine in sich konsistente und unterscheidbare Einheit bildet.
+Ein Produkt kann sich auf ein einzelnes Softwarepaket, ein Modul, eine Bibliothek oder eine Hardware-Komponente beziehen, die jeweils in sich selbst konsistent benannt, versioniert und verteilt werden können.
+Die Abgrenzung eines Produkts von einem benachbarten Produkt erfolgt dabei nicht notwendigerweise durch seine technische Repräsentation (wie Dateinamen, Hashes, Paketpfade, \ldots) sondern durch seine konzeptionelle Identität, die auch über verschiedene Distributionen, Plattformen und Versionen hinweg erkennbar bleibt.
+Das \acrshort{api}-Modul von Log4J stellt in diesem Kontext ein eigenständiges Produkt dar, da es unabhängig von anderen Modulen des Log4J-Projekts eigenständig genutzt, versioniert und veröffentlicht wird\footnote{\url{https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api}}.
+
+Im Gegensatz dazu wird der Begriff \textit{Repräsentation} für die standardisierte Darstellung eines Produkts oder bestimmter Bestandteile eines Produkts verwendet.
+Eine Repräsentation beschreibt eine Ausprägung eines Produkts, wie es in einem Dateisystem vorliegen kann, oder eine formal definierte Ausdrucksweise, mit der ein Produkt in unterschiedlichen Kontexten identifiziert wird.
+Je nach verwendetem Standard unterscheidet sich die Ebene der Granularität, auf der Produkte modelliert werden und es werden unterschiedliche Abstraktionsebenen verwendet.
+Für ein und dasselbe Produkt kann es so nicht über Standards hinweg, sondern auch innerhalb eines Standards verschiedene Repräsentationen geben, die sich in ihrer Genauigkeit unterscheiden.
+So steht \texttt{cpe:/a:apache:log4j} für das gesamte Log4J-Projekt inklusive aller Module, während sich \texttt{pkg:maven/org.apache.logging.log4j/log4j-api} spezifisch auf das \acrshort{api}-Modul von Log4J bezieht.
+Weiterhin ist eine Ausprägung des Produkts die konkrete Datei \texttt{log4j-api-2.23.0.jar}, unter der dieses Produkt verteilt wird.
+Repräsentationen sind damit an formale Spezifikationen, technische Formate und werden aus unterschiedlichen Anwendungsfällen heraus erstellt und spiegeln nicht notwednigerweise die vollständige Identität eines Produkts wider.
 
 Der Begriff \enquote{Produktidentifikationsstandard-\textit{Ökosystem}} wird wie von \citeauthor{CISA2023} dazu verwendet, um zu verdeutlichen, dass es nicht einfach ausreicht, ein technisches Format zur Beschreibung von Softwareprodukten zu definieren.
 Vielmehr ist ein Ökosystem notwendig, das von der Industrie akzeptiert wird und dessen Regeln durchgängig angewendet werden, das auch Prozesse zur Erstellung, Verbreitung und Nutzung solcher Identifikatoren umfasst \autocite{CISA2023}.

@@ -1,6 +1,89 @@
-\section{Auflistung der Anforderungen}
+\section{Anforderungen an das neue Korrelationssystem}\label{sec:requirements}
 
 % “4.3. Data Types in Falcon” ([Cheramangalath et al., 2016, p. 6](zotero://select/library/items/4DG8G9J3)) ([pdf](zotero://open-pdf/library/items/QNYKYEH4?page=6&annotation=C7MKFAUG))
 
-% - attribut-matching: erlaube eine Liste an möglichen Werten für ein Feld (OR) ([ "Windows 10", "Microsoft Windows 10" ])
-% - menschenfreundliches Format
+Basierend auf der Analyse der bestehenden Herausforderungen werden die Anforderungen an das neue Korrelationssystem abgeleitet.
+
+\subsection{A-01: Graphenbasiertes Datenmodell mit expliziten Abhängigkeitsdeklarationen}\label{subsec:req-format-product-graph}
+
+Das Kernmodell des neuen Systems muss als gerichteter Graph implementiert werden, wobei Knoten typisierten Produktrepräsentationen (Artefakte, \acrshort{cpe}, \acrshort{eol}-Id, MS Product ID) repräsentieren und Kanten Relationen mit unterschiedlichen Typen zwischen diesen darstellen.
+Kantentypen umfassen mindestens \enquote{is} (represented by, positive Zugehörigkeit) und \enquote{is not} (not represented by, expliziter Ausschluss).
+Der Typ des Zielknotens einer Relation entscheidet, wie die Art der Relation interpretiert werden soll.
+
+Jede Repräsentation eines Produkts darf sich in nur einen Knoten ausprägen, Mehrfachreferenzen auf dieselbe Repräsentation müssen durch Kanten auf einen einheitlichen Knoten dargestellt werden.
+Dies löst die Reihenfolgenabhängigkeit (\hyperref[subsec:c-10-order-dependency]{C-10}), indem die Abhängigkeiten zwischen Knoten explizit deklariert werden.
+Diese Deklaration soll eine topologische Sortierung während der Verarbeitung erzwingen und implizite Dateireihenfolgeabhängigkeiten vollständig entfernen.
+
+Der Graph ist gerichtet, damit über die Kantenrichtung die \enquote{is}- und \enquote{is not}-Beziehungen klar ausgewertet werden können.
+Falls es nötig ist, kann eine identische, umgekehrte Kante dazu verwendet werden, um die Richtung der Kante auf beide Seiten zu erweitern.
+In den Fall, dass der Bedarf besteht herauszufinden, welche weiteren Repräsentationen eine Produktrepräsentation noch haben kann, muss damit also bei dem als \enquote{sich selbst} identifizierten Knoten eine Durchquerung des Graphen unter Berücksichtigung der Kantenrichtung- und Typen gestartet werden, bis alle erreichbaren Knoten gefunden und ausgewertet wurden.
+
+\subsection{A-01: Produkt-Konzept}\label{subsec:req-product-concept}
+
+Wichtig ist die Unterscheidung zwischen einem \textit{Produkt}, und der \textit{Repräsentation eines Produkts} (she.\ \autoref{subsec:produkte-vs-reprasentation}).
+Diese sollen sich zwar im Graphen beide als Knotenpunkte darstellen, jedoch muss zwischen ihren Typen unterschieden werden.
+
+So könnte eine Repräsentation mit einer Kante auf einen Produkt-Knotenpunkt verweisen und von diesem eine Kante auf eine weitere Repräsentation des Produkts um amzugeben, dass diese Repräsentationen das selbe Produkt darstellen.
+
+\subsection{A-02: Normalisierte Typidentifikation und typspezifische Attribute für Software-Artefakte}\label{subsec:req-type-specific-matching}
+
+Um die Herausforderung \hyperref[subsec:c-02-uneindeutige-artefakt-typinformation]{C-02} der multiplen Ausprägungen und inkonsistenten Typinformationen zu lösen muss eine Typinferenz-Logik den Artefakttypen konsistent aus multiplen Quellen aufbereiten.
+In \autoref{subsec:analysis-ae-software-inventories} wurden die häufigsten Muster für Typinformationen analysiert.
+Die Ausgabe der Typinterferenz soll diese verwenden, um normalisierte Ökosystembezeichner (z.B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}), als Artefaktattribut verfügbar machen.
+
+Basierend auf dem erkannten Ökosystem/Typ eines Artefakts werden dann weitere Extraktoren auf die Artefakt-Metadaten angewendet.
+Diese müssen weitere Attribute als First-Class Matching-Kriterien auf den Artefakt-Selektoren zur Verfügung stellen, wie etwa Maven-Koordinaten (Group Id, Artifact Id) für Java, Paketnamen für NPM, Distributionskennung für Linux-Pakete, Java Runtime-Provider, \ldots.
+Wildcard-Selektor wie bisher häufig in der \texttt{Id} (\hyperref[subsec:c-01-unspezifische-identifikation-von-artefakten]{C-01}) können so durch exakte, ökosystemspezifische Attributvergleiche ersetzt werden.
+
+\subsection{A-03: Vererbung von Artefaktmerkmalen}\label{subsec:req-Selektor-inheritance}
+
+Um zu vermeiden, dass Artefakt-Selektoren wie in \hyperref[subsec:c-03-duplizierte-artefakt-selektoren]{C-03} für ähnliche Identifikationen wiederholt werden müssen, soll es ein Vererbungssystem an Artefakt-Selektoren geben.
+Ein Basis-Selektor definiert generische Selektorattribute (z.B.\ für alle Microsoft Windows-Varianten), während abgeleitete Selektoren spezifische Erweiterungen (z.B.\ Architektur) hinzufügen, wobei lokale Attributdefinitionen geerbte überschreiben.
+Dies erlaubt das Teilen von Basisattributen zwischen mehreren spezifischeren Ausprägungen eines Artefakts, ohne die Basisattribute bei jeder Ausprägung wiederholen zu müssen und vermeidet damit zu pflegende Redundanz.
+So muss ebenfalls nur der Basis-Selektor angepasst werden, wenn neue Attribute dazukommen oder vorhandene bearbeitet werden sollen.
+
+\subsection{A-04: Auflistung mehrerer Werte pro Attribut}\label{subsec:req-multiple-attribute-values}
+
+In \hyperref[subsec:c-03-duplizierte-artefakt-selektoren]{C-03} wurde die Herausforderungen der mehreren Werte pro Attribut aufgeführt.
+Um dieses zu lösen, soll im neuen Modell ein Abgleich von mehreren Optionen möglich sein, bei der nur ein Attributwert übereinstimmen muss (oder-Verknüpfung).
+
+\subsection{A-05: Unterstützung regulärer Ausdrücke}\label{subsec:req-regex-support}
+
+Auch wenn im neuen Format über \hyperref[subsec:req-type-specific-matching]{A-02} die Anzahl der Wildcard-Selektor drastisch verringert werden, soll dennoch das in \autoref{sec:current-correlation-format} beschriebene inkrementelle Wildcard-System weiterhin bestehen bleiben.
+
+\subsection{A-06: Maschinenlesbare Entscheidungsdokumentation}\label{subsec:req-reason-format}
+
+Um Daten wie Projektreferenzen, Beschreibungen und Begründung für Entscheidungen im Gegensatz zum alten Korrelationssystem (\hyperref[subsec:c-05-reason-not-good-enough]{C-05}) maschinenlesbar zu machen, müssen die bisherigen Kommentarfelder als strukturierte Objekte mit standardisierten Feldern modelliert werden.
+Dies soll es in automatisierten Systemen oder Nutzeroberflächen möglich machen, Metadaten über die Produktidentifikationen nützlicher anzuzeigen und auswerten zu können.
+
+Da das neue Korrelationssystem mit einem Graphen modelliert wird, gibt es zwei Stellen, an denen diese Dokumentation angebracht werden kann und muss.
+So wird der frühere \texttt{\# reason:}-Kommentar mit der Begründung der gegenseitigen Anwendbarkeit von Produkten nun auf den Kanten modelliert, und die weiteren Metadaten eines Produkts wie die Beschreibung oder Web-Referenzen auf den Knotenpuntken.
+
+\subsection{A-07: Nutzbarkeit: Menschenfreundliches Modifikationsformat}\label{subsec:req-human-friendly-format}
+
+Das neue Korrelationssystem als Graph zu modellieren führt viele Komplexitäten ein, die für den Nutzer im manuellen Modifikationsformat abstrahiert werden müssen, um noch immer so effektiv wie im alten Format arbeiten zu können.
+Hierfür muss ein Format iterativ entworfen und mit aktuellen Nutzern des Formats getestet und abgesprochen werden, um es so einfach wie möglich zu machen, den Graphen zu modifizieren ohne Kontrolle über detailierte Attribute zu verlieren.
+
+\subsection{A-08: Generierungsframework für dynamische Daten}\label{subsec:req-generated-data}
+
+Im aktuellen Korrelationssystem liegen die generierten \acrshort{yaml}-Dateien gleichwertig neben den manuell gepflegten Daten (\hyperref[subsec:c-08-generated-correlation-data]{C-08}).
+Da ihre Existenz nicht von Beginn an geplant war, wurden das Selektor-System und die weiteren Matching-Regeln nicht für die besonderen Anforderungen die diese Quellen mit sich bringen ausgelegt.
+Im neuen System soll der gesamte Graph darauf aufbauen, dass er zunächst mit generierten Daten befüllt wird und basierend darauf die manuellen Modifikationen angewendet werden.
+
+Mit den Datensätzen der \metaeffektsp sollen bereits alle Knotenpunkte für \acrshortpl{cpe}, MS Product Ids und \acrshort{eol}-Ids erzeugt werden, die bekannt sind, manche sollen bereits Kanten zwischen den Knoten erzeugen.
+Zudem sollen weitere Datenquellen wie die bereits vorhandenen Generatoren für NPM-Pakete zu \acrshortpl{cpe} und die für die vielen Java Runtimes, aber auch neue wie purl2cpe von scanoss\footnote{\url{https://github.com/scanoss/purl2cpe}} dazu beitragen, den Graphen bereits vorzufüllen und die darauf folgende Arbeit zu erleichtern.
+
+Um den fertigen auslieferbaren Graphen zu erhalten, soll zunächst der generierte Anteil des Graphen erstellt werden und dann auf diesem mit den manuellen Modifikationen aufgebaut werden.
+Durch diese Trennung in mehrere \enquote{Contributors} am Graphen kann \hyperref[subsec:c-09-sharing-of-public-data]{C-09} einfach abgebildet werden, indem der manuelle Schritt nicht auf den Datensatz angewendet wird.
+
+\subsection{A-09: Qualitätsmetriken des Graphen}\label{subsec:req-graph-inner-consistency}
+
+%- Innere Konsistenz: Zu jeder Repräsentation, die durch das Modell identifiziert werden soll, darf maximal eine
+%  eindeutige Identifikation stattfinden und es darf keine losen Knoten geben
+%- Datensatz erklärt sich selbst: Zu jedem Eintrag und jeder Verbindung muss es eine Begründung jeglicher Art geben
+%- Ein sich selbst prüfender Datensatz: Nachdem ein Datensatz manuell geprüft wurde, werden alle Identifikationen in
+%  einem separaten Datensatz abgelegt, um bei zukünftigen Änderungen automatisch geprüft werden zu können. So soll
+%  gegeben sein, dass die Identifikation eines bekannten Produktes nicht einfach so ändern kann, ohne, dass man es
+%  mitbekommen würde.
+
+Um verifizieren zu können, dass der Graph sinnhaft strukturiert ist, müssen einige Prüfungen darauf ablaufen können.
