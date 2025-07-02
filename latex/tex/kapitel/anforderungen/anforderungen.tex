@@ -2,7 +2,7 @@
 
 % “4.3. Data Types in Falcon” ([Cheramangalath et al., 2016, p. 6](zotero://select/library/items/4DG8G9J3)) ([pdf](zotero://open-pdf/library/items/QNYKYEH4?page=6&annotation=C7MKFAUG))
 
-Basierend auf der Analyse der bestehenden Herausforderungen werden die Anforderungen an das neue Korrelationssystem abgeleitet.
+Basierend auf der Analyse der bestehenden Herausforderungen und weiteren Rahmenbedingungen werden die Anforderungen an das neue Korrelationssystem abgeleitet.
 
 \subsection{A-01: Graphenbasiertes Datenmodell mit expliziten Abhängigkeitsdeklarationen}\label{subsec:req-format-product-graph}
 
@@ -14,18 +14,27 @@ Jede Repräsentation eines Produkts darf sich in nur einen Knoten ausprägen, Me
 Dies löst die Reihenfolgenabhängigkeit (\hyperref[subsec:c-10-order-dependency]{C-10}), indem die Abhängigkeiten zwischen Knoten explizit deklariert werden.
 Diese Deklaration soll eine topologische Sortierung während der Verarbeitung erzwingen und implizite Dateireihenfolgeabhängigkeiten vollständig entfernen.
 
+Um die programmatische Erfassung eines Knotenpunktes zu ermöglichen, soll jeder Knotenpunkt einen textuellen Identifikator besitzen, der in Kombination mit dem Knotentyp im Graph eindeutig ist.
+So kann über die Typ-Id-Kombination jeder Knoten im Graph angesprochen werden.
+
 Der Graph ist gerichtet, damit über die Kantenrichtung die \enquote{is}- und \enquote{is not}-Beziehungen klar ausgewertet werden können.
 Falls es nötig ist, kann eine identische, umgekehrte Kante dazu verwendet werden, um die Richtung der Kante auf beide Seiten zu erweitern.
 In den Fall, dass der Bedarf besteht herauszufinden, welche weiteren Repräsentationen eine Produktrepräsentation noch haben kann, muss damit also bei dem als \enquote{sich selbst} identifizierten Knoten eine Durchquerung des Graphen unter Berücksichtigung der Kantenrichtung- und Typen gestartet werden, bis alle erreichbaren Knoten gefunden und ausgewertet wurden.
 
-\subsection{A-01: Produkt-Konzept}\label{subsec:req-product-concept}
+Mit diesem System sollen jedwede Produkte und Repräsentationen modelliert werden können.
+Dies löst die Herausforderung \hyperref[subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden]{C-06}, dass keine Identifikationen ohne bekannte Relationen modelliert werden können, da in diesem System dennoch ein Knotenpunkt für die Identifikation erstellt werden kann, ohne eine Relation zu einem weiteren Knoten erstellen zu müssen.
+
+\subsection{A-02: Produkt-Konzept}\label{subsec:req-product-concept}
 
 Wichtig ist die Unterscheidung zwischen einem \textit{Produkt}, und der \textit{Repräsentation eines Produkts} (she.\ \autoref{subsec:produkte-vs-reprasentation}).
 Diese sollen sich zwar im Graphen beide als Knotenpunkte darstellen, jedoch muss zwischen ihren Typen unterschieden werden.
 
-So könnte eine Repräsentation mit einer Kante auf einen Produkt-Knotenpunkt verweisen und von diesem eine Kante auf eine weitere Repräsentation des Produkts um amzugeben, dass diese Repräsentationen das selbe Produkt darstellen.
+So könnte eine Repräsentation mit einer Kante auf einen Produkt-Knotenpunkt verweisen und von diesem eine Kante auf eine weitere Repräsentation des Produkts um anzugeben, dass diese Repräsentationen das selbe Produkt darstellen.
 
-\subsection{A-02: Normalisierte Typidentifikation und typspezifische Attribute für Software-Artefakte}\label{subsec:req-type-specific-matching}
+Produktknoten sollen in der Lage sein, Metainformationen über die zugehörigen Repräsentationen abzulegen.
+Dazu gehören vor allem Informationen über die Versionsräume und wie zwischen diesen umgewandelt werden kann.
+
+\subsection{A-03: Normalisierte Typidentifikation und typspezifische Attribute für Software-Artefakte}\label{subsec:req-type-specific-matching}
 
 Um die Herausforderung \hyperref[subsec:c-02-uneindeutige-artefakt-typinformation]{C-02} der multiplen Ausprägungen und inkonsistenten Typinformationen zu lösen muss eine Typinferenz-Logik den Artefakttypen konsistent aus multiplen Quellen aufbereiten.
 In \autoref{subsec:analysis-ae-software-inventories} wurden die häufigsten Muster für Typinformationen analysiert.
@@ -35,23 +44,38 @@ Basierend auf dem erkannten Ökosystem/Typ eines Artefakts werden dann weitere E
 Diese müssen weitere Attribute als First-Class Matching-Kriterien auf den Artefakt-Selektoren zur Verfügung stellen, wie etwa Maven-Koordinaten (Group Id, Artifact Id) für Java, Paketnamen für NPM, Distributionskennung für Linux-Pakete, Java Runtime-Provider, \ldots.
 Wildcard-Selektor wie bisher häufig in der \texttt{Id} (\hyperref[subsec:c-01-unspezifische-identifikation-von-artefakten]{C-01}) können so durch exakte, ökosystemspezifische Attributvergleiche ersetzt werden.
 
-\subsection{A-03: Vererbung von Artefaktmerkmalen}\label{subsec:req-Selektor-inheritance}
+\subsection{A-04: Vererbung von Artefaktmerkmalen}\label{subsec:req-Selektor-inheritance}
 
 Um zu vermeiden, dass Artefakt-Selektoren wie in \hyperref[subsec:c-03-duplizierte-artefakt-selektoren]{C-03} für ähnliche Identifikationen wiederholt werden müssen, soll es ein Vererbungssystem an Artefakt-Selektoren geben.
 Ein Basis-Selektor definiert generische Selektorattribute (z.B.\ für alle Microsoft Windows-Varianten), während abgeleitete Selektoren spezifische Erweiterungen (z.B.\ Architektur) hinzufügen, wobei lokale Attributdefinitionen geerbte überschreiben.
 Dies erlaubt das Teilen von Basisattributen zwischen mehreren spezifischeren Ausprägungen eines Artefakts, ohne die Basisattribute bei jeder Ausprägung wiederholen zu müssen und vermeidet damit zu pflegende Redundanz.
 So muss ebenfalls nur der Basis-Selektor angepasst werden, wenn neue Attribute dazukommen oder vorhandene bearbeitet werden sollen.
 
-\subsection{A-04: Auflistung mehrerer Werte pro Attribut}\label{subsec:req-multiple-attribute-values}
+\subsection{A-05: Auflistung mehrerer Werte pro Attribut}\label{subsec:req-multiple-attribute-values}
 
 In \hyperref[subsec:c-03-duplizierte-artefakt-selektoren]{C-03} wurde die Herausforderungen der mehreren Werte pro Attribut aufgeführt.
 Um dieses zu lösen, soll im neuen Modell ein Abgleich von mehreren Optionen möglich sein, bei der nur ein Attributwert übereinstimmen muss (oder-Verknüpfung).
 
-\subsection{A-05: Unterstützung regulärer Ausdrücke}\label{subsec:req-regex-support}
+\subsection{A-06: Unterstützung regulärer Ausdrücke}\label{subsec:req-regex-support}
 
-Auch wenn im neuen Format über \hyperref[subsec:req-type-specific-matching]{A-02} die Anzahl der Wildcard-Selektor drastisch verringert werden, soll dennoch das in \autoref{sec:current-correlation-format} beschriebene inkrementelle Wildcard-System weiterhin bestehen bleiben.
+Auch wenn im neuen Format über \hyperref[subsec:req-type-specific-matching]{A-03} die Anzahl der Wildcard-Selektor drastisch verringert werden, soll dennoch das in \autoref{sec:current-correlation-format} beschriebene inkrementelle Wildcard-System weiterhin bestehen bleiben.
 
-\subsection{A-06: Maschinenlesbare Entscheidungsdokumentation}\label{subsec:req-reason-format}
+\subsection{A-07: Manuelle Modifikation des Graphen}\label{subsec:req-manual-format-modification}
+
+Da in dem neuen Korrelationssystem noch immer manuelle Korrekturen an der automatischen Erkennung von \acrshort{cpe} gemacht werden können sollen, muss ein neues \acrshort{yaml}-basiertes Format entwickelt werden, welches einen solchen Produkt-Graphen modifizieren kann.
+Die durchführbaren Modifikationen am Graphen müssen mindestens die Erstellung, Modifikation und Entfernung von Knotenpunkten jedes Types, und die Erstellung, Modifikation und Entfernung von Kanten zwischen Knoten beinhalten.
+Technisch sollte dieses Modifikationsformat auf eine Weise modelliert werden, dass jegliche nötigen Modifikationen am Graphen ausschließlich darüber lösbar sind, ohne weiteren Code schreiben zu müssen, um als allgemeine Schnittstelle für Graphmodifikationen zu dienen.
+Auf diese Weise können auch andere Prozesse die selbe Logik verwenden, um ihre Änderungen durchzuführen, mit den gleichen Garantien wie der manuelle Prozess.
+
+Da die Kombination aus Typ und Id jedes Knotens im Graphen eindeutig ist (she. \hyperref[subsec:req-format-product-graph]{A-01}), sollte auch das Modifikationsformat diese Weise verwenden, Knotenpunkte für die Modifikation zu selektieren.
+
+Das neue Korrelationssystem als Graph zu modellieren führt viele Komplexitäten ein, die für den Nutzer im manuellen Modifikationsformat abstrahiert werden müssen, um noch immer so effektiv wie im alten Format arbeiten zu können.
+Hierfür muss ein Format iterativ entworfen und mit aktuellen Nutzern des Formats getestet und abgesprochen werden, um es so einfach wie möglich zu machen, den Graphen zu modifizieren ohne Kontrolle über detaillierte Attribute zu verlieren.
+
+Da das alte Format oft Schwierigkeiten hatte, aus dem Datenmodell wieder die ursprünglichen Einträge in den \acrshort{yaml}-Dateien zu finden (she.\ \hyperref[subsec:c-11-finding-yaml-entries]{C-11}), soll in dem neuen \acrshort{yaml}-Modifikationsformat das Auffinden von Einträgen deterministisch gestaltet werden.
+Wenn zur Selektion der Knotenpunkte im \acrshort{yaml} der Typ und die Id verwendet wird, dann kann diese auch umgekehrt wieder aus dem Graphen ausgelesen und die zugehörige Zeile im \acrshort{yaml} gefunden werden.
+
+\subsection{A-08: Maschinenlesbare Entscheidungsdokumentation}\label{subsec:req-reason-format}
 
 Um Daten wie Projektreferenzen, Beschreibungen und Begründung für Entscheidungen im Gegensatz zum alten Korrelationssystem (\hyperref[subsec:c-05-reason-not-good-enough]{C-05}) maschinenlesbar zu machen, müssen die bisherigen Kommentarfelder als strukturierte Objekte mit standardisierten Feldern modelliert werden.
 Dies soll es in automatisierten Systemen oder Nutzeroberflächen möglich machen, Metadaten über die Produktidentifikationen nützlicher anzuzeigen und auswerten zu können.
@@ -59,12 +83,7 @@ Dies soll es in automatisierten Systemen oder Nutzeroberflächen möglich machen
 Da das neue Korrelationssystem mit einem Graphen modelliert wird, gibt es zwei Stellen, an denen diese Dokumentation angebracht werden kann und muss.
 So wird der frühere \texttt{\# reason:}-Kommentar mit der Begründung der gegenseitigen Anwendbarkeit von Produkten nun auf den Kanten modelliert, und die weiteren Metadaten eines Produkts wie die Beschreibung oder Web-Referenzen auf den Knotenpuntken.
 
-\subsection{A-07: Nutzbarkeit: Menschenfreundliches Modifikationsformat}\label{subsec:req-human-friendly-format}
-
-Das neue Korrelationssystem als Graph zu modellieren führt viele Komplexitäten ein, die für den Nutzer im manuellen Modifikationsformat abstrahiert werden müssen, um noch immer so effektiv wie im alten Format arbeiten zu können.
-Hierfür muss ein Format iterativ entworfen und mit aktuellen Nutzern des Formats getestet und abgesprochen werden, um es so einfach wie möglich zu machen, den Graphen zu modifizieren ohne Kontrolle über detailierte Attribute zu verlieren.
-
-\subsection{A-08: Generierungsframework für dynamische Daten}\label{subsec:req-generated-data}
+\subsection{A-09: Generierungsframework für dynamische Daten}\label{subsec:req-generated-data}
 
 Im aktuellen Korrelationssystem liegen die generierten \acrshort{yaml}-Dateien gleichwertig neben den manuell gepflegten Daten (\hyperref[subsec:c-08-generated-correlation-data]{C-08}).
 Da ihre Existenz nicht von Beginn an geplant war, wurden das Selektor-System und die weiteren Matching-Regeln nicht für die besonderen Anforderungen die diese Quellen mit sich bringen ausgelegt.
@@ -74,9 +93,9 @@ Mit den Datensätzen der \metaeffektsp sollen bereits alle Knotenpunkte für \ac
 Zudem sollen weitere Datenquellen wie die bereits vorhandenen Generatoren für NPM-Pakete zu \acrshortpl{cpe} und die für die vielen Java Runtimes, aber auch neue wie purl2cpe von scanoss\footnote{\url{https://github.com/scanoss/purl2cpe}} dazu beitragen, den Graphen bereits vorzufüllen und die darauf folgende Arbeit zu erleichtern.
 
 Um den fertigen auslieferbaren Graphen zu erhalten, soll zunächst der generierte Anteil des Graphen erstellt werden und dann auf diesem mit den manuellen Modifikationen aufgebaut werden.
-Durch diese Trennung in mehrere \enquote{Contributors} am Graphen kann \hyperref[subsec:c-09-sharing-of-public-data]{C-09} einfach abgebildet werden, indem der manuelle Schritt nicht auf den Datensatz angewendet wird.
+Durch diese Trennung in mehrere \enquote{Contributors} am Graphen kann \hyperref[subsec:c-09-sharing-of-public-data]{C-09} einfach abgebildet werden, indem der Datensatz vor der Anwendung des manuellen Schritts ausgeliefert wird.
 
-\subsection{A-09: Qualitätsmetriken des Graphen}\label{subsec:req-graph-inner-consistency}
+\subsection{A-10: Qualitätsmetriken des Graphen}\label{subsec:req-graph-inner-consistency}
 
 %- Innere Konsistenz: Zu jeder Repräsentation, die durch das Modell identifiziert werden soll, darf maximal eine
 %  eindeutige Identifikation stattfinden und es darf keine losen Knoten geben
@@ -86,4 +105,84 @@ Durch diese Trennung in mehrere \enquote{Contributors} am Graphen kann \hyperref
 %  gegeben sein, dass die Identifikation eines bekannten Produktes nicht einfach so ändern kann, ohne, dass man es
 %  mitbekommen würde.
 
-Um verifizieren zu können, dass der Graph sinnhaft strukturiert ist, müssen einige Prüfungen darauf ablaufen können.
+Um verifizieren zu können, dass der Graph sinnhaft strukturiert und in sich selbst konsistent ist, müssen einige Prüfungen darauf ablaufen können.
+Diese prüfen mindestens die folgenden Eigenschaften:
+
+\begin{itemize}
+    \item Zu jeder Repräsentation eines Produkts in dem Graphen darf maximal genau eine eindeutige Identifikation stattfinden.
+    Dies bedeutet, dass jeder Knoten exakt eine Repräsentation vollständig modellieren sollte und diese nicht noch einmal von einem anderen Knoten partiell abgedeckt sein darf.
+    Diese Metrik muss sowohl in dem Matching-Algorithmus, als auch als Modellierungsvorschrift umgesetzt werden.
+    % FIXME-YWI: das hier hat halt das Problem, dass wir den Graphen mit allen CPE, etc. füllen wollen und nicht immer ein zugehöriges Produkt erzeugt werden kann.
+    \item Es darf keine losen Knoten geben, jede Repräsentation muss mindestens zu einem Produkt-Knotenpunkt verbunden sein um sicherzustellen, dass mit einer Identifikation auch ein Informationsgewinn stattfinden kann.
+    \item Um einen sich selbst erklärenden Datensatz zu erhalten, müssen die Metadaten jedes Knotenpunktes aufgefüllt sein und die Kanten eine Begründung enthalten, warum sie so existieren.
+    \item Der Graph soll sich selbst prüfen können: Nachdem ein Software-Inventar manuell geprüft wurde, sollen alle Quell-Artefakte mit ihren Identifikationen in einem separaten Datensatz abgelegt werden, um diese bei zukünftigen Änderungen am Graphen automatisch prüfen zu können.
+    So kann die Identifikation eines bekannten Produktes sich nicht einfach so ändern, ohne, dass man es mitbekommen würde.
+    \item Eine Prüfung auf zirkuläre Vererbungs-Referenzen soll sicherstellen, dass es immer einen spezifischeren Knoten gibt und keine Schleife entsteht.
+\end{itemize}
+
+\subsection{A-11: Organisation der \acrshort{yaml}-Dateien}\label{subsec:req-yaml-file-organization}
+
+Die manuell gepflegten Korrelationsdateien werden noch immer im Dateisystem abgelegt werden.
+Hierbei müssen jedoch die Herausforderungen der tausenden Zeilen langen \acrshort{yaml}-Dateien adressiert werden (\hyperref[subsec:c-04-groe-und-unubersichtliche-yaml-dateien]{C-04}).
+Es soll für die neuen Dateien mindestens eine Auftrennung in Verzeichnissen nach Typ und/oder Ökosystem geben, und weiterführend können die einzelnen Hersteller- oder Produktgruppen jeweils in getrennten Dateien aufgeführt werden.
+
+\subsection{A-12: Überführung von Einträgen aus dem alten Korrelationsdatensatz}\label{subsec:req-current-dataset-conversion}
+
+Um die Transition zum neuen Korrelationssystem so einfach wie möglich zu machen, sollen die beiden Datensätze zunächst parallel weiter geführt und auf Inventare angewendet werden.
+In der Transitionsperiode sollen dann die Einträge aus dem alten Format in das neue konvertiert und damit der alte langsam ersetzt werden.
+
+Dazu muss sichergestellt werden, dass der neue Graph mindestens die Fähigkeiten des alten Formats abdeckt und durch seine weiteren Eigenschaften die Identifikation sogar verbessert.
+
+\subsection{A-13: Performance des neuen Korrelationsformats}\label{subsec:req-correlation-format-performance}
+
+Das alte Korrelationssystem wurde bei unterschiedlichen Inventar-Größen mit dem aktuellen Datensatz mit 6400 Einträgen getestet.
+Die Zeiten werden in \autoref{tab:old-correlation-performance} angegeben.
+
+Aus diesen Messwerten sind zwei Phasen erkennbar.
+Zunächst läuft eine konstante Startzeit (bei dem getesteten Datensatz etwa 0,8-0,9 Sekunden), die unabhängig von der Anzahl der Artefakte im Inventar auftritt, in welcher die Korrelationseinträge aus dem \acrshort{yaml} ausgelesen werden.
+Danach steigt die Laufzeit annähernd linear mit der Anzahl der Artefakte an, der Zeitbedarf pro zusätzlichem Artefakt ist also relativ konstant.
+
+\begin{table}[h!]
+    \centering
+    \label{tab:old-correlation-performance}
+    \begin{tabular}{l r r r r}
+        \toprule
+        \textbf{Artefakte} & \textbf{Ø [s]} & \textbf{Min. [s]} & \textbf{Max. [s]} \\
+        \midrule
+        0                  & 0,806          & 0,435             & 1,668             \\
+        1                  & 0,897          & 0,453             & 1,919             \\
+        500                & 2,033          & 1,504             & 3,277             \\
+        1000               & 3,256          & 2,531             & 4,612             \\
+        2000               & 5,920          & 4,543             & 6,979             \\
+        3000               & 8,804          & 7,425             & 11,800            \\
+        4000               & 9,433          & 8,780             & 10,338            \\
+        5000               & 12,162         & 10,929            & 13,596            \\
+        6000               & 13,609         & 12,461            & 15,381            \\
+        \bottomrule
+    \end{tabular}
+    \caption{Gemessene Laufzeiten des alten Korrelationsformats bei unterschiedlichen Artefakt-Anzahlen.}
+\end{table}
+
+Da der Korrelationsschritt bisher bei weitem nicht der zeitintensivste Schritt in der Schwachstellenanalyse ist, ist die Optimierung nie eine kritische Anforderung gewesen.
+Das neue Korrelationsmodell sollte diese Zeiten jedoch bei vergleichbaren Datenmengen dennoch nicht um einen Faktor von 2 überschreiten.
+
+% \begin{table}[h!]
+%     \centering
+%     \label{tab:new-correlation-performance}
+%     \begin{tabular}{l r r r}
+%         \toprule
+%         \textbf{Artefakte} & \textbf{Ø [s]} & \textbf{Min. [s]} & \textbf{Max. [s]} \\
+%         \midrule
+%         0                  & 0,000          & 0,000             & 0,000             \\
+%         1                  & 0,034          & 0,001             & 0,134             \\
+%         500                & 2,303          & 2,078             & 2,950             \\
+%         1000               & 4,249          & 4,022             & 4,790             \\
+%         2000               & 8,582          & 8,109             & 9,658             \\
+%         3000               & 12,639         & 12,156            & 13,730            \\
+%         4000               & 16,702         & 16,113            & 17,446            \\
+%         5000               & 20,693         & 20,179            & 21,175            \\
+%         6000               & 24,601         & 24,093            & 25,503            \\
+%         \bottomrule
+%     \end{tabular}
+%     \caption{Laufzeiten des neuen Korrelationsformats bei unterschiedlichen Artefakt-Anzahlen.}
+% \end{table}
