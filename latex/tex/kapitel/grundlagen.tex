@@ -55,6 +55,8 @@ Fehlende oder ungenaue Angaben zu Produktnamen und Versionen können durch die i
 
 Zur einheitlichen Darstellung und Verbreitung solcher Inventare haben sich mehrere maschinenlesbare Standards etabliert.
 
+% FIXME-YWI: der abstand zwischen der Überschrift und der Footnote ist durch den Blocksatz aus irgendeinem Grund größer
+
 \paragraph{\acrfull{spdx}}\footnote{\url{https://spdx.dev}}
 wurde ursprünglich für das Lizenzmanagement entwickelt und stellt heute einen häufig eingesetzten Standard zur Beschreibung von Software-Inventaren dar.
 Der Fokus des Projekts lag bis Version 2.3 hauptsächlich auf lizenzrechtlichen Informationen.
@@ -259,7 +261,7 @@ Alternativ kann jedes Attribut auch auf einen von zwei Werten mit logischer Bede
 
 Da \acrshort{cpe} das für die \metaeffektsp wichtigste Ökosystem zur Schwachstellenerkennung ist, werden in den folgenden Paragrafen noch einmal auf einige weitere Eigenschaften und Probleme eingegangen.
 
-\paragraph{Probleme mit CPE}
+\subsubsection{Probleme mit CPE}
 
 Neben den allgemeinen Herausforderungen von autoritativen Identifikatoren (\autoref{par:authorative-identifiers}), gibt es noch einige weitere das \acrshort{cpe}-Ökosystem einen Bezug mit dem \acrshort{cve}-System haben.
 
@@ -288,6 +290,7 @@ Neben den allgemeinen Herausforderungen von autoritativen Identifikatoren (\auto
     Einige Beispiele vergangener fehlerhafter \acrshortpl{cpe} werden mit ihren korrigierten Gegenstücken in \autoref{lst:invalid-cpe-strings-in-dictionary} aufgeführt.
 \end{itemize}
 
+% TODO: Vielleicht eine Liste daraus machen?
 \begin{lstlisting}[caption=Ungültige CPE 2.3 Format Strings aus dem NVD CPE Dictionary und ihre korrigierten Gegenstücke,label=lst:invalid-cpe-strings-in-dictionary]
 Fehlendes "part"-Attribut:
    cpe:2.3:sainwp:onestore_sites:*:*:*:*:*:*:wordpress:*:*
@@ -315,7 +318,7 @@ Zu viele Attribute:
 %       “However, some CPE-IDs registered in the dictionary may not follow the nomenclature rules of CPE specification. For instance, Hidemaru’s CPE-ID violated the rules at the time of this writing.” (Takahashi et al., 2016, p. 4) Takahashi_Miyamoto_Nakao_2016
 % python pthyon
 
-\paragraph{Identifikation von CPE}\label{par:automated-cpe-identification}
+\subsubsection{Identifikation von CPE}\label{subsec:automated-cpe-identification}
 
 % “Table 3. Collected methods related to the similarity matching-based approach.” (Bennouk et al., 2024, p. 870) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
 % “In the first step, CPE identifiers that could be assigned to a software product (CPE candidates) are searched for.” (Sanguino and Uetz, 2017, p. 10) Sanguino_Uetz_2017
@@ -325,6 +328,18 @@ Zu viele Attribute:
 % “The novelty of this research consists in the algorithm for mapping software names in the information system to the CPE entries based on the Ratcliff/Obershelp algorithm recursively implemented for the software product name’s parts.” (Ushakov et al., 2021, p. 353) Ushakov_Doynikova_Novikova_Kotenko_2021
 %    “Research work Method CPE fields Disadvantages Gawron et al., 2017 [6] Regular expression. Name and version Not unified entries or entries with errors are not mapped Sanguino and Uetz [7, 8] Levenshtein algorithm to select CPE candidates based on vendor and name, distance should be less than 2. Versions are used to prioritize the candidates. Vendor, name, and version Requires manual selection from several CPE candidates to avoid errors. Evaluation on 12 products. O'Hare and Macfarlane, 2018 [9] Levenshtein algorithm applied to the CPE list. Candidates with the minimum distance are selected (consequently, 0, 1, or 2). Full entry Error-prone. Na et al., 2017 [10] Hierarchical tree based on entry fields, full words comparison Full entry Error-prone, no evaluation. Bela and Enachescu, 2015 [11] Multiple hierarchical trees Full entry Error-prone” (Ushakov et al., 2021, p. 354) Ushakov_Doynikova_Novikova_Kotenko_2021
 %    basically eine zusammenfassung von untersch. papers zum thema
+
+\subsubsection{Effective CPE Calculation}\label{subsec:effective-cpe-calculation}
+
+Um die unterschiedlichen Quellen von \acrshort{cpe}-Informationen und die Priorisierung dieser abzubilden, wurden mehrere Attribute auf dem Artefakt-Modell dafür registriert.
+Diese Attribute sind \texttt{Derived CPE URIs}, \texttt{CPE URIs}, \texttt{Additional CPE URIs} und \texttt{Inapplicable CPE URIs}.
+
+Das Attribut \texttt{CPE URIs} hat in der Auswertung der \enquote{effektiven} \acrshortpl{cpe} die höchste Priorität.
+Sobald in diesem Attribut mindestens ein Eintrag vorhanden ist, werden alle anderen Quellen ignoriert und die expliziten \acrshortpl{cpe} in \texttt{CPE URIs} dienen ausschließlich für den Schwachstellenabgleich.
+Falls es leer ist, wird die effektive \acrshort{cpe}-Menge aus den anderen drei Attribute berechnet, indem alle Einträge aus \texttt{Derived CPE URIs} und \texttt{Additional CPE URIs} eindeutig gesammelt und die Einträge aus \texttt{Inapplicable CPE URIs} davon abgezogen werden.
+
+Nachdem eine Menge an \acrshort{cpe} erhalten wurde, werden diese noch nach den Regeln der \acrshort{cpe}-Spezifikation auf den kleinsten gemeinsamen Teiler über die Wildcards (\enquote{*}) reduziert, und Duplikate werden entfernt.
+Damit ist es möglich, die Menge der automatisch abgeleiteten \acrshortpl{cpe} mit manuell gesetzten Eingaben zu modifizieren und dennoch die Grundwahrheit selbst definieren zu können.
 
 \subsection{PURL}
 

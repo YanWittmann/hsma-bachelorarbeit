@@ -1,0 +1,141 @@
+\section{Referenzfälle}\label{sec:reference-case-chapter}
+
+Aus einer Auswertung aus dem bereits vorhandenen Korrelationsdatensatz wurden vier grundlegende Fälle identifiziert, die in ihrer Kombination den Großteil der Komplexität in den bisherigen Daten abdecken.
+Sie wurden nicht aufgrund von ihren Inhalten oder betreffenden Produkten gewählt, sondern wegen ihrer Struktur und verwendeten impliziten oder expliziten Mechanismen.
+Das neue Modell muss also mindestens diese Fälle abdecken können und daher werden sie als Referenzfälle verwendet.
+
+Neben dem konzeptionellen Unterschied zum neuen Korrelationsformat der Modellierung als Graphen haben diese Beispiele im alten Format zudem die Eigenschaft, dass sie mit dem Ziel erstellt werden, ein Inventar-Artefakt zu modifizieren.
+Es wird also immer ausschließlich von einem Artefakt ausgegangen, und dessen Ziel-Attribut-Werte definiert.
+Im neuen Format wird dieser Gedanke in den Hintergrund treten, und sich implizit durch den Aufbau des Graphen ergeben.
+
+Es werden zunächst immer die Einträge vorgestellt, dann die Herausforderungen und relevanten Anforderungen identifiziert.
+Diese Referenzfälle werden in \autoref{sec:beispiele-fertige-implementierung} jeweils auf das neue Korrelationssystem übersetzt, um einen Vergleich der Formate zu ermöglichen.
+
+\paragraph{JavaScript-Paket mit multiplen Namensvarianten}\label{par:reference-case-walletconnect} (she. \autoref{lst:correlation-generated-walletconnect-example})
+
+Bei dem Paket \texttt{@web3-react/walletconnect} handelt sich in der NPM-Registry zwar um ein eindeutiges Paket, allerdings kann sich der Bezeichner in den gescannten Software-Inventaren in unterschiedlichen Varianten ausprägen, auf die alle geprüft werden muss.
+In diesem Fall handelt es sich um eine Positividentifikation auf einer \acrshort{cpe} \texttt{cpe:/a:uniswap:web3-react\_walletconnect}, die als \texttt{Additional CPE URIs} zum Artefakt hinzugefügt wird.
+Um die drei alternative Namensformen in dem Selektor in der \texttt{affects}-Sektion erfassen zu können, müssen diese alle separat mit Wiederholung der restlichen Attribute in alternativen Selektoren geführt werden.
+Über dem Eintrag ist ein \texttt{reason}-Kommentar, der eine Referenz auf das Paket auf NPM und auf die Homepage des Herstellers enthält.
+
+Dieser Fall, wie auch die folgenden, demonstriert die Notwendigkeit, ökosystemspezifisch-normalisierte Bezeichner zu extrahieren (\hyperref[subsec:req-type-specific-matching]{A-03}).
+Die \enquote{-*}-Suffixe können zu einer Übergeneralisierung der Einträge führen, aber auch der häufig wiederholte reguläre Ausdruck \texttt{/(web|nodejs|npm)-module/} für die Erkennung des Artefakt-Typen kann zu Fehlern führen und stellt die üblichen Probleme von Redundanz dar.
+
+\hyperref[subsec:req-multiple-attribute-values]{A-05} ist aus der Notwendigkeit entstanden, innerhalb eines Eintrages die Wiederholung nah identischer Selektoren zu vermeiden.
+In diesem Fall war es nötig, für jede Namensform einen neuen Selektor zu erstellen, und alle weiteren Attribute zu wiederholen.
+
+\paragraph{Java-Runtimes: Komplexe Versionstransformation}\label{par:reference-case-java-runtimes} (she. \autoref{lst:reference-case-java-runtimes})
+
+Wie in \autoref{subsec:old-generated-correlation-data} bereits gezeigt, wird ein wesentlicher Teil des alten Korrelationsdatensatzes regelmäßig automatisch in einem dedizierten Prozess generiert.
+Das Listing zeigt einen Auszug der generierten Einträge für die Java-Runtime \enquote{Amazon Corretto} und \enquote{Azul Zulu}.
+Diese wurden einmal aus der Notwendigkeit eingeführt, da die \acrshortpl{cpe} der Java Runtimes einige der wenigen sind, bei denen häufig der Update-Part tatsächlich verwendet wird und andererseits die Versionen der \acrshortpl{cpe} selbst innerhalb eines Vendor-Product-Namensraums sehr uneinheitlich strukturiert sein können.
+Einige häufige Beispiele für das Format der Version- und Update Parts sind: \texttt{21.0.6:*}, \texttt{23:*}, \texttt{*:update32}, \texttt{*:update\_32}, \texttt{1.6.0:update32\_b31}, \texttt{1.6.0:update32\_b32}.
+Für jede dieser Versionen ist ein neuer Eintrag in den \acrshort{yaml}-Dateien nötig, da jeder Eintrag nur eine versionierte \acrshort{cpe} adressieren kann.
+
+Die zugehörige Anforderung für die automatische Befüllung des Graphen ist \hyperref[subsec:req-generated-data]{A-09}.
+Die Anforderung \hyperref[subsec:req-type-specific-matching]{A-03} trifft hier ebenfalls zu, denn die Erkennung des Artefakts als Java Runtime, des Anbieters und die Versionserkennung muss implizit an derselben Stelle in der \texttt{Id} passieren.
+Die Erkennung von drei Metriken über ein einziges Artefakt-Attribut ist weder zuverlässig, noch ist es gut auf weitere Formate der \texttt{Id} erweiterbar.
+In dem neuen Format sollte die Identifikation von diesen zusammengesetzen Attributen durch programmatische Unterstützung in der Selektorlogik auf einzelne Attribute aufgetrennt werden.
+Mit der Änderung des Formats als Graphen (\hyperref[subsec:req-format-product-graph]{A-01}), in dem jede Repräsentation versions-agnostisch nur einmal als Knotenpunkt ausgeprägt ist und mit der Anforderung, dass es ein ausgeprägtes Produkt-Konzept mit Produkt-Knotenpunkten gibt (\hyperref[subsec:req-product-concept]{A-02}), kann die Versionserkennung und Modifikation der Version in der \acrshort{cpe} in den einzelnen Knotenpunkten der Repräsentationen nicht mehr wie früher modelliert werden, sondern muss auf einen zentral die Repräsentationen verknüpenden Produkt-Knotenpunkt, der diese Mappings unter einem Namensraum an die Knotenpunkte zur Verfügung stellt.
+Zur Erkennung der Version sollte mindestens noch immer das Wildcard-System zur Verfügung gestellt werden (\hyperref[subsec:req-regex-support]{A-06}).
+
+\begin{lstlisting}[style=yaml,caption={Java-Runtime-Korrelation mit Versionstransformation},label={lst:reference-case-java-runtimes},basicstyle=\ttfamily\scriptsize]
+- affects:
+    - Id: amazon-corretto-*/i
+    - Id: /java-(?:\d\.?)+-amazon-corretto-.*/i
+  append:
+    Additional CPE URIs: cpe:/a:amazon:corretto, cpe:/a:oracle:jdk, cpe:/a:oracle:jre
+- affects:
+    - Id: /amazon-corretto-1\.1\.6.*9.*/i
+    - Id: /amazon-corretto-java-1\.1\.6.*9.*/i
+    - Id: /java-(?:\d\.?)+-amazon-corretto(?:-jdk)?-1\.1\.6.*9.*/i
+  append:
+    CPE URIs: cpe:/a:oracle:jre:1.1.6_009, cpe:/a:amazon:corretto
+
+- affects:
+    - Id: /zulu.*-(?:jre|jdk)-headless-.*/i
+    - Id: /zulu.*-(?:jre|jdk)-.*/i
+  append:
+    Additional CPE URIs: cpe:/a:azul:zulu
+- affects:
+    - Id: /zulu.*-(?:jre|jdk)-headless-11\.0\.10.*/i
+    - Id: /zulu.*-(?:jre|jdk)-11\.0\.10.*/i
+  append:
+    CPE URIs: cpe:/a:azul:zulu:11.0.10
+- affects:
+    - Id: /zulu.*-(?:jre|jdk)-headless-1\.8\.0.*[^0-9]282.*/i
+    - Id: /zulu.*-(?:jre|jdk)-1\.8\.0.*[^0-9]282.*/i
+  append:
+    CPE URIs: cpe:/a:azul:zulu:8:update282
+\end{lstlisting}
+
+\paragraph{Windows 10: Betriebssystem mit mehreren Identifikatoren}\label{par:reference-case-windows} (she. \autoref{lst:reference-case-windows})
+
+Die Modellierung von Windows 10 in den alten Korrelationsdaten stellt einige größere Herausforderungen dar.
+Da Windows als Microsoft-Produkt sich nicht nur als \acrshort{cpe} repräsentiert, sondern auch durch Microsoft Produkt-Ids und zusätzlich noch EOL Ids an die Artefakte angehängt werden sollen, müssen für unterschiedliche Versionen des Betriebssystems auch immer unterschiedliche Repräsentationen verknüpft werden.
+Dies ist problematisch, da die Basisinformationen auf allen Windows-Artefakten dieselbe ist, und diese dann für jede zusätzliche zu unterstützende Version in den Artefakt-Selektoren wiederholt werden muss.
+Selbst innerhalb eines Eintrages müssen die Selektoren wiederholt werden, um die unterschiedlichen Ausprägungen der \texttt{Id} zu unterstützen.
+Dies führt zu einer großen Menge an Redundanzen.
+Zudem ist die Hierarchie der Einträge (Windows 10, 21H2, Architektur) nur impliziert modelliert und muss von einem Leser erst als solche erkannt werden.
+
+Die relevanten Anforderungen sind die Vererbung von Artefakt-Selektoren (\hyperref[subsec:req-selektor-inheritance]{A-04}), die die Wiederholung über Einträge hinweg vermeidet, und die Auflistung mehrerer Werte pro Attribut (\hyperref[subsec:req-multiple-attribute-values]{A-05}).
+Zudem ist hier besonders die dokumentation der unterschiedlichen Knotenpunkte und Kanten relevant (\hyperref[subsec:req-reason-format]{A-08}).
+
+\begin{lstlisting}[style=yaml,caption={Windows-Korrelation mit mehreren Identifikatoren},label={lst:reference-case-windows},basicstyle=\ttfamily\scriptsize]
+- affects:
+    - Id: Windows 10*
+      Type: operating system
+    - Id: Microsoft Windows 10*
+      Type: operating system
+  remove:
+    Additional CPE URIs: cpe:/o:microsoft:windows
+  append:
+    Inapplicable CPE URIs: cpe:/a:windows:media_player, cpe:/o:mircorsoft:windows, cpe:/o:microsoft:windows
+    Additional CPE URIs: cpe:/o:microsoft:windows_10
+    EOL Id: windows
+
+# reason: https://learn.microsoft.com/de-de/windows/release-health/release-information
+#         11931 --> Version 21H2 (OS build 19044) / Windows 10 Version 21H2 for x64-based Systems
+- affects:
+    - Id: Microsoft Windows 10*
+      Version: 10.0.19044*
+      Type: operating system
+      Architecture: "*64*"
+    - Id: Windows 10*
+      Version: 10.0.19044*
+      Type: operating system
+      Architecture: "*64*"
+  append:
+    MS Product ID: "11931"
+
+# reason: 11929 --> Version 21H2 (OS build 19044) / Windows 10 Version 21H2 for 32-bit Systems
+- affects:
+    - Id: Microsoft Windows 10*
+      Version: 10.0.19044*
+      Type: operating system
+      Architecture: "*32*"
+    - Id: Windows 10*
+      Version: 10.0.19044*
+      Type: operating system
+      Architecture: "*32*"
+  append:
+    MS Product ID: "11929"
+
+# reason: 11929 --> Version 21H2 (OS build 19044) / Windows 10 Version 21H2 for 32-bit Systems
+- affects:
+    - Id: Microsoft Windows 10*
+      Version: 10.0.19044*
+      Type: operating system
+  append:
+    Additional CPE URIs: cpe:/o:microsoft:windows_10_21h2, cpe:/o:microsoft:windows_10:21h2
+\end{lstlisting}
+
+\paragraph{Redis: Kontextabhängige Produktdifferenzierung}\label{par:reference-case-redis} (she. \autoref{lst:correlation-order-depdendency-example})
+
+Der Redis-Fall zeigt die Herausforderung von ökosystemabhängigen überladenen Artefaktbezeichnern.
+Der gleiche Basisname \texttt{redis-*} repräsentiert in den Referenzeinträgen aus den Software-Inventaren mindestens zwei unterschiedliche Entitäten: die Datenbankserver-Software und die Client-Bibliothek als Python-Modul.
+Im alten Format erfordert dies entweder eine Wiederholung des Artefakt-Selektors in dem spezifischeren Eintrag als \texttt{ignores}, oder eine \texttt{remove}-Ausschlussregel mit der die generelle Modifikation wieder rückgängig gemacht wird.
+Dies ist durch die bedingte Reihenfolge fehleranfällig und die Entscheidungslogik kann nicht zureichend dokumentiert werden.
+
+Die klare Trennung zwischen Produkten und Repräsentationen (\hyperref[subsec:req-product-concept]{A-02}) im Graphenmodell soll eine bessere Ausprägung der Repräsentationen ermöglichen.
+Durch die \enquote{is}/\enquote{is not}-Relationen soll der spezifischste Knotenpunkt explizit angeben können, wie mit einer referenzierten Repräsentation umgegangen werden soll (\hyperref[subsec:req-format-product-graph]{A-01}), und strukturierte Metadaten (\hyperref[subsec:req-reason-format]{A-08}) sollen die Dokumentation maschinenlesbar machen.
