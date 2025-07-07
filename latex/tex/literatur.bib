@@ -229,7 +229,7 @@
     abstractnote = {The Software Bill of Materials (SBOM) has emerged as a promising solution, providing a machine-readable inventory of software components used, thus bolstering supply chain security. This paper presents an extensive study concerning the practical aspects of SBOM practice. Leveraging an analysis of 4,786 GitHub discussions from 510 SBOM-related projects, our research delineates key topics, challenges, and solutions intrinsic to the effective utilization of SBOMs. Furthermore, we shed light on commonly used tools and frameworks for generating SBOMs, exploring their respective strengths and limitations. Our findings underscore the pivotal role SBOMs play in ensuring resilient software development practices and underscore the imperative of their widespread integration to bolster supply chain security. The insights accrued from our study hold significance as valuable input for prospective research and development in this crucial domain.}
 }
 
-@misc{spdxOverview1june2024,
+@online{spdxOverview1june2024,
     author = {{The Linux Foundation}},
     institution = {The Linux Foundation},
     title = {SPDX: About Overview},
@@ -239,7 +239,7 @@
     howpublished = {SPDX Official Website}
 }
 
-@misc{CycloneDX2024Spec,
+@online{CycloneDX2024Spec,
     author = {{OWASP Foundation and Ecma International}},
     title = {CycloneDX Specification Overview},
     year = {2024},
@@ -250,6 +250,17 @@
     version = {1.6},
     organization = {Technical Committee TC54},
     keywords = {SBOM, Software Bill of Materials, Supply Chain Security, OWASP, Ecma-424}
+}
+
+@online{PackageURLSpec,
+    author = {{Package URL Project}},
+    title = {Package URL specification (purl)},
+    year = {2024},
+    url = {https://github.com/package-url/purl-spec/blob/main/PURL-SPECIFICATION.rst},
+    note = {Accessed on 06.07.2025},
+    howpublished = {GitHub Repository},
+    version = {1.0.X},
+    keywords = {package URL, purl, software identification, package management}
 }
 
 @standard{ecma424:2024,
@@ -298,6 +309,60 @@
     year = {2024},
     url = {https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/TechGuidelines/TR03183/BSI-TR-03183-2-2_0_0.pdf?__blob=publicationFile&v=3},
     note = {Zugriff am 22. Juni 2025}
+}
+
+@inproceedings{Gawron2017,
+    author = {Gawron, Marian and Cheng, Feng and Meinel, Christoph},
+    title = {PVD: Passive Vulnerability Detection},
+    booktitle = {2017 8th International Conference on Information and Communication Systems (ICICS)},
+    year = {2017},
+    month = {4},
+    doi = {10.1109/IACS.2017.7921992},
+    publisher = {IEEE},
+    organization = {Deutsche Bahn, Peking University, Hasso Plattner Institute},
+    url = {https://ieeexplore.ieee.org/document/7921992},
+}
+
+@inproceedings{McClanahan_Li_2024,
+    title = {Towards Automatically Matching Security Advisories to CPEs: String Similarity-based Vendor Matching},
+    author = {McClanahan, Kylie and Li, Qinghua},
+    year = 2024,
+    month = feb,
+    booktitle = {2024 International Conference on Computing, Networking and Communications (ICNC)},
+    pages = {233–238},
+    doi = {10.1109/ICNC59896.2024.10556231},
+    issn = {2473-7585},
+    url = {https://ieeexplore.ieee.org/document/10556231},
+}
+
+@inproceedings{Huff2021Recommender,
+    author = {Huff, Philip and McClanahan, Kylie and Le, Thao and Li, Qinghua},
+    title = {A Recommender System for Tracking Vulnerabilities},
+    booktitle = {Proceedings of the 16th International Conference on Availability, Reliability and Security},
+    series = {ARES '21},
+    year = {2021},
+    pages = {1--7},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    location = {Vienna, Austria},
+    date = {2021-08-17},
+    articleno = {114},
+    numpages = {7},
+    doi = {10.1145/3465481.3470039},
+    url = {https://doi.org/10.1145/3465481.3470039},
+    isbn = {978-1-4503-9051-4},
+}
+
+@ARTICLE{8846081,
+    author = {Zou, Deqing and Wang, Sujuan and Xu, Shouhuai and Li, Zhen and Jin, Hai},
+    journal = {IEEE Transactions on Dependable and Secure Computing},
+    title = {A Deep Learning-Based System for Multiclass Vulnerability Detection},
+    year = {2021},
+    volume = {18},
+    number = {5},
+    pages = {2224-2236},
+    keywords = {Deep learning;Neural networks;Technological innovation;Software;Feature extraction;Big Data;Vulnerability detection;multiclass classification;data-dependence;control-dependence;code gadget;code attention;deep learning},
+    doi = {10.1109/TDSC.2019.2942930}
 }
 
 % https://flamingtempura.github.io/bibtex-tidy

@@ -2,15 +2,15 @@
 
 Wie alle Datentypen im Inventar basieren auch Artefakte auf Key-Value-Pairs, einer frei definierbaren Zuordnung von Textschlüsseln zu Textwerten.
 Dieses Format wurde gewählt, um möglichst einfach Änderungen und neue Felder einführen zu können, ohne Schemata definieren und ändern zu müssen.
-Komplexere Werte als flache Texte werden z.B.\ automatisch als JSON-Objekte serialisiert und beim Einlesen wieder als Objekte deserialisiert.
+Komplexere Werte als flache Texte werden z.\ B.\ automatisch als JSON-Objekte serialisiert und beim Einlesen wieder als Objekte deserialisiert.
 
 Für Artefakte ist die zugrundeliegende Struktur mit einigen Basis-Feldern für alle Software-Ökosysteme die gleiche, jedoch unterscheidet sich je nach Ökosystem die tatsächliche Verwendung der Felder.
 Jedes Ökosystem hat somit eine übliche Menge an Feldern, mit denen eine Komponente beschrieben wird, die typischerweise ausgefüllt werden.
 
+% FIXME: Why does this table reference not resolve in the document?
 Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inventory-artifact-entries} dargestellt.
 
 \begin{table}[ht]
-    \label{tab:inventory-artifact-entries}
     \centering
     \begin{tabular}{llll}
         \toprule
@@ -23,6 +23,7 @@ Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inven
         \bottomrule
     \end{tabular}
     \caption{Beispielhafte Artefakteinträge in einem Software-Inventar}
+    \label{tab:inventory-artifact-entries}
 \end{table}
 
 Die \texttt{Id} eines Artefakts ist das einzige Attribut, welches auf einem Artefakt immer gesetzt sein muss.

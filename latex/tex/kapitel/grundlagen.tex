@@ -17,7 +17,7 @@ Die Klassifikation reicht von abstrakteren Kategorien (\verb+CWE-20+: Improper I
 Während Schwächen allgemeine Fehlermuster beschreiben, stellt eine Schwachstelle eine konkrete Ausprägung einer Schwäche in einem spezifischen System oder Produkt dar.
 Sie beeinträchtigt die zentralen \acrshort{ciavuln}-Schutzziele (Confidentiality (Vertraulichkeit), Integrity (Integrität) und Availability (Verfügbarkeit)) und stellt eine Verletzung formeller oder impliziter Sicherheitsanforderungen dar.
 Das \acrshort{cve}-Programm, betrieben durch die MITRE Corporation und unterstützt von US-Behörden wie der \acrfull{cisa}, bietet einen weltweit anerkannten Standard zur Identifikation und Beschreibung von öffentlich bekannten Schwachstellen.
-Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.B.\ \verb+CVE-2024-12345+) und wird in Kooperation mit autorisierten \acrfullpl{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
+Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.\ B.\ \verb+CVE-2024-12345+) und wird in Kooperation mit autorisierten \acrfullpl{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
 Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api} von der \acrshort{nvd} öffentlich zur Verfügung gestellt\footnote{\url{https://nvd.nist.gov/developers/vulnerabilities}}.
 
 Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen betrachtet, andere ähnliche Quellen werden als \nameref{par:security-advisories} behandelt.
@@ -43,7 +43,7 @@ Eine \acrshort{sbom} hat das Ziel, die Transparenz in der Software-Lieferkette m
 
 Eine \acrshort{sbom} kann sowohl manuell als auch automatisiert durch die Identifikation und Dokumentation aller verwendeten Software-Komponenten erfolgen.
 Manuelle Methoden sind jedoch vor allem bei wiederholten Durchläufen inkonsistent, fehleranfällig und in größeren Projekten kaum skalierbar.
-Die Aktualisierung von \acrshortpl{sbom} ist nötig, wenn z.B.\ bei neuen Versionen sich die Zusammensetzung einer Software verändert.
+Die Aktualisierung von \acrshortpl{sbom} ist nötig, wenn z.\ B.\ bei neuen Versionen sich die Zusammensetzung einer Software verändert.
 Daher wird die Erzeugung von \acrshortpl{sbom} in der Regel projektweit durch Werkzeuge, die Quellcode, Projektdateien oder Container analysieren, durchgeführt \autocite{Bi_Xia_Xing_Lu_Zhu_2023}.
 
 Eine \acrshort{sbom} ist eine zentrale Anforderung der Technischen Richtlinie TR-03183 des \acrfull{bsi}, die in dieser formale und technische Vorgaben für die Erstellung von Software-Inventaren definiert.
@@ -68,7 +68,7 @@ Heute ermöglicht \acrshort{spdx} nicht nur die Darstellung von Lizenzen, sonder
 wurde von der OWASP Foundation in Zusammenarbeit mit Ecma International entwickelt und ist seit 2024 als Standard \texttt{ECMA-424} veröffentlicht \autocite{CycloneDX2024Spec, ecma424:2024}.
 CycloneDX beschreibt ein maschinenlesbares Format zur Dokumentation von Software-Komponenten, deren direkten Abhängigkeiten, Lizenzinformationen, kryptografischen Prüfsummen und bekannten Schwachstellen.
 Durch die Möglichkeit, eigene Felder und Erweiterungen in den Dokumenten zu verwenden, können domänenspezifische Anforderungen ohne Anpassung des Standards abgedeckt werden.
-Neuere Versionen führen Erweiterungen für z.B.\ für Hardware-Komponenten (HBOM)\footnote{\url{https://cyclonedx.org/capabilities/hbom}}, KI-Modelle und Trainingsdaten (AI/ML-BOM)\footnote{\url{https://cyclonedx.org/capabilities/mlbom}} oder Konfigurationen und Betriebsdaten (OBOM)\footnote{\url{https://cyclonedx.org/capabilities/obom}} hinzu.
+Neuere Versionen führen Erweiterungen für z.\ B.\ für Hardware-Komponenten (HBOM)\footnote{\url{https://cyclonedx.org/capabilities/hbom}}, KI-Modelle und Trainingsdaten (AI/ML-BOM)\footnote{\url{https://cyclonedx.org/capabilities/mlbom}} oder Konfigurationen und Betriebsdaten (OBOM)\footnote{\url{https://cyclonedx.org/capabilities/obom}} hinzu.
 
 \paragraph{\metaeffekt-Inventare}
 werden im Detail in \autoref{sec:metaeffekt-inventory-format} erklärt.
@@ -93,7 +93,7 @@ Daher folgt die Triage, in der jede gefundene Schwachstelle kontextbezogen auf i
 Auf Grundlage der verbleibenden relevanten Schwachstellen erfolgt eine Bewertung, bei der Faktoren wie Schweregrad, Angriffsvektor, Ausnutzbarkeit und Rahmenbedingungen berücksichtigt werden, um Prioritäten für das weitere Vorgehen zu setzen.
 Diese Bewertung stellt immer eine Momentaufnahme des identifizierten Risikos dar und dient als Grundlage für Entscheidungen für die nächsten Maßnahmen.
 Auch das Reporting zeigt damit nur den aktuellen Stand.
-Die eigentliche Behebung, durch Maßnahmen wie z.B.\ Aktualisierungen oder Konfigurationsänderungen, ist davon entkoppelt.
+Die eigentliche Behebung, durch Maßnahmen wie z.\ B.\ Aktualisierungen oder Konfigurationsänderungen, ist davon entkoppelt.
 Sie findet in separaten operativen Prozessen und kann sich auch über längere Zeiträume erstrecken.
 
 Die Identifikation von Schwachstellen ist damit nur der erste Schritt in einem vollständigen Schwachstellenmanagement.
@@ -318,7 +318,36 @@ Zu viele Attribute:
 %       “However, some CPE-IDs registered in the dictionary may not follow the nomenclature rules of CPE specification. For instance, Hidemaru’s CPE-ID violated the rules at the time of this writing.” (Takahashi et al., 2016, p. 4) Takahashi_Miyamoto_Nakao_2016
 % python pthyon
 
-\subsubsection{Identifikation von CPE}\label{subsec:automated-cpe-identification}
+\subsubsection{Automatisierte Identifikation von CPE}
+
+Die automatische Zuordnung von \acrshortpl{cpe} zu den Ausprägungen von Softwareprodukten erfolgt meist über Ähnlichkeitsanalysen von Produktnamen, da eine exakte Übereinstimmung in der Realität nur selten zuverlässig ist.
+Die Verfahren bauen typischerweise auf reale Produktbezeichner auf, um über unterschiedliche Techniken die relevanten \acrshortpl{cpe} finden.
+Die meisten Verfahren definieren nicht, wie diese Referenzbezeichner erhalten werden, es gibt jedoch eigene Arbeiten, die sich mit dem Thema beschäftigen.
+So setzen Gawron et al.\ in diesem Schritt reguläre Ausdrücke auf Log-Dateien ein, um Produktnamen zu erhalten \autocite{Gawron2017}, meist werden allerdings einfach die Bezeichner gewählt, wie sie in einer \acrshort{sbom} oder im Dateisystem vorkommen.
+
+\paragraph{Similarity-Matching-basierte Ansätze}
+
+Aufgrund ihrer einfachen Implementierung und dem klaren Konzept werden häufig String-Similarity-Verfahren zur Ermittlung potenzieller \acrshort{cpe} eingesetzt.
+Sanguino und Uetz verwenden die Levenshtein-Distanz auf die Produktbezeichner zu den Vendor- und Produktnamen und wählen die \acrshort{cpe} mit der kleinsten Distanz über beide Felder \autocite{Sanguino_Uetz_2017}, womit sie eine Trefferquote von etwa $83\,\%$ erreichen \autocite{Idrissi_Sebai_Faroukhi_Mahouachi_2024}.
+Takahashi et al.\ bestimmen eine Matching-Rate als Anteil gleicher Zeichen zwischen den Produktbezeichnern und \acrshort{cpe}-Parts und wählen nur \acrshort{cpe}, deren Wert über einem definierten Schwellwert liegt \autocite{Takahashi_Miyamoto_Nakao_2016}.
+Ushakov et al.\ setzen auf die Ratcliff/Obershelp-Ähnlichkeit, um den Abgleich des Vendor und Produkts durchzuführen \autocite{Ushakov_Doynikova_Novikova_Kotenko_2021}.
+McClanahan et al.\ verwenden den Jaro-Winkler-Algorithmus in Kombination mit einem Stemming-Verfahren, um Namensvariationen besser zu verarbeiten, indem ein Datensatz aufgebaut wird, der häufig vorkommende Produktnamen priorisiert.
+Dabei erweist sich natürlich der Aufbau der Datensätze als arbeitsintensiv \autocite{McClanahan_Li_2024}.
+
+\paragraph{AI-basierte Ansätze}
+
+Einige Ansätze prüfen, inwiefern sich Künstliche Intelligenz zur automatisierten \acrshort{cpe}-Identifikation einsetzen lässt.
+Huff et al.\ kombinieren dazu Natural Language Processing und Machine-Learning-Verfahren, wie Random Forests und Word2Vec.
+Es zeigt sich, dass trotz eines Trainingsdatensatzes mit hoher Qualität die Genauigkeit vor allem bei Produkten ohne bekannte \acrshort{cpe} begrenzt war viele falsch-positive und falsch-negative Ergebnisse erhalten wurden.
+Zudem war die Laufzeit um einen wesentlichen Faktor höher als typsiche Algorithmus-basierte Verfahren, was in großen Organisationen mit vielen Projekten nicht praktikabel ist \autocite{Huff2021Recommender}.
+Li et al.\ setzen ein \acrfull{ai-rnn} in Kombination mit Word2Vec ein, mit einem Fokus auf das Scanning von Quellcode in C/C++ \autocite{8846081}.
+
+\paragraph{Ansatz der \metaeffekt}
+
+Die Herausforderung all dieser Methoden liegt in der sehr heterogenen und fehlerbehafteten Datenlage, wie in vorhergegangenen Kapiteln gezeigt.
+Das Ergebnis sind also häufig falsch-negativen und falsch-positiven Zuordnungen, was zu der Notwendigkeit führt, die Ergebnisse immer noch einmal manuell prüfen zu müssen.
+Einige Ansätze schlagen als Methode daher bereits eine Kombination einer automatischer Vorselektion und menschlicher Prüfung vor, um die Fehlerquote zu verringern \autocite{Takahashi_Miyamoto_Nakao_2016, Sanguino_Uetz_2017}.
+
 
 % “Table 3. Collected methods related to the similarity matching-based approach.” (Bennouk et al., 2024, p. 870) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
 % “In the first step, CPE identifiers that could be assigned to a software product (CPE candidates) are searched for.” (Sanguino and Uetz, 2017, p. 10) Sanguino_Uetz_2017
@@ -329,7 +358,7 @@ Zu viele Attribute:
 %    “Research work Method CPE fields Disadvantages Gawron et al., 2017 [6] Regular expression. Name and version Not unified entries or entries with errors are not mapped Sanguino and Uetz [7, 8] Levenshtein algorithm to select CPE candidates based on vendor and name, distance should be less than 2. Versions are used to prioritize the candidates. Vendor, name, and version Requires manual selection from several CPE candidates to avoid errors. Evaluation on 12 products. O'Hare and Macfarlane, 2018 [9] Levenshtein algorithm applied to the CPE list. Candidates with the minimum distance are selected (consequently, 0, 1, or 2). Full entry Error-prone. Na et al., 2017 [10] Hierarchical tree based on entry fields, full words comparison Full entry Error-prone, no evaluation. Bela and Enachescu, 2015 [11] Multiple hierarchical trees Full entry Error-prone” (Ushakov et al., 2021, p. 354) Ushakov_Doynikova_Novikova_Kotenko_2021
 %    basically eine zusammenfassung von untersch. papers zum thema
 
-\subsubsection{Effective CPE Calculation}\label{subsec:effective-cpe-calculation}
+\subsubsection{Effective CPE Calculation}\label{subsubsec:effective-cpe-calculation}
 
 Um die unterschiedlichen Quellen von \acrshort{cpe}-Informationen und die Priorisierung dieser abzubilden, wurden mehrere Attribute auf dem Artefakt-Modell dafür registriert.
 Diese Attribute sind \texttt{Derived CPE URIs}, \texttt{CPE URIs}, \texttt{Additional CPE URIs} und \texttt{Inapplicable CPE URIs}.
@@ -343,8 +372,66 @@ Damit ist es möglich, die Menge der automatisch abgeleiteten \acrshortpl{cpe} m
 
 \subsection{PURL}
 
+\acrshort{purl} ist ein standardisiertes URL-Format zur Identifikation von Softwarepaketen, speziell entwickelt um die Paketidentifikation für verschiedene Programmiersprachen, Paketmanager und Ökosysteme hinweg zu vereinheitlichen \autocite{PackageURLSpec}.
+
+Eine \acrshort{purl} folgt dem Schema \texttt{pkg:type/namespace/name@version?qualifiers\#subpath}, wobei neben der \texttt{scheme}-Komponente mit der Konstante \texttt{pkg:} die sieben Komponenten nicht alle gesetzt sein müssen und darum durch spezifische Trennzeichen eindeutig voneinander getrennt sind.
+Die erste identifizierende Komponente ist der Pakettyp (\texttt{type}) und kann Werte wie \texttt{maven}, \texttt{npm} oder \texttt{deb} annehmen.
+\texttt{namespace} entspricht je nach Pakettyp einer Gruppierung wie einer Maven Group Id oder einem GitHub-Nutzer.
+\texttt{name} gibt den Paketnamen an.
+
+Damit die Trennzeichen der Komponenten korrekt erkannt werden können, werden Regeln für die Zeichenkodierung definiert: Alle Komponenten außer \texttt{type} müssen mit UTF-8 als Zeichenkodierung percent-encoded werden.
+Einige Beispiele für \acrshortpl{purl} können in \autoref{lst:purl-examples} gefunden werden.
+
+\begin{lstlisting}[caption=Beispielhafte PURLs verschiedener Pakettypen,label=lst:purl-examples]
+pkg:deb/debian/curl@7.50.3-1?arch=i386&distro=jessie
+pkg:maven/org.apache.xmlgraphics/batik-anim@1.9.1
+pkg:npm/foobar@12.3.1?repository_url=https://registry.npmjs.org
+\end{lstlisting}
+
+Im Vergleich zu \acrshort{cpe} ist \acrshort{purl} feingranularer, da mit der Kombination über Wissen des Paketmanagers exakte Ausprägungen eines Artefakts im Dateisystem damit identifiziert werden können.
+Allerdings fehlt \acrshort{purl} noch die Integration in vorhandene Schwachstellendatenbanken wie die \acrshort{nvd}, was die praktische Anwendung für Schwachstellanalysen erschwert.
+Andere Quellen wie \acrshort{osv}-Datenbank verwenden \acrshort{purl} jedoch bereits, weshalb sie durchaus relevant sind.
+
 \subsection{MSRC Product-Ids}\label{subsec:msrc-product-ids}
 
+\acrshort{msrc} Produkt-Ids sind sehr feingranulare Produktidentifikatoren, die von Microsoft vergeben werden, um spezifische Produkte auf Versions- und Editionslevel eindeutig zu referenzieren.
+Wenn für ein Produkt eine solche Id bekannt ist, ist eine Zuordnung von relevanten Sicherheitsupdates, Schwachstellen in Form von \acrshortpl{cve} und Patches in Form von KB-Relationen möglich.
+Da es zum Verfassungszeitpunkt dieser Arbeit keine offizielle Dokumentation der Datenquellen gibt, war eine eigene Analyse erforderlich.
+Weitere Ergebnisse dieser Forschung sind auf \href{https://web.archive.org/web/20250706140027/https://github.com/org-metaeffekt/metaeffekt-documentation/blob/main/metaeffekt-vulnerability-management/data-mirror/msrc/understanding-data.md}{GitHub zu finden}.
+
+Microsoft verwendet die Produkt-Ids konsistent über mehrere Datenquellen hinweg, wobei für die Schwachstellenanalyse vor allem der \acrfull{msrc}\footnote{\url{https://msrc.microsoft.com/}} relevant ist.
+Der Zugriff auf deren Informationen ist auf drei unterschiedliche \acrshortpl{api} und weitere Exporte verteilt, wobei diese jeweils stark in ihrer Vollständigkeit und dem Datenformat variieren.
+Neben diesen Herausforderungen der Datenkonsistenz ist einer der Datentöpfe nicht automatisiert abfragbar, da es sich um eine Webseite die für Menschen gedacht ist eignet.
+
+Eine \enquote{MS Produkt-Id} ist ein numerischer Identifikator, der optional durch einen Bindestrich (\enquote{-}) eine Relation beliebiger Art auf eine weitere Produkt-Id aufbauen kann.
+Hinter einer Produkt-Id steht das Datentripel eines Produktnamens, Herstellers und Produktfamilie.
+Einige Beispiele für solche Ids können in \autoref{tab:ms-product-id-example} gefunden werden.
+
+\begin{table}
+    \centering
+    \makebox[\linewidth][c]{%
+        \resizebox{1.2\textwidth}{!}{%
+            \begin{tabular}{llll}
+                \toprule
+                \textbf{ID}  & \textbf{Vendor} & \textbf{Family} & \textbf{Name}                                                       \\
+                \midrule
+                11673        & Windows         & Microsoft       & Windows 10 Version 1809 for HoloLens                                \\
+                11568        & Windows         & Microsoft       & Windows 10 Version 1809 for 32-bit Systems                          \\
+                11569        & Windows         & Microsoft       & Windows 10 Version 1809 for x64-based Systems                       \\
+                11570        & Windows         & Microsoft       & Windows 10 Version 1809 for ARM64-based Systems                     \\
+                11804--11673 & Windows         & Microsoft       & Raw Image Extension on Windows 10 Version 1809 for HoloLens         \\
+                251--11568   & System Center   & Microsoft       & Windows Defender on Windows 10 Version 1809 for 32-bit Systems      \\
+                251--11569   & System Center   & Microsoft       & Windows Defender on Windows 10 Version 1809 for x64-based Systems   \\
+                251--11570   & System Center   & Microsoft       & Windows Defender on Windows 10 Version 1809 for ARM64-based Systems \\
+                \bottomrule
+            \end{tabular}%
+        }%
+    }
+    \caption{Beispiele für MSRC Product-Ids}
+    \label{tab:ms-product-id-example}
+\end{table}
+
+% https://github.com/org-metaeffekt/metaeffekt-documentation/blob/main/metaeffekt-vulnerability-management/data-mirror/msrc/understanding-data.md
 % https://github.com/org-metaeffekt/metaeffekt-documentation/blob/bd184b2889d5421b5a71dcd26c1ac0ffc63d07e7/metaeffekt-vulnerability-management/data-mirror/eol/eol-data-specific-cycles.md
 
 \subsection{EOL Product-Ids}
