@@ -37,12 +37,14 @@ Dazu gehören vor allem Informationen über die Versionsräume und wie zwischen 
 \subsection{A-03: Normalisierte Typidentifikation und typspezifische Attribute für Software-Artefakte}\label{subsec:req-type-specific-matching}
 
 Um die Herausforderung \hyperref[subsec:c-02-uneindeutige-artefakt-typinformation]{C-02} der multiplen Ausprägungen und inkonsistenten Typinformationen zu lösen muss eine Typinferenz-Logik den Artefakttypen konsistent aus multiplen Quellen aufbereiten.
-In \autoref{subsec:analysis-ae-software-inventories} wurden die häufigsten Muster für Typinformationen analysiert.
-Die Ausgabe der Typinterferenz soll diese verwenden, um normalisierte Ökosystembezeichner (z.\ B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}), als Artefaktattribut verfügbar machen.
+In \autoref{subsec:erkennung-typspezifische-artefakte} wurden die häufigsten Muster für Typinformationen analysiert.
+Die Ausgabe der Typinterferenz soll diese verwenden, um normalisierte Ökosystembezeichner (z.\ B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}) und weitere Typspezifische Attribute als Vergleichswerte verfügbar machen.
 
 Basierend auf dem erkannten Ökosystem/Typ eines Artefakts werden dann weitere Extraktoren auf die Artefakt-Metadaten angewendet.
 Diese müssen weitere Attribute als First-Class Matching-Kriterien auf den Artefakt-Selektoren zur Verfügung stellen, wie etwa Maven-Koordinaten (Group Id, Artifact Id) für Java, Paketnamen für NPM, Distributionskennung für Linux-Pakete, Java Runtime-Provider, \ldots.
 Wildcard-Selektor wie bisher häufig in der \texttt{Id} (\hyperref[subsec:c-01-unspezifische-identifikation-von-artefakten]{C-01}) können so durch exakte, ökosystemspezifische Attributvergleiche ersetzt werden.
+
+Falls kein bekannter Typ konkreter erkannt werden konnte, muss ein Artefakt dennoch mit den Basisattributen zum Abgleich zur Verfügung gestellt werden.
 
 \subsection{A-04: Vererbung von Artefaktmerkmalen}\label{subsec:req-selektor-inheritance}
 
@@ -135,7 +137,7 @@ Dazu muss sichergestellt werden, dass der neue Graph mindestens die Fähigkeiten
 
 \subsection{A-13: Performance des neuen Korrelationsformats}\label{subsec:req-correlation-format-performance}
 
-Das alte Korrelationssystem wurde bei unterschiedlichen Inventar-Größen mit dem aktuellen Datensatz mit 6400 Einträgen getestet.
+Das alte Korrelationssystem wurde bei unterschiedlichen Inventar-Größen mit dem aktuellen Datensatz mit 6400 Korrelationseinträgen getestet.
 Die Zeiten werden in \autoref{tab:old-correlation-performance} angegeben.
 
 Aus diesen Messwerten sind zwei Phasen erkennbar.

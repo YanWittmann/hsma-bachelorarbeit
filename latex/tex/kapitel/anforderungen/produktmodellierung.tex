@@ -12,16 +12,20 @@ Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inven
 
 \begin{table}[ht]
     \centering
-    \begin{tabular}{llll}
-        \toprule
-        \textbf{Id}                  & \textbf{Component}         & \textbf{Group Id}        & \textbf{Version} \\
-        \midrule
-        commons-codec-1.15.jar       & Apache Commons Codec       & commons-codec            & 1.15             \\
-        commons-collections4-4.1.jar & Apache Commons Collections & org.apache.commons       & 4.1              \\
-        slf4j-api-1.7.36.jar         & SLF4J                      & org.slf4j                & 1.7.36           \\
-        log4j-api-2.14.0.jar         & Apache Log4j               & org.apache.logging.log4j & 2.14.0           \\
-        \bottomrule
-    \end{tabular}
+    \makebox[\linewidth][c]{%
+        \resizebox{1.1\textwidth}{!}{%
+        \begin{tabular}{llll}
+            \toprule
+            \textbf{Id}                  & \textbf{Component}         & \textbf{Group Id}        & \textbf{Version} \\
+            \midrule
+            commons-codec-1.15.jar       & Apache Commons Codec       & commons-codec            & 1.15             \\
+            commons-collections4-4.1.jar & Apache Commons Collections & org.apache.commons       & 4.1              \\
+            slf4j-api-1.7.36.jar         & SLF4J                      & org.slf4j                & 1.7.36           \\
+            log4j-api-2.14.0.jar         & Apache Log4j               & org.apache.logging.log4j & 2.14.0           \\
+            \bottomrule
+        \end{tabular}%
+        }%
+    }
     \caption{Beispielhafte Artefakteinträge in einem Software-Inventar}
     \label{tab:inventory-artifact-entries}
 \end{table}
@@ -67,5 +71,43 @@ Die folgenden Kombinationen aus \texttt{Type} → \texttt{Specific Type} konnten
 Bei einer Sichtung des Quellcodes einiger Entstehungsquellen von Artefakten konnte die große Auflistung der Hardware- und Betriebssystemtypen in dem Windows-Inventar-Extraktor System gefunden werden, die restlichen sind über diverse Extraktoren verteilt oder werden extern aufgefüllt und damit nicht einheitlich.
 
 \subsection{Erkennungsrichtlinien für unterschiedliche Ökosysteme}\label{subsec:erkennung-typspezifische-artefakte}
-% TODO: erkennungsrichtlinien für einzelne ökosysteme
 
+Aus den erfassten Artefakt-Typen und weiteren Attributen der Artefakte werden in \autoref{tab:erkennung-artefakt-typ-tabelle} Muster abgeleitet, mit denen sie erkannt werden können.
+In den Spalte \enquote{Attribute} sind Regeln auf den Artefakt-Attributen aufgeführt, die übereinstimmen müssen, um als den in der ersten Spalte aufgeführten Typ erkannt zu werden.
+Zunächst werden nur aufgeführten Typen bewusst erkannt, die Erkennung kann auf weitere erweitert werden.
+
+Jede typisierte Artefakterkennung stellt eine Methode bereit, eine normalisierte \texttt{Artifact Id} zu extrahieren, die versucht, den realen Paketnamen zu extrahieren.
+Zusätzlich soll die Version des Artefakts erfasst werden.
+Neben diesen beiden Grundattributen kann jede Erkennung weitere Attribute extrahieren und so aufbereiten, dass sie dedizierte Fragestellungen in den Korrelationsdaten einfacher beantworten können indem diese dort direkt als Attribute prüfbar gemacht werden.
+Diese Attribute sind in der Spalte \enquote{Extraktierte Attribute} gefunden werden.
+
+% @formatter:off
+\begin{table}
+    \makebox[\linewidth][c]{%
+        \resizebox{1\textwidth}{!}{%
+            \centering
+            \begin{tabular}{lll}
+                \toprule
+                \textbf{Erkennung} & \textbf{Attribute} & \textbf{Extraktierte Attribute} \\
+                \midrule
+                Java Module & \makecell[l]{\texttt{Specific Type} ist \texttt{jar-module} oder \\ \texttt{Ecosystem} ist \texttt{maven} oder \\ \texttt{Id} endet mit \texttt{.jar}} & \makecell[l]{\texttt{groupId}} \\
+                \midrule
+                Python Module & \makecell[l]{\texttt{Type} ist \texttt{python-module}} & \\
+                \midrule
+                Betriebssystem & \makecell[l]{\texttt{Type} ist \texttt{operating system}} & \\
+                \midrule
+                NPM Module & \makecell[l]{\texttt{Type} ist \texttt{web-module} oder \\ \texttt{Type} ist \texttt{npm-module} oder \\ \texttt{Type} ist \texttt{nodejs-module} oder \\ \texttt{Component Source Type} ist \texttt{npm-module}} & \makecell[l]{\texttt{scope}\\ \texttt{packageName} (ohne scope)} \\
+                \midrule
+                Java Runtime & \makecell[l]{\texttt{Specific Type} ist \texttt{java-runtime} oder \\ (\texttt{Id} enthält \texttt{jdk} oder \texttt{jre}) und \texttt{GroupId} ist leer} & \makecell[l]{\texttt{supplier} (z.B. Temurin), \\ \texttt{variant} (JRE/JDK)} \\
+                \midrule
+                Linux Paket & \makecell[l]{\texttt{Type} ist \texttt{package} oder \\ \texttt{Ecosystem} ist in \texttt{\{rpm, deb, apk, pacman\}}} & \makecell[l]{\texttt{distribution}} \\
+                \midrule
+                Sonstiges File & \makecell[l]{\texttt{Type} ist \texttt{file} oder \\ Dateiendung ist in \texttt{\{css, php, ...\}}} & \makecell[l]{\texttt{extension}} \\
+                \bottomrule
+            \end{tabular}%
+        }%
+    }
+    \caption{Erkennungsrichtlinien und extrahierte Attribute für Artefakttypen}
+    \label{tab:erkennung-artefakt-typ-tabelle}
+\end{table}
+% @formatter:on

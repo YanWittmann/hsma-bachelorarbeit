@@ -20,15 +20,15 @@ Das \acrshort{cve}-Programm, betrieben durch die MITRE Corporation und unterstü
 Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.\ B.\ \verb+CVE-2024-12345+) und wird in Kooperation mit autorisierten \acrfullpl{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
 Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api} von der \acrshort{nvd} öffentlich zur Verfügung gestellt\footnote{\url{https://nvd.nist.gov/developers/vulnerabilities}}.
 
-Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen betrachtet, andere ähnliche Quellen werden als \nameref{par:security-advisories} behandelt.
+Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen betrachtet.
 
-\paragraph{Security Advisories}\label{par:security-advisories}
+% \paragraph{Security Advisories}\label{par:security-advisories}
 
 % OSV, CSAF, etc.
 % ich mochte die tabelle aus “Table 2. Security vulnerability databases (VDBs).” (Bennouk et al., 2024, p. 865) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
 
 
-\section{Schachstelldatenbanken}\label{sec:security-vulnerability-databases}
+% \section{Schachstelldatenbanken}\label{sec:security-vulnerability-databases}
 
 % VDBs
 % “3.3. Security Vulnerability Databases” (Bennouk et al., 2024, p. 864) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
@@ -119,7 +119,7 @@ Anhand eines Beispiels aus der Chemie:
 \begin{quote}
     Natriumchlorid ist eine kubische Kristallstruktur und kann mit \textit{NaCl} als identifizierende Verhältnisformel vollständig nur aufgrund seiner inherenten Eigenschaften beschrieben werden.
     Allerdings gibt es noch weitere Systeme, wie chemische Stoffe angegeben werden können.
-    Authoritative Systeme wie CAS-Nummern definieren einen autoritativen, künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
+    Authoritative Systeme wie CAS-Nummern definieren einen künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
     Die \textit{Identität} ist die eigentliche Zusammensetzung von Natriumchlorid, NaCl und 7647-14-5 sind Namen, die dieser Struktur gegeben wurden.
 \end{quote}
 
@@ -434,8 +434,16 @@ Einige Beispiele für solche Ids können in \autoref{tab:ms-product-id-example} 
 % https://github.com/org-metaeffekt/metaeffekt-documentation/blob/main/metaeffekt-vulnerability-management/data-mirror/msrc/understanding-data.md
 % https://github.com/org-metaeffekt/metaeffekt-documentation/blob/bd184b2889d5421b5a71dcd26c1ac0ffc63d07e7/metaeffekt-vulnerability-management/data-mirror/eol/eol-data-specific-cycles.md
 
-\subsection{EOL Product-Ids}
+\subsection{EOL Product-Ids}\label{subsec:eol-product-ids}
 
+Eine weitere relevante Datenquelle mit einem eigenen identifizierenden System für Produkte ist \href{https://endoflife.date}{endoflife.date}, welche aktuelle Lebenszyklusinformationen von über 380 Produkten (Stand 07.07.2025) aus Kategorien wie Betriebssysteme, Programmiersprachen, Standards, Frameworks und vielen mehr dokumentiert.
+Neben diesen \acrshort{eol}-Daten werden häufig auch Supportinformationen, Veröffentlichungsdaten und Release-Pläne der Produkte bereitgestellt, was die Planung von Aktualisierungen vereinfachen kann \autocite{EndOfLifeDateHomepage}.
+
+Die Plattform stellt die Information über eine \acrshort{api} bereit, unter der für jeder \acrshort{eol} Produkt-Id zugehörige Release-Zyklen und Versionen angefordert werden können.
+Die Ids werden in kebab-case angegeben, wie etwa \enquote{windows} oder \enquote{eclipse-jetty}.
+
+Jeder Release-Zyklus wird durch eine eindeutige Zyklusbezeichnung identifiziert und beschreibt eine Hauptversion oder eine langfristig unterstützte Version eines Produkts.
+Zu jedem dieser werden Metadaten wie das initiale Veröffentlichungsdatum des Zyklus, die aktuellste Version innerhalb des Zyklus, das End-of-Life-Datum für den regulären Support und optional ein Enddatum für erweiterten Support bereitgestellt.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % somewhere else
