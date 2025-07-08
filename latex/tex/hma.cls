@@ -662,6 +662,7 @@ intoc=true]%
 \renewcommand*{\acrshortpl}[1]{\pdftooltip{\acrshortplainpl{#1}}{\glsentrylong{#1}}}
 
 \RequirePackage{makecell}
+\RequirePackage{svg}
 
 \lstdefinestyle{yaml}{
 	basicstyle=\ttfamily\footnotesize\color{black},

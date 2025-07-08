@@ -194,3 +194,9 @@ Das neue Korrelationsmodell sollte diese Zeiten jedoch bei vergleichbaren Datenm
 Der Aufwand, den Korrelationsdatensatz zu verteilen, muss vergleichbar mit dem alten Korrelationssystem sein.
 Bisher hat es ausgereicht, einen Ordner an \acrshort{yaml}-Dateien zu verteilen.
 Es darf also keine dedizierte Ausführungsumgebung einer Datenbank vorausgesetzt werden, der gesamte Ablauf muss innerhalb des Java-Prozesses stattfinden, in dem auch das alte Format verwendet wird.
+
+\subsection{A-15: Zu verwendende Technologien}\label{subsec:req-lang-java}
+
+Da die bestehende Software zum Schwachstellenmanagement der \metaeffektsp in Java geschrieben ist, muss auch die Implementierung des neuen Korrelationssystems in Java geschehen.
+Zum Abspeichern des Graphen kommen die Bibliotheken infrage, die bereits auf dem Classpath des Projekts sind, um weitere Abhängigkeiten zu vermeiden.
+Eine Datenbank würde sich zur performanten Abfrage und Transformation eignen.

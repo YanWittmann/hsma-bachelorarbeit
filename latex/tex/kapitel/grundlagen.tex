@@ -320,6 +320,15 @@ Zu viele Attribute:
 
 \subsubsection{Automatisierte Identifikation von CPE}
 
+% “Table 3. Collected methods related to the similarity matching-based approach.” (Bennouk et al., 2024, p. 870) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
+% “In the first step, CPE identifiers that could be assigned to a software product (CPE candidates) are searched for.” (Sanguino and Uetz, 2017, p. 10) Sanguino_Uetz_2017
+%    “5.2.1. CPE Matching As can be seen in Table 3, IVA would be able to automatically assign the correct CPEs to ten products; however, to the products P6 and P11 incorrect CPEs would be assigned.” (Sanguino and Uetz, 2017, p. 19) Sanguino_Uetz_2017
+% “Because we typically find only a few exact matches, we use a numerical method to determine a CPE-ID. We introduce a parameter, called matching rate, which is calculated as the percentage of the characters that match the query.” (Takahashi et al., 2016, p. 3) Takahashi_Miyamoto_Nakao_2016
+%    “We choose the CPE-ID that shows the highest matching rate, although we judge that no CPE-ID is found if we do not find a CPE-ID with matching rate higher than a certain threshold value.” (Takahashi et al., 2016, p. 3) Takahashi_Miyamoto_Nakao_2016
+% “The novelty of this research consists in the algorithm for mapping software names in the information system to the CPE entries based on the Ratcliff/Obershelp algorithm recursively implemented for the software product name’s parts.” (Ushakov et al., 2021, p. 353) Ushakov_Doynikova_Novikova_Kotenko_2021
+%    “Research work Method CPE fields Disadvantages Gawron et al., 2017 [6] Regular expression. Name and version Not unified entries or entries with errors are not mapped Sanguino and Uetz [7, 8] Levenshtein algorithm to select CPE candidates based on vendor and name, distance should be less than 2. Versions are used to prioritize the candidates. Vendor, name, and version Requires manual selection from several CPE candidates to avoid errors. Evaluation on 12 products. O'Hare and Macfarlane, 2018 [9] Levenshtein algorithm applied to the CPE list. Candidates with the minimum distance are selected (consequently, 0, 1, or 2). Full entry Error-prone. Na et al., 2017 [10] Hierarchical tree based on entry fields, full words comparison Full entry Error-prone, no evaluation. Bela and Enachescu, 2015 [11] Multiple hierarchical trees Full entry Error-prone” (Ushakov et al., 2021, p. 354) Ushakov_Doynikova_Novikova_Kotenko_2021
+%    basically eine zusammenfassung von untersch. papers zum thema
+
 Die automatische Zuordnung von \acrshortpl{cpe} zu den Ausprägungen von Softwareprodukten erfolgt meist über Ähnlichkeitsanalysen von Produktnamen, da eine exakte Übereinstimmung in der Realität nur selten zuverlässig ist.
 Die Verfahren bauen typischerweise auf reale Produktbezeichner auf, um über unterschiedliche Techniken die relevanten \acrshortpl{cpe} finden.
 Die meisten Verfahren definieren nicht, wie diese Referenzbezeichner erhalten werden, es gibt jedoch eigene Arbeiten, die sich mit dem Thema beschäftigen.
@@ -348,15 +357,22 @@ Die Herausforderung all dieser Methoden liegt in der sehr heterogenen und fehler
 Das Ergebnis sind also häufig falsch-negativen und falsch-positiven Zuordnungen, was zu der Notwendigkeit führt, die Ergebnisse immer noch einmal manuell prüfen zu müssen.
 Einige Ansätze schlagen als Methode daher bereits eine Kombination einer automatischer Vorselektion und menschlicher Prüfung vor, um die Fehlerquote zu verringern \autocite{Takahashi_Miyamoto_Nakao_2016, Sanguino_Uetz_2017}.
 
+Der Ansatz der \metaeffekt zur \acrshort{cpe}-Identifikation basiert auf einem mehrstufigen Verfahren zur Ableitung von Produktbezeichnern (\enquote{\acrshort{cpe} Derivation}).
+Wie bei vielen der vorgeschlagenen Systeme werden als Grundlage Produkt- und Herstellernamen aus den Artefaktattributen (wie \texttt{Id}, \texttt{Group Id}, \texttt{PURL}, etc.) für das Artefakt verwendet, für das die \acrshortpl{cpe} abgeleitet werden sollen.
+Zu der abzufragenden Menge an Referenzbezeichnern werden neben diesen originalen Inhalten der Felder noch weitere normalisierte Varianten, Aliase genannt, hinzugefügt.
+Die Normalisierung entfernt Zeichen, die nicht in einer \acrshort{cpe} erlaubt sind, teilt lange Bezeichner in mehrere auf, entfernt Versionen und häufige Präfixe oder Suffixe von den Feldern und mehr.
+Unspezifischen Produktbezeichner wie \enquote{common} oder \enquote{shared} werden aus der Menge der Aliase entfernt, um über-matchings zu vermeiden.
+Dennoch ist dieser Algorithmus eher so konzipiert, dass er mehr falsch-positive als falsch-negative \acrshort{cpe}-Erkennungen erzeugt, um keine Schwachstellenerkennungen zu verlieren, sondern es einem Bewertungsteam zu ermöglichen, die Korrekturen manuell vorzunehmen.
 
-% “Table 3. Collected methods related to the similarity matching-based approach.” (Bennouk et al., 2024, p. 870) A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies
-% “In the first step, CPE identifiers that could be assigned to a software product (CPE candidates) are searched for.” (Sanguino and Uetz, 2017, p. 10) Sanguino_Uetz_2017
-%    “5.2.1. CPE Matching As can be seen in Table 3, IVA would be able to automatically assign the correct CPEs to ten products; however, to the products P6 and P11 incorrect CPEs would be assigned.” (Sanguino and Uetz, 2017, p. 19) Sanguino_Uetz_2017
-% “Because we typically find only a few exact matches, we use a numerical method to determine a CPE-ID. We introduce a parameter, called matching rate, which is calculated as the percentage of the characters that match the query.” (Takahashi et al., 2016, p. 3) Takahashi_Miyamoto_Nakao_2016
-%    “We choose the CPE-ID that shows the highest matching rate, although we judge that no CPE-ID is found if we do not find a CPE-ID with matching rate higher than a certain threshold value.” (Takahashi et al., 2016, p. 3) Takahashi_Miyamoto_Nakao_2016
-% “The novelty of this research consists in the algorithm for mapping software names in the information system to the CPE entries based on the Ratcliff/Obershelp algorithm recursively implemented for the software product name’s parts.” (Ushakov et al., 2021, p. 353) Ushakov_Doynikova_Novikova_Kotenko_2021
-%    “Research work Method CPE fields Disadvantages Gawron et al., 2017 [6] Regular expression. Name and version Not unified entries or entries with errors are not mapped Sanguino and Uetz [7, 8] Levenshtein algorithm to select CPE candidates based on vendor and name, distance should be less than 2. Versions are used to prioritize the candidates. Vendor, name, and version Requires manual selection from several CPE candidates to avoid errors. Evaluation on 12 products. O'Hare and Macfarlane, 2018 [9] Levenshtein algorithm applied to the CPE list. Candidates with the minimum distance are selected (consequently, 0, 1, or 2). Full entry Error-prone. Na et al., 2017 [10] Hierarchical tree based on entry fields, full words comparison Full entry Error-prone, no evaluation. Bela and Enachescu, 2015 [11] Multiple hierarchical trees Full entry Error-prone” (Ushakov et al., 2021, p. 354) Ushakov_Doynikova_Novikova_Kotenko_2021
-%    basically eine zusammenfassung von untersch. papers zum thema
+Der Matching-Prozess läuft eine Reihe an Verfahren durch, die schrittweise von präzisen Abgleichen zu unscharfen wechselt, von denen das erste zutreffende ausgewählt wird.
+Im ersten Verfahren werden direkte Vendor/Product-Zuordnungen von den Aliasen zu allen bekannten \acrshort{cpe}-Parts aus dem \acrshort{nvd}-Datensatz getestet, um exakte Matches zu erhalten.
+Falls dieses Verfahren keine Ergebnisse liefert, werden auch Übereinstimmungen von Teilzeichenketten in den Aliasen zum Abgleich erlaubt.
+Als letzte Stufe kommt ein Fuzzy-Matching mit einer Levenshtein-Distanz zum Einsatz, wobei alle \acrshortpl{cpe} ab einem gewissen Schwellwert mit aufgenommen werden.
+
+Im Nachhinein läuft immer noch ein Konsolidierungsschritt, der bei besonders vielen erkannten \acrshort{cpe} noch einmal auf die wahrscheinlichsten Matches basierend auf einigen Entscheidungsregeln zu filtern versucht.
+Falls es diesem Filter nicht gelingt, genügend \acrshortpl{cpe} aus der Ergebnismenge zu entfernen, wird die Liste mithilfe einer Levenshtein-Distanz-Berechnung über alle Aliase auf eine konfigurierbare Anzahl \acrshort{cpe} reduziert.
+
+Die Ergebnisse dieser \enquote{\acrshort{cpe} Derivation} werden in das Attribut \texttt{Derived CPE URIs} der Artefakte geschrieben, aus dem sie später wieder zum Schwachstellenscan ausgelesen werden können.
 
 \subsubsection{Effective CPE Calculation}\label{subsubsec:effective-cpe-calculation}
 
