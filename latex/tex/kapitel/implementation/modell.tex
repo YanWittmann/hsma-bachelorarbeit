@@ -41,7 +41,7 @@ Um von Anfang an ein einheitliches Format für die Ids unterschiedlicher Typen z
     \item \textit{Artefakt}: repräsentieren tatsächliche Software-Artefakte, die in einem Inventar aus einem Software-Scan oder einer \acrshort{sbom} gefunden werden können.
     In dem Nutzungskontext der Korrelationsdaten dienen sie als Ausgangspunkt für den Selektionsprozess und die anschließende Graphen-Durchquerung um Effekte auf ein Artefakt zu bestimmen.
     Ein Artefakt-Knoten besitzt einen Selektionsblock, der die Kriterien für die Artefakt-Selektion enthält.
-    Die Selektionslogik wird in \autoref{subsec:model-matching} genauer ausgeführt.
+    Die Selektionslogik wird in \autoref{subsubsec:model-matching} genauer ausgeführt.
 \end{itemize}
 
 Jeder Knotenpunkt kann optional eine Menge an \enquote{Namespaces} als eine Liste an Labels zugewiesen bekommen.
@@ -76,7 +76,7 @@ Allgemein beschreibt sie, dass eine bestimmte Repräsentation die Ausgangsreprä
 Die \enquote{is not}-Kante (auch \enquote{is not represented by}) ist für einen expliziten Ausschluss der Anwendbarkeit einer Repräsentation auf einer Ausgangsrepräsentation zuständig und so Fehlidentifikationen explizit zu vermeiden.
 So wird beispielsweise die positiv anwendbare Verknüpfung von Artefakt-Knoten mit Produkt-Knoten, und von Produkt-Knoten mit verschiedenen Standard-Identifikatoren (\acrshortpl{cpe}, \acrshortpl{purl} etc.) über \enquote{is}-Kanten realisiert, oder wenn ein Artefakt mit einem bestimmten Namen fälschlicherweise einer Produktfamilie zugeordnet werden könnte, kann eine \enquote{is not}-Kante die korrekte Trennung sicherstellen.
 
-Beim Durchqueren des Graphen sind diese beiden Kantentypen jedoch nicht äquivalent auszuwerten, wie genauer in \autoref{subsec:model-traversal} beschrieben wird.
+Beim Durchqueren des Graphen sind diese beiden Kantentypen jedoch nicht äquivalent auszuwerten, wie genauer in \autoref{subsubsec:model-traversal} beschrieben wird.
 So überschreibt eine einzige Kante vom Typ \enquote{is not} bei allen direkt und indirekt darüber erreichbaren Knotenpunkten den Kantentyp ebenfalls auf \enquote{is not}.
 Dies ist nötig, da es nicht korrekt wäre, eine Repräsentation als Anwendbar zu klassifizieren, nur weil die direkte Kante von der vorherigen Repräsentation sie als auf sich Anwendbar sieht.
 Die Nicht-Anwendbarkeit wird also durch den Graphen propagiert.
@@ -114,8 +114,8 @@ Die Begründungsschritte sind nicht typisiert, um noch immer eine möglichst gro
 
 In dieser initialen Version sind auf einem Knoten einer Repräsentation die relevanten Metadaten die Produktbeschreibung und eine Menge an Referenzen auf Webseiten wie die Projekte, Homepages, Dokumentationen oder weitere.
 Die Beschreibung ist ein einfaches Textfeld, die Referenzen sind ein Objekt, bei dem die Schlüssel die Art der Referenz und der Wert der Link selbst ist.
-Bisher festgelegte Referenztypen sind \enquote{homepage}, \enquote{repository}, \enquote{...}.
-Um jedoch die Erweiterbarkeit zu sichern, kann als Schlüssel jeder Wert verwendet werden. % TODO: fill types
+Bisher festgelegte Referenztypen sind \enquote{homepage}, \enquote{repository}, \enquote{TODO}. % TODO: fill types
+Um jedoch die Erweiterbarkeit zu sichern, kann als Schlüssel jeder Wert verwendet werden.
 
 \subsection{Graphmodifikation}\label{subsec:model-graph-modification}
 
@@ -155,106 +155,6 @@ Daraus ergeben sich die folgenden Modifikationsmodi:
     \item \enquote{create\_or\_append} ignoriert den vorherigen Zustand.
     Dieser Modus wird nur den automatischen Prozessen exponiert, da die Erwartungshaltung im manuellen Format angegeben werden soll.
 \end{itemize}
-
-\subsection{Matching von Artefakt-Repräsentationen}\label{subsec:model-matching}
-% Artefaktselektoren und Vererbungsregeln
-
-Der Fokus dieser Arbeit liegt darauf, den Produktgraphen für das neue Korrelationssystem vorzubereiten.
-Da in diesem Kontext die Traversierungsrichtung immer von Artefakt-Knoten zu anderen Repräsentationen ausgeht, wird zunächst der Fokus nur auf den Abgleich von Knoten des Typs \texttt{artefact} mit Artefakten gelegt.
-Die hier aufgeführten Regeln lassen sich daraus jedoch auch recht einfach für weitere Knotentypen ableiten.
-
-Eine der Qualitätsanforderungen an den Graphen (\hyperref[subsec:req-graph-inner-consistency]{A-10}) ist, dass genaue eine Repräsentation im Graphen mit einer Eingabe übereinstimmt.
-Das bedeutet auch, dass bei der Abfrage eines Artefakts nur ein einiger Knoten gefunden werden darf, der diesem entspricht.
-Es werden dafür in Folgenden zwar Mechanismen bereitgestellt, die dieses Verhalten möglichst einfach für einen Anwender ermöglichen, jedoch kann die explizite manuelle Modellierung eines solchen Falles nicht von der Konzeption her ausgeschlossen werden.
-Daher ist es so wichtig, einen sich selbst pflegenden Testdatensatz zu führen, der die Identifikationen regelmäßig automatisch prüft.
-
-Zunächst wird die Artefakt-Selektion auf einzelnen Knoten eingeführt, dann werden mehrere Knoten über Vererbungsregeln kombiniert und deren Regeln erläutert.
-
-\subsubsection{Artefakt-Selektor}
-
-Jeder Artefakt-Knoten enthält eine Liste an Selektoren, die durch ein logisches ODER verbunden werden, damit nur ein Selektor zutreffen muss, um ein Artefakt zu identifizieren.
-Das ermöglicht es, mehrere alternativen aufzuführen, wie sich ein reales Artefakt in seiner Attributmenge ausprägen kann und verhindert die Notwendigkeit, einen zweiten Knoten für dasselbe Artefakt anlegen zu müssen.
-
-Jeder Selektor besteht aus einer Menge an Attributen, von denen alle für ein Artefakt mit einem logischen UND übereinstimmen müssen, um den Eintrag zu aktivieren.
-Um \hyperref[subsec:req-multiple-attribute-values]{A-05} zu erfüllen, sind die Werte der abzugleichenden Attribute als Listen an möglichen Werten abgelegt, die mit einem weiteren logischen ODER verbunden sind, also von denen nur ein Wert zutreffen muss.
-Zudem können die Werte nach \hyperref[subsec:req-regex-support]{A-06} das bisherige inkrementelle Wildcard-System verwenden, um möglichst alle Matching-Fälle abzudecken.
-Die abfragbaren Attribute sind in zwei Mengen geteilt, die sich in ihrer Quellen unterscheiden.
-
-Rohe Artefakt-Attribute beziehen sich auf die Attribute, die das Artefakt direkt in sich speichert.
-Im alten System war diese Menge die einzige, die abgefragt werden konnte.
-Häufig verwendete Attribute sind \texttt{Id}, \texttt{Type} und Ökosystemspezifische wie \texttt{Group Id}.
-Da diese Art von Abfrage in dem neuen Format aufgrund ihrer Instabilität, der Unschärfe wegen der Kombination von mehreren Werten in einem Attribut und der anderen Herausforderungen auf Artefakt-Attributen in den Hintergrund treten soll, werden diese Abfragen explizit als solche gekennzeichnet werden müssen.
-
-Die neuen typspezifischen Attribute werden von den in \autoref{subsubsec:model-graph-knoten} aufgelisteten Extraktoren aufbereitet und in den Selektoren als First-Class Attribute zur Verfügung gestellt.
-Die Standard-Attribute sind \texttt{type} zur Auswahl eines erkannten Artefakttyps, \texttt{name} für einen ökosystemspezifischen Paketnamen und \texttt{version} für die Version.
-Basierend auf dem \texttt{type}-Wert wird in dem Objekt die Präsenz weiterer Attribute der typisierten Artefakte zugesichert und für Abgleiche exponiert.
-
-\subsubsection{Vererbung von Selektoren}
-
-Wie in \autoref{subsubsec:model-edges-relations} angerissen haben Artefakt-Knoten die Möglichkeit
-
-\subsubsection{Ergebnisse der Selektion}
-
-Das Ergebnis des Selektionsprozesses eine Menge an \texttt{artifact}-Knoten im Graphen, die dem eingehenden Software-Artefakt entsprechen.
-Diese gefundenen Knoten dienen als Ausgangspunkte für die anschließende Durchquerung des Graphen (\autoref{subsec:model-traversal}), um die zugehörigen Repräsentationen zu ermitteln.
-
-% Basierend auf dem erkannten Ökosystem oder Typ des Artefakts werden anschließend **typspezifische Extraktoren** angewendet.
-% Diese Extraktoren ziehen weitere Attribute aus den Artefakt-Metadaten, die als First-Class Matching-Kriterien dienen.
-% Beispiele hierfür sind Maven-Koordinaten (Group Id, Artifact Id) für Java-Artefakte, spezifische Paketnamen für NPM-Pakete, oder Distributionskennungen für Linux-Pakete.
-% Durch die Nutzung dieser präzisen, ökosystemspezifischen Attribute können unpräzise Wildcard-Selektoren, die im alten System häufig in der \texttt{Id} verwendet wurden (\hyperref[subsec:c-01-unspezifische-identifikation-von-artefakten]{C-01}), weitestgehend durch exakte Vergleiche ersetzt werden, was die Präzision und Zuverlässigkeit des Matchings erheblich steigert.
-% Sollte kein bekannter Typ konkret erkannt werden können, wird das Artefakt dennoch mit seinen Basisattributen zum Abgleich zur Verfügung gestellt, um eine grundlegende Identifikation zu ermöglichen.
-
-% Die eigentliche Matching-Logik vergleicht die extrahierten Artefaktattribute mit den in den \texttt{artifact}-Knoten des Graphen definierten **Selektor-Blöcken** (dem \texttt{identification}-Feld im \acrshort{yaml}-Format).
-% Dabei kommt das in \hyperref[subsec:req-selektor-inheritance]{A-04} beschriebene **Vererbungssystem von Artefaktmerkmalen** zum Tragen.
-% Ein Basis-Selektor kann generische Attribute definieren (z.B. Attribute, die für alle Microsoft Windows-Varianten gelten), während abgeleitete Selektoren spezifische Erweiterungen (z.B. die Architektur) hinzufügen.
-% Lokale Attributdefinitionen in abgeleiteten Selektoren überschreiben dabei geerbte Werte.
-% Dies verhindert die Duplizierung von Artefakt-Selektoren (\hyperref[subsec:c-03-duplizierte-artefakt-selektoren]{C-03}) und vereinfacht die Pflege von Korrelationsregeln.
-
-% Die Anforderung \hyperref[subsec:req-multiple-attribute-values]{A-05} zur **Auflistung mehrerer Werte pro Attribut** wird ebenfalls im Matching-Prozess berücksichtigt.
-% Wenn ein Attribut in einem Selektor mehrere Werte als Liste enthält, wird eine logische ODER-Verknüpfung angewendet.
-% Das bedeutet, dass ein Match zustande kommt, sobald der Wert des eingehenden Artefakts mit mindestens einem der gelisteten Werte übereinstimmt.
-% Trotz des Fokus auf typspezifische Attribute wird die **Unterstützung regulärer Ausdrücke** (\hyperref[subsec:req-regex-support]{A-06}) beibehalten, um weiterhin flexible und inkrementelle Wildcard-Systeme für komplexe Match-Fälle zu ermöglichen, die nicht rein über exakte Attribute abgebildet werden können.
-
-\subsection{Durchquerungsregeln des Graphen}\label{subsec:model-traversal}
-% Auswertungslogik für Relationen und Versionstransformation
-
-% Nachdem ein eingehendes Artefakt erfolgreich einem oder mehreren \texttt{artifact}-Knoten im Graphen zugeordnet wurde, beginnt die Phase der Graphen-Durchquerung.
-% Diese dient dazu, die vollständige Produktidentifikation zu ermitteln und alle relevanten Repräsentationen sowie zugehörige Metainformationen zu aggregieren.
-% Die Durchquerungslogik wird maßgeblich durch die Eigenschaften des gerichteten Graphen und die expliziten Abhängigkeitsdeklarationen gesteuert, wie in \hyperref[subsec:req-format-product-graph]{A-01} beschrieben.
-
-% Die Kanten im Graphen sind gerichtet, was eine eindeutige Interpretation der \enquote{is}- und \enquote{is not}-Beziehungen ermöglicht.
-% Die Durchquerung startet typischerweise bei dem gematchten Artefakt-Knoten und folgt den Kanten, um alle erreichbaren Knoten zu finden und deren Beziehungen auszuwerten.
-% Dies beinhaltet sowohl positive Beziehungen (\enquote{is}-Kanten, intern \texttt{REP:APPLICABLE}) als auch explizite Ausschlüsse (\enquote{is not}-Kanten, intern \texttt{REP:INAPPLICABLE}). Die Richtung der Kante ist dabei entscheidend: Eine Kante von A nach B bedeutet, dass B durch A repräsentiert wird oder von A abhängt.
-% Falls es nötig ist, kann eine identische, umgekehrte Kante dazu verwendet werden, um die Richtung der Kante auf beide Seiten zu erweitern, was eine bidirektionale Navigation ermöglicht, wenn dies für die Informationssuche relevant ist.
-
-% Ein zentrales Ziel der Durchquerung ist die Verbindung der Artefakt-Repräsentationen mit den **Produkt-Knoten** (\hyperref[subsec:req-product-concept]{A-02}). Produkt-Knoten dienen als logische Klammer und zentrale Ankerpunkte für alle zugehörigen Repräsentationen eines Software-Produkts.
-% Die Durchquerung bewegt sich von den initial gefundenen \texttt{artifact}-Knoten über \enquote{is}-Beziehungen zu den entsprechenden \texttt{product}-Knoten.
-% Von einem Produkt-Knoten aus können dann weitere Repräsentationen wie \acrshortpl{cpe}, \acrshortpl{purl}, \acrshort{ms} Product IDs oder \acrshort{eol}-IDs identifiziert werden, die alle dasselbe logische Produkt beschreiben.
-% Diese Produkt-Knoten speichern auch wichtige Metainformationen über Versionsräume und Transformationsregeln zwischen verschiedenen Versionierungsstandards, wie in \hyperref[subsec:req-product-concept]{A-02} gefordert.
-% Dies ermöglicht es, unterschiedliche technische Identifikatoren unter einem einheitlichen Produktbegriff zu aggregieren und bei Bedarf Versionsinformationen zu normalisieren.
-
-% Die explizite Deklaration von Abhängigkeiten zwischen Knoten durch die gerichteten Kanten ist essenziell.
-% Sie erzwingt eine **topologische Sortierung** während der Verarbeitung, was implizite Dateireihenfolgeabhängigkeiten vollständig beseitigt (\hyperref[subsec:c-10-order-dependency]{C-10}). Dies gewährleistet, dass die Korrelationslogik stets in einer konsistenten und reproduzierbaren Reihenfolge ausgeführt wird, unabhängig von der physischen Anordnung der Daten im Speicher oder Dateisystem.
-
-% Ein wesentlicher Aspekt der Durchquerung sind die **Qualitätsmetriken des Graphen** (\hyperref[subsec:req-graph-inner-consistency]{A-10}). Die Durchquerungslogik muss sicherstellen, dass bestimmte Eigenschaften des Graphen während der Auflösung eingehalten werden:
-% \begin{itemize}
-%     \item \textbf{Eindeutige Identifikation}: Zu jeder Repräsentation eines Produkts im Graphen darf maximal genau eine eindeutige Identifikation stattfinden.
-%     Dies bedeutet, dass ein eingehendes Artefakt schlussendlich zu einem oder keiner eindeutigen Produktidentifikation führen sollte.
-%     Konfliktierende Pfade zu unterschiedlichen Produkten, die von derselben Repräsentation ausgehen, würden als Inkonsistenz erkannt.
-%     \item \textbf{Keine losen Knoten}: Jede Repräsentation muss mindestens zu einem Produkt-Knotenpunkt verbunden sein.
-%     Dies stellt sicher, dass jede Identifikation einen Informationsgewinn bietet und nicht isoliert im System existiert.
-%     Knoten, die zwar existieren, aber zu keinem Produkt in Beziehung stehen, adressieren \hyperref[subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden]{C-06}, indem sie zwar modelliert, aber als unvollständig erkannt werden können.
-%     \item \textbf{Sich selbst erklärender Datensatz}: Die Durchquerung muss Metadaten an Knotenpunkten und Begründungen an Kanten nutzen, um eine vollständige und nachvollziehbare Erklärung der Identifikationsentscheidungen zu bieten, wie in \hyperref[subsec:req-reason-format]{A-08} gefordert.
-%     \item \textbf{Sich selbst prüfender Datensatz}: Nachdem ein Software-Inventar manuell geprüft wurde, werden die resultierenden Identifikationen in einem separaten Datensatz abgelegt.
-%     Bei zukünftigen Graphen-Änderungen kann dieser Datensatz als Referenz dienen, um automatisiert zu prüfen, ob sich die Identifikation bekannter Produkte unerwartet geändert hat.
-%     Dies erhöht die Stabilität und Zuverlässigkeit des Systems.
-%     \item \textbf{Keine zirkulären Vererbungs-Referenzen}: Die Durchquerungslogik prüft auch auf Schleifen in Vererbungsbeziehungen, um sicherzustellen, dass es immer einen spezifischeren Knoten gibt und die Hierarchie der Vererbung eindeutig bleibt.
-% \end{itemize}
-
-% Die Fähigkeit des Systems, den gesamten Graphen aus generierten Daten zu befüllen und darauf die manuellen Modifikationen anzuwenden (\hyperref[subsec:req-generated-data]{A-09}), ist ein integraler Bestandteil der Durchquerungsstrategie.
-% Zuerst wird der generierte Anteil des Graphen erstellt, der eine breite Basis an bekannten Identifikationen bietet.
-% Anschließend werden die manuellen Modifikationen auf diesem generierten Graphen angewendet, um Korrekturen und Präzisierungen vorzunehmen.
-% Diese Schichtenbauweise ermöglicht eine effiziente Verwaltung und erleichtert die Verteilung von öffentlichen Datensätzen vor der Anwendung spezifischer manueller Anpassungen (\hyperref[subsec:c-09-sharing-of-public-data]{C-09}).
 
 \subsection{\acrshort{yaml}-Format für Graphmodifikationen}\label{subsec:modell-graph-modification-yaml}
 
@@ -348,3 +248,118 @@ Weitere Beispiele und die Referenzfälle können in \autoref{sec:beispiele-ferti
     \caption{Generierter Graph aus dem Beispiel des \acrshort{yaml}-Modifikationsformats (append mode)}
     \label{fig:modell-graph-modification-yaml-demo-append-rendered}
 \end{figure}
+
+\subsection{Auswertung des Graphen anhand eines Artefakts}\label{subsec:model-apply-to-artifact}
+
+Der Fokus dieser Arbeit liegt darauf, den Produktgraphen für das neue Korrelationssystem vorzubereiten.
+Da in diesem Kontext die Traversierungsrichtung immer von Artefakt-Knoten zu anderen Repräsentationen ausgeht, wird zunächst der Fokus nur auf den Abgleich von Knoten des Typs \texttt{artefact} mit Artefakten gelegt.
+Die hier aufgeführten Regeln lassen sich daraus jedoch auch recht einfach für weitere Knotentypen ableiten.
+
+Das Anwenden von Informationen aus dem Graphen auf ein Referenzartefakt erfolgt in vier getrennten Schritten, die jeweils eine definierte Ausgabe bereitstellen.
+
+\begin{enumerate}
+    \itemsep0em
+    \item Artefakt-Typ-Erkennung: Typspezifische Attribute werden aus dem Artefakt abgeleitet, die in der Selektion ausgewertet werden können.
+    \item Knoten-Identifikation: Die Selektoren der Artefakt-Knoten im Graphen werden ausgewertet, um zutreffende Artefakt-Knoten zu finden.
+    \item Graph-Traversierung: Von den identifizierten Knoten aus werden erreichbare Repräsentationen ermittelt und Metadaten auf dem Weg dorthin aggregiert.
+    \item Anwendung: Gefundene Knoten wenden ihre typspezifische Logik auf das ursprüngliche Artefakt an, um es zu transformieren.
+\end{enumerate}
+
+Diese Schritte werden in den folgenden Unterkapiteln detailliert.
+
+\subsubsection{Matching von Artefakt-Repräsentationen}\label{subsubsec:model-matching}
+
+Eine der Qualitätsanforderungen an den Graphen (\hyperref[subsec:req-graph-inner-consistency]{A-10}) ist, dass genaue eine Repräsentation im Graphen mit einer Eingabe übereinstimmt.
+Das bedeutet auch, dass bei der Abfrage eines Artefakts nur ein einiger Knoten gefunden werden darf, der diesem entspricht.
+Es werden dafür in Folgenden zwar Mechanismen bereitgestellt, die dieses Verhalten möglichst einfach für einen Anwender ermöglichen, jedoch kann die explizite manuelle Modellierung eines solchen Falles nicht von der Konzeption her ausgeschlossen werden.
+Daher ist es so wichtig, einen sich selbst pflegenden Testdatensatz zu führen, der die Identifikationen regelmäßig automatisch prüft.
+
+In den nächsten Kapiteln wird wird zunächst die Artefakt-Selektion auf einzelnen Knoten eingeführt, dann werden mehrere Knoten über Vererbungsregeln kombiniert und deren Regeln erläutert.
+
+\paragraph{Artefakt-Typ-Erkennung}
+
+Vor der Auswertung des Graphen wird das zu identifizierende Artefakt mit den Mustern aus \autoref{subsec:erkennung-typspezifische-artefakte} abgeglichen, um typspezifische Informationen für den Abgleich der Artefakt-Selektoren der Knoten zu erhalten.
+Diese programmatisch ermittelten Attribute sichern, dass Attributwertprüfungen schärfer, zuverlässiger und atomarer durchgeführt werden können.
+
+\paragraph{Artefakt-Selektor}
+
+Jeder Artefakt-Knoten enthält eine Liste an Selektoren, die durch ein logisches ODER verbunden werden, damit nur ein Selektor zutreffen muss, um ein Artefakt zu identifizieren.
+Das ermöglicht es, mehrere alternativen aufzuführen, wie sich ein reales Artefakt in seiner Attributmenge ausprägen kann und verhindert die Notwendigkeit, einen zweiten Knoten für dasselbe Artefakt anlegen zu müssen.
+
+Jeder Selektor besteht aus einer Menge an Attributen, von denen alle für ein Artefakt mit einem logischen UND übereinstimmen müssen, um den Eintrag zu aktivieren.
+Um \hyperref[subsec:req-multiple-attribute-values]{A-05} zu erfüllen, sind die Werte der abzugleichenden Attribute als Listen an möglichen Werten abgelegt, die mit einem weiteren logischen ODER verbunden sind, also von denen nur ein Wert zutreffen muss.
+Zudem können die Werte nach \hyperref[subsec:req-regex-support]{A-06} das bisherige inkrementelle Wildcard-System verwenden, um möglichst alle Matching-Fälle abzudecken.
+Die abfragbaren Attribute sind in zwei Mengen geteilt, die sich in ihrer Quellen unterscheiden.
+
+Rohe Artefakt-Attribute beziehen sich auf die Attribute, die das Artefakt direkt in sich speichert.
+Im alten System war diese Menge die einzige, die abgefragt werden konnte.
+Häufig verwendete Attribute sind \texttt{Id}, \texttt{Type} und Ökosystemspezifische wie \texttt{Group Id}.
+Da diese Art von Abfrage in dem neuen Format aufgrund ihrer Instabilität, der Unschärfe wegen der Kombination von mehreren Werten in einem Attribut und der anderen Herausforderungen auf Artefakt-Attributen in den Hintergrund treten soll, werden diese Abfragen explizit als solche gekennzeichnet werden müssen.
+
+Die neuen typspezifischen Attribute werden von den in \autoref{subsubsec:model-graph-knoten} aufgelisteten Extraktoren aufbereitet und in den Selektoren als First-Class Attribute zur Verfügung gestellt.
+Die Standard-Attribute sind \texttt{type} zur Auswahl eines erkannten Artefakttyps, \texttt{name} für einen ökosystemspezifischen Paketnamen und \texttt{version} für die Version.
+Basierend auf dem \texttt{type}-Wert wird in dem Objekt die Präsenz weiterer Attribute der typisierten Artefakte zugesichert und für Abgleiche exponiert.
+
+\paragraph{Vererbung von Selektoren}
+
+Wie in \autoref{subsubsec:model-edges-relations} angerissen haben Artefakt-Knoten die Möglichkeit, sich mit einer Vererbungskante auf weitere Artefakt-Knoten zu beziehen.
+Eine solche Beziehung bedeutet, dass der Knoten, von dem geerbt wird, ebenfalls mit seinen Selektoren auf das aktuell zu prüfende Artefakt erfolgreich übereinstimmen muss.
+Diese Beziehung kann verkettet werden, indem von dem geerbten Knoten eine weitere Vererbungskante losgeht.
+Auf diese Weise können beliebig viele Identifikationen aufeinander folgen.
+
+Dies führt zu einer weiteren Herausforderung in der Identifikationslogik, da nach \hyperref[subsec:req-graph-inner-consistency]{A-10} immer nur genau ein Knotenpunkt für eine zu identifizierende Repräsentation gefunden werden darf.
+Da die allgemeineren Knotenpunkte, von denen die spezifischen Ausprägungen der Artefakt-Knoten erben, bei einem Artefakt welche den spezifischen Knoten selektieren immer auch mit den Selektoren des allgemeinen Knotens übereinstimmen werden, muss eine Ausschlusslogik implementiert werden.
+Da immer die spezifischste Identifikation für die Repräsentation gewählt werden soll, wird auf der Ergebnismenge der gefundenen Knoten die Hierarchie der Vererbung ausgewertet und alle entfernt, von denen geerbt wird.
+
+\paragraph{Ergebnisse der Selektion}
+
+Das Ergebnis des Selektionsprozesses ist im optimalen Fall ein einziger \texttt{artifact}-Knoten im Graphen, dem das eingehende Software-Artefakt entspricht.
+Es lässt sich jedoch aufgrund eines ungünstig strukturierten Graphen nicht ausschließen, dass doch eine Menge an Knoten identifiziert wird.
+Da der restliche Ablauf des Prozesses den Graphen auf ein Artefakt anzuwenden jedoch pro Knotenpunkt getrennt durchgeführt wird, macht dies für die restliche Beschreibung keinen Unterschied.
+Dieser (bzw.\ diese) gefundene(n) Knoten dienen als Ausgangspunkt für die anschließende Durchquerung des Graphen (\autoref{subsubsec:model-traversal}), um die zugehörigen Repräsentationen zu ermitteln.
+
+\subsubsection{Durchquerung des Graphen}\label{subsubsec:model-traversal}
+% Auswertungslogik für Relationen und Versionstransformation
+
+Nachdem ein eingehendes Artefakt erfolgreich einem \texttt{artifact}-Knoten im Graphen zugeordnet wurde, beginnt die Phase der Graphen-Durchquerung.
+In der Traversierung des Graphen von dem Startknoten zu den Zielknoten werden entlang der Kanten und Knoten zugehörige Metainformationen aggregiert, die dann in der anschließenden Auswertungsphase interpretiert werden.
+In diesem Prozess werden Kanten der Repräsentationsbeziehungen \enquote{is} und \enquote{is not} unterschiedlich behandelt als die Vererbungsbeziehungen vom Typ \enquote{inherit}.
+
+Der erste Pfad folgt allgemein den Repräsentationsbeziehungen, die zunächst vom Artefakt-Knoten und später von allen weiteren erreichbaren Knoten ausgehen.
+Diesen Beziehungen wird allgemein immer gefolgt, egal ob es eine positive oder negative Relation ist.
+Falls es sich jedoch um eine negative Relation handelt, werden alle auf diesem Pfad durch den Graphen nachfolgenden Kanten ebenfalls als \enquote{is not} behandelt, was den späteren Anwendungsschritt beeinflusst.
+Jede Kante stellt zudem optional Transformationsregeln bereit, die bei der Traversierung je durchquertem Pfad zunächst einmal einfach alle eingesammelt werden.
+Erreichte Produktknoten enthalten ebenfalls optional Transformationsregeln, die nur dann mit in die Liste an Transformationen eingesammelt werden, wenn der ursprüngliche Quellknoten teil des Namensraums ist, unter dem diese Transformation abgelegt ist.
+Die konkrete Anwendbarkeit basierend auf Quell- und Zielknoteneigenschaften wird erst im nächsten Schritt ausgewertet, wenn die Zielknoten alle gesammelt wurden.
+
+Der zweite Pfad wertet Vererbungshierarchien zwischen Knoten aus.
+Vererbungshierarchien bei Artefakt-Knoten werden ausschließlich zum Teilen der Selektoren in dem initialen Identifikationsprozess verwendet.
+Daher werden hier ausschließlich die Vererbungskanten zwischen Produkt-Knoten ausgewertet.
+Allgemein funktioniert das folgen der Vererbungskanten identisch wie die regulären Repräsentationsbeziehungen, mit dem Unterschied, dass nur die spezifischsten Kanten auf einen zwischen Vererbungsebenen geteilten Knoten behalten werden.
+Dies wird dadurch ermöglicht, indem zunächst über die Auswertung der allgemeinen Knoten die allgemeineren Kanten zum Erreichen eines Knotens gespeichert werden und die spezialisierten Knoten später diese Kanten mit ihren eigenen überschreiben werden.
+
+Während der rekursiven Durchquerung sollte das System einen Kontextzustand mit Informationen über den aktuellen Pfad durch den Graphen verwalten.
+Die Informationen, die er verwaltet, sind der aktuellen Knoten, die Beziehung die zum Erreichen dieses verwendet wurde, der gesamte bisherige Pfad zur Vermeidung von Schleifen, und die gesammelten Transformationsanweisungen.
+
+Die Gesamtheit der gesammelten Kontextzustände ist das Ergebnis dieser Phase und die Eingabe für die finale Anwendung der Zielknoten.
+Jeder Kontext stellt dabei einen Zielknoten dar, mit dem vollständigen Pfad der Entscheidungsfindung und den Transformationen.
+
+\subsubsection{Anwendung von zutreffenden Knotenpunkten auf Artefakte}\label{subsubsec:model-result-processing-apply-nodes-to-artifact}
+
+Die identifizierten Zielknoten werden abschließend einzeln auf das Artefakt angewendet.
+Dabei werden je Knoten zudem die erreichende Kante und die gesammelten Transformationen entlang des Pfades übergeben.
+
+Zunächst werden die gesammelten Transformationen auf ihre Anwendbarkeit gefiltert.
+Der Namensraum-Filter wurde bereits während dem letzten Schritt der Traversierung berücksichtigt, sodass nun die Quellartefakt- und Zielknotenfilter aus \autoref{subsubsec:model-graph-knoten} angewendet werden.
+Die erste Prüfung ist die Existenz einer Transformation mit dem \texttt{discard}-Attribut, hier wird der Knoten vollständig von der Identifikation verworfen.
+Ein weiteres Transformationsattribut kann den Typ der eingehenden Kante auf einen anderen (z.\ B. \enquote{is not}) überschreiben.
+
+Die verbleibenden Transformationen modifizieren die Knotendaten mit typspezifischen Attributen.
+Die restlichen Transformationsattribute werden an den Zielknoten übergeben, um typspezifische Änderungen an den anzuwendenden Daten vorzunehmen, bevor sie auf das Artefakt angewendet werden.
+So wird beispielsweise bei \acrshort{cpe}-Repräsentationen die \acrshort{cpe} in ihre Komponenten zerlegt, die dann durch Transformationen auf konkrete Werte gesetzt werden können (z.B. \texttt{vendor} oder \texttt{version}).
+Die modifizierten Komponenten werden dann wieder zu einer gültigen \acrshort{cpe} kombiniert.
+Andere Repräsentationstypen folgen ähnlichen Mustern mit eigenen typspezifischen Attributen.
+
+Die transformierten Knoten werden abschließend unter Berücksichtigung des effektiven Kantentyps auf das Subjekt, dem Artefakt, angewandt.
+Bei \acrshort{cpe}-Knoten führt eine \enquote{is}-Beziehung zum Hinzufügen der \acrshort{cpe} zu \texttt{Additional CPE URIs} und dem Entfernen aus \texttt{Inapplicable CPE URIs}, wobei \enquote{is not} entsprechend das umgekehrte bewirkt.
+Dies verhindert implizit Widersprüche durch gegensätzliche Klassifizierungen einer \acrshort{cpe} und löst eine der Herausforderungen von \hyperref[subsec:c-10-order-dependency]{C-10}.
