@@ -11,7 +11,8 @@ Im neuen Format wird dieser Gedanke in den Hintergrund treten, und sich implizit
 Es werden zunächst immer die Einträge vorgestellt, dann die Herausforderungen und relevanten Anforderungen identifiziert.
 Diese Referenzfälle werden in \autoref{sec:beispiele-fertige-implementierung} jeweils auf das neue Korrelationssystem übersetzt, um einen Vergleich der Formate zu ermöglichen.
 
-\paragraph{JavaScript-Paket mit multiplen Namensvarianten}\label{par:reference-case-walletconnect} (she. \autoref{lst:correlation-generated-walletconnect-example})
+% FIXME-KKL: Zusammenhalten: Ich glaube der Kommentar hier bezieht sich darauf, dass im PDF zwischen dem Titel und der Klammer ein Abstand ist. Den habe ich schon versucht wegzubekommen, aber LaTex will das unbedingt so aufteilen.
+\paragraph{JavaScript-Paket mit multiplen Namensvarianten}\label{par:reference-case-walletconnect} (s. \autoref{lst:correlation-generated-walletconnect-example})
 
 Bei dem Paket \texttt{@web3-react/walletconnect} handelt sich in der NPM-Registry zwar um ein eindeutiges Paket, allerdings kann sich der Bezeichner in den gescannten Software-Inventaren in unterschiedlichen Varianten ausprägen, auf die alle geprüft werden muss.
 In diesem Fall handelt es sich um eine Positividentifikation auf einer \acrshort{cpe} \texttt{cpe:/a:uniswap:web3-react\_walletconnect}, die als \texttt{Additional CPE URIs} zum Artefakt hinzugefügt wird.
@@ -24,7 +25,7 @@ Die \enquote{-*}-Suffixe können zu einer Übergeneralisierung der Einträge fü
 \hyperref[subsec:req-multiple-attribute-values]{A-05} ist aus der Notwendigkeit entstanden, innerhalb eines Eintrages die Wiederholung nah identischer Selektoren zu vermeiden.
 In diesem Fall war es nötig, für jede Namensform einen neuen Selektor zu erstellen, und alle weiteren Attribute zu wiederholen.
 
-\paragraph{Java-Runtimes: Komplexe Versionstransformation}\label{par:reference-case-java-runtimes} (she. \autoref{lst:reference-case-java-runtimes})
+\paragraph{Java-Runtimes: Komplexe Versionstransformation}\label{par:reference-case-java-runtimes} (s. \autoref{lst:reference-case-java-runtimes})
 
 Wie in \autoref{subsec:old-generated-correlation-data} bereits gezeigt, wird ein wesentlicher Teil des alten Korrelationsdatensatzes regelmäßig automatisch in einem dedizierten Prozess generiert.
 Das Listing zeigt einen Auszug der generierten Einträge für die Java-Runtime \enquote{Amazon Corretto} und \enquote{Azul Zulu}.
@@ -39,6 +40,7 @@ In dem neuen Format sollte die Identifikation von diesen zusammengesetzen Attrib
 Mit der Änderung des Formats als Graphen (\hyperref[subsec:req-format-product-graph]{A-01}), in dem jede Repräsentation versions-agnostisch nur einmal als Knotenpunkt ausgeprägt ist und mit der Anforderung, dass es ein ausgeprägtes Produkt-Konzept mit Produkt-Knotenpunkten gibt (\hyperref[subsec:req-product-concept]{A-02}), kann die Versionserkennung und Modifikation der Version in der \acrshort{cpe} in den einzelnen Knotenpunkten der Repräsentationen nicht mehr wie früher modelliert werden, sondern muss auf einen zentral die Repräsentationen verknüpenden Produkt-Knotenpunkt, der diese Mappings unter einem Namensraum an die Knotenpunkte zur Verfügung stellt.
 Zur Erkennung der Version sollte mindestens noch immer das Wildcard-System zur Verfügung gestellt werden (\hyperref[subsec:req-regex-support]{A-06}).
 
+% FIXME-KKL: /zulu.*-(?:jre|jdk)-headless-11\.0\.10.*/i ist nicht korrekt: was wäre denn dann richtig? so steht es in den korrelationsdaten drin.
 \begin{lstlisting}[style=yaml,caption={Java-Runtime-Korrelation mit Versionstransformation},label={lst:reference-case-java-runtimes},basicstyle=\ttfamily\scriptsize]
 - affects:
     - Id: amazon-corretto-*/i
@@ -69,7 +71,7 @@ Zur Erkennung der Version sollte mindestens noch immer das Wildcard-System zur V
     CPE URIs: cpe:/a:azul:zulu:8:update282
 \end{lstlisting}
 
-\paragraph{Windows 10: Betriebssystem mit mehreren Identifikatoren}\label{par:reference-case-windows} (she. \autoref{lst:reference-case-windows})
+\paragraph{Windows 10: Betriebssystem mit mehreren Identifikatoren}\label{par:reference-case-windows} (s. \autoref{lst:reference-case-windows})
 
 Die Modellierung von Windows 10 in den alten Korrelationsdaten stellt einige größere Herausforderungen dar.
 Da Windows als Microsoft-Produkt sich nicht nur als \acrshort{cpe} repräsentiert, sondern auch durch Microsoft Produkt-Ids und zusätzlich noch EOL Ids an die Artefakte angehängt werden sollen, müssen für unterschiedliche Versionen des Betriebssystems auch immer unterschiedliche Repräsentationen verknüpft werden.
@@ -79,7 +81,7 @@ Dies führt zu einer großen Menge an Redundanzen.
 Zudem ist die Hierarchie der Einträge (Windows 10, 21H2, Architektur) nur impliziert modelliert und muss von einem Leser erst als solche erkannt werden.
 
 Die relevanten Anforderungen sind die Vererbung von Artefakt-Selektoren (\hyperref[subsec:req-selektor-inheritance]{A-04}), die die Wiederholung über Einträge hinweg vermeidet, und die Auflistung mehrerer Werte pro Attribut (\hyperref[subsec:req-multiple-attribute-values]{A-05}).
-Zudem ist hier besonders die dokumentation der unterschiedlichen Knotenpunkte und Kanten relevant (\hyperref[subsec:req-reason-format]{A-08}).
+Zudem ist hier besonders die Dokumentation der unterschiedlichen Knotenpunkte und Kanten relevant (\hyperref[subsec:req-reason-format]{A-08}).
 
 \begin{lstlisting}[style=yaml,caption={Windows-Korrelation mit mehreren Identifikatoren},label={lst:reference-case-windows},basicstyle=\ttfamily\scriptsize]
 - affects:
@@ -130,7 +132,7 @@ Zudem ist hier besonders die dokumentation der unterschiedlichen Knotenpunkte un
     Additional CPE URIs: cpe:/o:microsoft:windows_10_21h2, cpe:/o:microsoft:windows_10:21h2
 \end{lstlisting}
 
-\paragraph{Redis: Kontextabhängige Produktdifferenzierung}\label{par:reference-case-redis} (she. \autoref{lst:correlation-order-depdendency-example})
+\paragraph{Redis: Kontextabhängige Produktdifferenzierung}\label{par:reference-case-redis} (s. \autoref{lst:correlation-order-depdendency-example})
 
 Der Redis-Fall zeigt die Herausforderung von ökosystemabhängigen überladenen Artefaktbezeichnern.
 Der gleiche Basisname \texttt{redis-*} repräsentiert in den Referenzeinträgen aus den Software-Inventaren mindestens zwei unterschiedliche Entitäten: die Datenbankserver-Software und die Client-Bibliothek als Python-Modul.

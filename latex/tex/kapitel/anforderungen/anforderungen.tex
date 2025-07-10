@@ -26,13 +26,13 @@ Dies löst die Herausforderung \hyperref[subsec:c-06-falle-ohne-aktion-konnen-ni
 
 \subsection{A-02: Produkt-Konzept}\label{subsec:req-product-concept}
 
-Wichtig ist die Unterscheidung zwischen einem \textit{Produkt}, und der \textit{Repräsentation eines Produkts} (she.\ \autoref{subsec:produkte-vs-reprasentation}).
+Wichtig ist die Unterscheidung zwischen einem \textit{Produkt}, und der \textit{Repräsentation eines Produkts} (s.\ \autoref{subsec:produkte-vs-reprasentation}).
 Diese sollen sich zwar im Graphen beide als Knotenpunkte darstellen, jedoch muss zwischen ihren Typen unterschieden werden.
 
 So könnte eine Repräsentation mit einer Kante auf einen Produkt-Knotenpunkt verweisen und von diesem eine Kante auf eine weitere Repräsentation des Produkts um anzugeben, dass diese Repräsentationen das selbe Produkt darstellen.
 
 Produktknoten sollen in der Lage sein, Metainformationen über die zugehörigen Repräsentationen abzulegen.
-Dazu gehören vor allem Informationen über die Versionsräume und wie zwischen diesen umgewandelt werden kann.
+Dazu gehören vor allem Informationen über die Versionsräume und wie zwischen diesen umgewandelt werden kann (\hyperref[C-13]{subsec:c-13-attribut-abbildung-unzureichend}).
 
 \subsection{A-03: Normalisierte Typidentifikation und typspezifische Attribute für Software-Artefakte}\label{subsec:req-type-specific-matching}
 
@@ -41,7 +41,7 @@ In \autoref{subsec:erkennung-typspezifische-artefakte} wurden die häufigsten Mu
 Die Ausgabe der Typinterferenz soll diese verwenden, um normalisierte Ökosystembezeichner (z.\ B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}) und weitere Typspezifische Attribute als Vergleichswerte verfügbar machen.
 
 Basierend auf dem erkannten Ökosystem/Typ eines Artefakts werden dann weitere Extraktoren auf die Artefakt-Metadaten angewendet.
-Diese müssen weitere Attribute als First-Class Matching-Kriterien auf den Artefakt-Selektoren zur Verfügung stellen, wie etwa Maven-Koordinaten (Group Id, Artifact Id) für Java, Paketnamen für NPM, Distributionskennung für Linux-Pakete, Java Runtime-Provider, \ldots.
+Diese müssen weitere Attribute als First-Class Matching-Kriterien auf den Artefakt-Selektoren zur Verfügung stellen, wie etwa Maven-Koordinaten (Group Id, Artifact Id) für Java, Paketnamen für NPM, Distributionskennung für Linux-Pakete, Java Runtime-Provider, und viele mehr.
 Wildcard-Selektor wie bisher häufig in der \texttt{Id} (\hyperref[subsec:c-01-unspezifische-identifikation-von-artefakten]{C-01}) können so durch exakte, ökosystemspezifische Attributvergleiche ersetzt werden.
 
 Falls kein bekannter Typ konkreter erkannt werden konnte, muss ein Artefakt dennoch mit den Basisattributen zum Abgleich zur Verfügung gestellt werden.
@@ -61,20 +61,22 @@ Um dieses zu lösen, soll im neuen Modell ein Abgleich von mehreren Optionen mö
 \subsection{A-06: Unterstützung regulärer Ausdrücke}\label{subsec:req-regex-support}
 
 Auch wenn im neuen Format über \hyperref[subsec:req-type-specific-matching]{A-03} die Anzahl der Wildcard-Selektor drastisch verringert werden, soll dennoch das in \autoref{sec:current-correlation-format} beschriebene inkrementelle Wildcard-System weiterhin bestehen bleiben.
+% FIXME-KKL: Option: mit Mustern und Variablen arbeiten. Alternativen erwähnen.: Was wären Alternativen? Ich habe es momentan nicht implementiert, Variablen zu ermöglichen, soll dass dann eine Erweiterung sein?
 
 \subsection{A-07: Manuelle Modifikation des Graphen}\label{subsec:req-manual-format-modification}
 
 Da in dem neuen Korrelationssystem noch immer manuelle Korrekturen an der automatischen Erkennung von \acrshort{cpe} gemacht werden können sollen, muss ein neues \acrshort{yaml}-basiertes Format entwickelt werden, welches einen solchen Produkt-Graphen modifizieren kann.
 Die durchführbaren Modifikationen am Graphen müssen mindestens die Erstellung, Modifikation und Entfernung von Knotenpunkten jedes Types, und die Erstellung, Modifikation und Entfernung von Kanten zwischen Knoten beinhalten.
-Technisch sollte dieses Modifikationsformat auf eine Weise modelliert werden, dass jegliche nötigen Modifikationen am Graphen ausschließlich darüber lösbar sind, ohne weiteren Code schreiben zu müssen, um als allgemeine Schnittstelle für Graphmodifikationen zu dienen.
-Auf diese Weise können auch andere Prozesse die selbe Logik verwenden, um ihre Änderungen durchzuführen, mit den gleichen Garantien wie der manuelle Prozess.
+Technisch sollte dieses Modifikationsformat auf eine Weise modelliert werden, dass jegliche nötigen Modifikationen am Graphen ausschließlich im Format lösbar sind, um als allgemeine Schnittstelle für Graphmodifikationen zu dienen.
+Auf diese Weise können auch andere Prozesse dieselbe Logik verwenden, um ihre Änderungen durchzuführen, mit den gleichen Garantien wie der manuelle Prozess.
 
-Da die Kombination aus Typ und Id jedes Knotens im Graphen eindeutig ist (she. \hyperref[subsec:req-format-product-graph]{A-01}), sollte auch das Modifikationsformat diese Weise verwenden, Knotenpunkte für die Modifikation zu selektieren.
+Da die Kombination aus Typ und Id jedes Knotens im Graphen eindeutig ist (s. \hyperref[subsec:req-format-product-graph]{A-01}), sollte auch das Modifikationsformat diese Weise verwenden, Knotenpunkte für die Modifikation zu selektieren.
 
 Das neue Korrelationssystem als Graph zu modellieren führt viele Komplexitäten ein, die für den Nutzer im manuellen Modifikationsformat abstrahiert werden müssen, um noch immer so effektiv wie im alten Format arbeiten zu können.
-Hierfür muss ein Format iterativ entworfen und mit aktuellen Nutzern des Formats getestet und abgesprochen werden, um es so einfach wie möglich zu machen, den Graphen zu modifizieren ohne Kontrolle über detaillierte Attribute zu verlieren.
+Hierfür muss ein Format iterativ entworfen und mit aktuellen Nutzern des Formats getestet und abgesprochen werden.
+Das Ziel ist es, es so einfach wie möglich zu machen, den Graphen zu modifizieren, aber trotzdem noch jedes Attribut modifizieren zu können.
 
-Da das alte Format oft Schwierigkeiten hatte, aus dem Datenmodell wieder die ursprünglichen Einträge in den \acrshort{yaml}-Dateien zu finden (she.\ \hyperref[subsec:c-11-finding-yaml-entries]{C-11}), soll in dem neuen \acrshort{yaml}-Modifikationsformat das Auffinden von Einträgen deterministisch gestaltet werden.
+Da das alte Format oft Schwierigkeiten hatte, aus dem Datenmodell wieder die ursprünglichen Einträge in den \acrshort{yaml}-Dateien zu finden (s.\ \hyperref[subsec:c-11-finding-yaml-entries]{C-11}), soll in dem neuen \acrshort{yaml}-Modifikationsformat das Auffinden von Einträgen deterministisch gestaltet werden.
 Wenn zur Selektion der Knotenpunkte im \acrshort{yaml} der Typ und die Id verwendet wird, dann kann diese auch umgekehrt wieder aus dem Graphen ausgelesen und die zugehörige Zeile im \acrshort{yaml} gefunden werden.
 
 \subsection{A-08: Maschinenlesbare Entscheidungsdokumentation}\label{subsec:req-reason-format}
@@ -93,6 +95,7 @@ Im neuen System soll der gesamte Graph darauf aufbauen, dass er zunächst mit ge
 
 Mit den Datensätzen der \metaeffektsp sollen bereits alle Knotenpunkte für \acrshortpl{cpe}, MS Product Ids und \acrshort{eol}-Ids erzeugt werden, die bekannt sind, manche sollen bereits Kanten zwischen den Knoten erzeugen.
 Zudem sollen weitere Datenquellen wie die bereits vorhandenen Generatoren für NPM-Pakete zu \acrshortpl{cpe} und die für die vielen Java Runtimes, aber auch neue wie purl2cpe von scanoss\footnote{\url{https://github.com/scanoss/purl2cpe}} dazu beitragen, den Graphen bereits vorzufüllen und die darauf folgende Arbeit zu erleichtern.
+% FIXME-KKL: Siehe Erweiterungsvorschlag oben: welcher vorschlag?
 
 Um den fertigen auslieferbaren Graphen zu erhalten, soll zunächst der generierte Anteil des Graphen erstellt werden und dann auf diesem mit den manuellen Modifikationen aufgebaut werden.
 Durch diese Trennung in mehrere \enquote{Contributors} am Graphen kann \hyperref[subsec:c-09-sharing-of-public-data]{C-09} einfach abgebildet werden, indem der Datensatz vor der Anwendung des manuellen Schritts ausgeliefert wird.
@@ -114,7 +117,9 @@ Diese prüfen mindestens die folgenden Eigenschaften:
     \item Zu jeder Repräsentation eines Produkts in dem Graphen darf maximal genau eine eindeutige Identifikation stattfinden.
     Dies bedeutet, dass jeder Knoten exakt eine Repräsentation vollständig modellieren sollte und diese nicht noch einmal von einem anderen Knoten partiell abgedeckt sein darf.
     Diese Metrik muss sowohl in dem Matching-Algorithmus, als auch als Modellierungsvorschrift umgesetzt werden.
-    % FIXME-YWI: das hier hat halt das Problem, dass wir den Graphen mit allen CPE, etc. füllen wollen und nicht immer ein zugehöriges Produkt erzeugt werden kann.
+    \item Eine Erweiterung zu dieser Metrik ist, dass pro Artefakt im Graphen nur ein einziger Produktknoten über eine \enquote{is}-Beziehung erreicht werden darf.
+    Es muss also eine Prüfung auf die Erreichbarkeit und Überlappungen von Produktknoten von Artefaktknoten aus durchgeführt werden.
+    % FIXME-KKL: das hier hat halt das Problem, dass wir den Graphen mit allen CPE, etc. füllen wollen und nicht immer ein zugehöriges Produkt erzeugt werden kann.
     \item Es darf keine losen Knoten geben, jede Repräsentation muss mindestens zu einem Produkt-Knotenpunkt verbunden sein um sicherzustellen, dass mit einer Identifikation auch ein Informationsgewinn stattfinden kann.
     \item Um einen sich selbst erklärenden Datensatz zu erhalten, müssen die Metadaten jedes Knotenpunktes aufgefüllt sein und die Kanten eine Begründung enthalten, warum sie so existieren.
     \item Der Graph soll sich selbst prüfen können: Nachdem ein Software-Inventar manuell geprüft wurde, sollen alle Quell-Artefakte mit ihren Identifikationen in einem separaten Datensatz abgelegt werden, um diese bei zukünftigen Änderungen am Graphen automatisch prüfen zu können.
@@ -146,7 +151,6 @@ Danach steigt die Laufzeit annähernd linear mit der Anzahl der Artefakte an, de
 
 \begin{table}[h!]
     \centering
-    \label{tab:old-correlation-performance}
     \begin{tabular}{l r r r r}
         \toprule
         \textbf{Artefakte} & \textbf{Ø [s]} & \textbf{Min. [s]} & \textbf{Max. [s]} \\
@@ -163,10 +167,11 @@ Danach steigt die Laufzeit annähernd linear mit der Anzahl der Artefakte an, de
         \bottomrule
     \end{tabular}
     \caption{Gemessene Laufzeiten des alten Korrelationsformats bei unterschiedlichen Artefakt-Anzahlen.}
+    \label{tab:old-correlation-performance}
 \end{table}
 
 Da der Korrelationsschritt bisher bei weitem nicht der zeitintensivste Schritt in der Schwachstellenanalyse ist, ist die Optimierung nie eine kritische Anforderung gewesen.
-Das neue Korrelationsmodell sollte diese Zeiten jedoch bei vergleichbaren Datenmengen dennoch nicht um einen Faktor von 2 überschreiten.
+Das neue Korrelationsmodell sollte diese Zeiten jedoch bei vergleichbaren Datenmengen dennoch nicht um den Faktor von 2 überschreiten.
 
 % \begin{table}[h!]
 %     \centering

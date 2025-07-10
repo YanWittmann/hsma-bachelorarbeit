@@ -1,7 +1,9 @@
-\section{Interne Produktmodellierung der \metaeffektlg}\label{sec:metaeffekt-inventory-format}
+% TODO-KKL: Bitte Inhaltsverzeichnis im Viewer anschauen: why?
+\section{Interne Produkterfassung der \metaeffektlg}\label{sec:metaeffekt-inventory-format}
 
 Wie alle Datentypen im Inventar basieren auch Artefakte auf Key-Value-Pairs, einer frei definierbaren Zuordnung von Textschlüsseln zu Textwerten.
-Dieses Format wurde gewählt, um möglichst einfach Änderungen und neue Felder einführen zu können, ohne Schemata definieren und ändern zu müssen.
+Dieses Format wurde gewählt, um flexibel einfach Änderungen und neue Felder einführen zu können, ohne Schemata definieren und ändern zu müssen.
+
 Komplexere Werte als flache Texte werden z.\ B.\ automatisch als JSON-Objekte serialisiert und beim Einlesen wieder als Objekte deserialisiert.
 
 Für Artefakte ist die zugrundeliegende Struktur mit einigen Basis-Feldern für alle Software-Ökosysteme die gleiche, jedoch unterscheidet sich je nach Ökosystem die tatsächliche Verwendung der Felder.
@@ -14,16 +16,16 @@ Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inven
     \centering
     \makebox[\linewidth][c]{%
         \resizebox{1.1\textwidth}{!}{%
-        \begin{tabular}{llll}
-            \toprule
-            \textbf{Id}                  & \textbf{Component}         & \textbf{Group Id}        & \textbf{Version} \\
-            \midrule
-            commons-codec-1.15.jar       & Apache Commons Codec       & commons-codec            & 1.15             \\
-            commons-collections4-4.1.jar & Apache Commons Collections & org.apache.commons       & 4.1              \\
-            slf4j-api-1.7.36.jar         & SLF4J                      & org.slf4j                & 1.7.36           \\
-            log4j-api-2.14.0.jar         & Apache Log4j               & org.apache.logging.log4j & 2.14.0           \\
-            \bottomrule
-        \end{tabular}%
+            \begin{tabular}{llll}
+                \toprule
+                \textbf{Id}                  & \textbf{Component}         & \textbf{Group Id}        & \textbf{Version} \\
+                \midrule
+                commons-codec-1.15.jar       & Apache Commons Codec       & commons-codec            & 1.15             \\
+                commons-collections4-4.1.jar & Apache Commons Collections & org.apache.commons       & 4.1              \\
+                slf4j-api-1.7.36.jar         & SLF4J                      & org.slf4j                & 1.7.36           \\
+                log4j-api-2.14.0.jar         & Apache Log4j               & org.apache.logging.log4j & 2.14.0           \\
+                \bottomrule
+            \end{tabular}%
         }%
     }
     \caption{Beispielhafte Artefakteinträge in einem Software-Inventar}
@@ -46,7 +48,7 @@ Das Attribut \texttt{Ecosystem} in Artefakten entspricht dem \texttt{type}-Attri
 Fehlt dieses, kann meist \texttt{Specific Type} für eine allgemeine Klassifikation und \texttt{Type} für die spezifischere Einordnung in ein zweistufiges hierarchisches Modell verwendet werden.
 Leider wurden in dem Datensatz oft Artefakte komplett ohne Typ-Information gefunden, in diesen Fällen müssen weitere Algorithmen zur Erkennung etwa basierend auf Dateiendungen oder anderen Attributen entwickelt werden.
 
-Ein Auszug aus den Werten des \texttt{Ecosystem}-Attributs:
+Ein Auszug aus den Werten des \texttt{Ecosystem}-Attributs zeigt, dass es sich um das \texttt{Type}-Attribut der \acrshort{purl} handelt\footnote{\url{https://github.com/package-url/purl-spec/blob/main/PURL-TYPES.rst}}:
 \texttt{npm}, \texttt{gem}, \texttt{github}, \texttt{cpan}, \texttt{wut}, \texttt{docker}, \texttt{conan}, \texttt{deb}, \texttt{nuget}, \texttt{generic}, \texttt{maven}, \texttt{rpm}, \texttt{pypi}, \texttt{golang}, \texttt{apk}.
 
 Die beobachteten Werte aus den Attributen \texttt{Specific Type} und \texttt{Type} reichen von Ökosystemen und Dateitypen bis hin zu Begriffen aus der Betriebssystem- und Gerätetreiberdomäne.
@@ -79,7 +81,7 @@ Zunächst werden nur aufgeführten Typen bewusst erkannt, die Erkennung kann auf
 Jede typisierte Artefakterkennung stellt eine Methode bereit, eine normalisierte \texttt{Artifact Id} zu extrahieren, die versucht, den realen Paketnamen zu extrahieren.
 Zusätzlich soll die Version des Artefakts erfasst werden.
 Neben diesen beiden Grundattributen kann jede Erkennung weitere Attribute extrahieren und so aufbereiten, dass sie dedizierte Fragestellungen in den Korrelationsdaten einfacher beantworten können indem diese dort direkt als Attribute prüfbar gemacht werden.
-Diese Attribute sind in der Spalte \enquote{Extraktierte Attribute} gefunden werden.
+Diese Attribute sind in der Spalte \enquote{Bereitgestellte Attribute} gefunden werden.
 
 % @formatter:off
 \begin{table}
@@ -88,7 +90,7 @@ Diese Attribute sind in der Spalte \enquote{Extraktierte Attribute} gefunden wer
             \centering
             \begin{tabular}{lll}
                 \toprule
-                \textbf{Erkennung} & \textbf{Attribute} & \textbf{Extraktierte Attribute} \\
+                \textbf{Erkennung} & \textbf{Attribute} & \textbf{Bereitgestellte Attribute} \\
                 \midrule
                 Java Module & \makecell[l]{\texttt{Specific Type} ist \texttt{jar-module} oder \\ \texttt{Ecosystem} ist \texttt{maven} oder \\ \texttt{Id} endet mit \texttt{.jar}} & \makecell[l]{\texttt{groupId}} \\
                 \midrule
@@ -107,7 +109,7 @@ Diese Attribute sind in der Spalte \enquote{Extraktierte Attribute} gefunden wer
             \end{tabular}%
         }%
     }
-    \caption{Erkennungsrichtlinien und extrahierte Attribute für Artefakttypen}
+    \caption{Erkennungsrichtlinien und bereitgestellte Attribute für Artefakttypen}
     \label{tab:erkennung-artefakt-typ-tabelle}
 \end{table}
 % @formatter:on

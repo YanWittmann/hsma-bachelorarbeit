@@ -44,6 +44,20 @@ Um von Anfang an ein einheitliches Format für die Ids unterschiedlicher Typen z
     Die Selektionslogik wird in \autoref{subsec:model-matching} genauer ausgeführt.
 \end{itemize}
 
+Jeder Knotenpunkt kann optional eine Menge an \enquote{Namespaces} als eine Liste an Labels zugewiesen bekommen.
+Diese Namespaces können auf beliebige Nutzungsfälle erweitert werden, sind im Moment jedoch ausschließlich für das Filtern von Transformationen geplant, die im folgenden Abschnitt erklärt werden.
+
+Da eine Repräsentation im Graphen in nur einem Knoten ohne Wiederholung ausgeprägt sein soll, müssen Attribute wie Versionen oder Editionen für den Zielknoten aus dem Weg von dem selektierten Knoten zur Zielrepräsentation abgeleitet werden.
+Dies wird durch \enquote{transform}-Anweisungen gelöst, die allgemein auf Kanten, aber auch speziell auf Produkt-Knoten angebracht sein können und dementsprechend unterschiedlich ausgewertet werden.
+Produkt-Knoten werden in \autoref{subsubsec:model-product-node} spezifiziert.
+Eine Transformation besitzt immer einen Anwendbarkeitsfilter, der auf Quell- und Zielknoteneigenschaften prüfen kann, und einen Effekt, der auf den Zielknoten bei erfolgreicher Prüfung beider Knoten angewendet werden kann, und eine Transformation, die auf einen Zielknoten angewendet werden soll.
+Auf Kanten wird eine vereinfachte Form der Filtermechanismen eingesetzt, da hier die Quelle bereits bekannt ist und so nur noch auf das Ziel gefiltert werden muss, auf Produkt-Knoten können beide geprüft werden.
+Filterattribute können der Typ, die Id, diverse typspezifische Attribute oder die Zugehörigkeit zu einem Namespace sein.
+Sobald ein Transformationseintrag als zutreffend klassifiziert ist, werden an den Zielknoten die weiteren frei setzbaren Attribute des Eintrages weitergegeben, die dieser je nach Knotentyp und Kantentyp individuell auswerten kann.
+Beispiele dafür sind bei \texttt{cpe}-Knoten die Attribute wie \texttt{version} oder \texttt{update}.
+Auf diese Weise müssen Attribute nicht bereits in dem Knoten der Repräsentation modelliert sein, sondern können auf dem Weg von einer anderen Repräsentation dynamisch gesammelt werden.
+Neben diesen freien Attributen gibt es auch noch weitere spezielle Schlüsselwörter, mit denen eine Zielrepräsentation völlig ignoriert werden kann (\texttt{discard}) oder der eingehende Kantentyp explizit gesetzt werden kann (\texttt{is}, \texttt{is not}).
+
 \subsubsection{Produkt-Knoten}\label{subsubsec:model-product-node}
 Produkt-Knoten sind eine spezielle Form von Knoten, die ein Software-Produkt wie in \autoref{subsec:produkte-vs-reprasentation} detailliert darstellen.
 Sie enthalten im Gegensatz zu den konkreten Repräsentationsknoten keine Selektoren oder Informationen darüber, wie eine Repräsentation modifiziert werden soll, sondern dient als logische Klammer und zentraler Knoten für alle Repräsentationen, mit denen ein Produkt identifiziert werden kann.
@@ -78,6 +92,30 @@ Eine Prüfung auf zirkuläre Vererbungs-Referenzen ist dabei nötig, um Schleife
 Falls es nötig ist, eine bidirektionale Beziehung darzustellen, kann mit einer identische, umgekehrten Kante die Richtung auf beide Seiten erweitert werden.
 
 \subsection{Beschreibungen und Begründungen}\label{subsec:model-rationale}
+
+Dieser Abschnitt teilt sich in zwei Unterkapitel, die das Format der Dokumentation von Metadaten auf Knoten und von Begründungen auf Kanten beschreiben.
+Aus dem bestehenden Datensatz werden Muster identifiziert, wie diese bisher in der Regel angegeben wurden, anhand von denen diese neuen Formate entworfen werden.
+
+\subsubsection{Kanten}
+
+In \hyperref[subsec:c-05-reason-not-good-enough]{C-05} wurden einige Beispiele für bisherige Entscheidungsketten aufgeführt.
+Jede Kette startet mit der Repräsentation, zu der es zu prüfen gilt, ob sie auf das aktuelle Artefakt anwendbar ist.
+Jedes Element in der Kette stellt eine Referenz, ein Zitat, eine Begründung oder Ableitung dar, die im letzten Schritt verwendet werden, um ein Urteil über die Anwendbarkeit der Repräsentation zu fällen.
+
+Der klare Vorteil von diesem Schema ist es, dass es sehr einfach ist, diese Ketten zu formulieren und während der Forschungsarbeit die einzelnen Schritte zu dokumentieren, da das Kommentarfeld formlos ist und jede Art von Inhalt erlaubt ist.
+Jedoch kann ein Kommentar in \acrshort{yaml} nicht ausgewertet werden, und die Formlosigkeit erlaubt es, auch \enquote{falsch} formatierte Ketten aufzubauen.
+Das neue Format soll also die Einfachheit und Erweiterbarkeit des alten Formats zu behalten, aber es auf eine Weise zu strukturieren, dass es Teil der Kantenangaben sein kann.
+Da das Subjekt der Begründung bereits durch die Kantenrichtung festgelegt ist, muss nur die Begründungskette und das Urteil aufgenommen werden.
+
+Daher wird das Urteil einfach in einem \enquote{why}-Attribut als Text abgelegt und die Begründung für diese als Liste an Texten in \enquote{because}, wobei jeder Eintrag in dieser Liste einem der ursprünglichen Schritte in der Kette entspricht (Referenz, \ldots).
+Die Begründungsschritte sind nicht typisiert, um noch immer eine möglichst große Freiheit zu ermöglichen und zukünftige Begründungen nicht einzuschränken.
+
+\subsubsection{Knoten}
+
+In dieser initialen Version sind auf einem Knoten einer Repräsentation die relevanten Metadaten die Produktbeschreibung und eine Menge an Referenzen auf Webseiten wie die Projekte, Homepages, Dokumentationen oder weitere.
+Die Beschreibung ist ein einfaches Textfeld, die Referenzen sind ein Objekt, bei dem die Schlüssel die Art der Referenz und der Wert der Link selbst ist.
+Bisher festgelegte Referenztypen sind \enquote{homepage}, \enquote{repository}, \enquote{...}.
+Um jedoch die Erweiterbarkeit zu sichern, kann als Schlüssel jeder Wert verwendet werden. % TODO: fill types
 
 \subsection{Graphmodifikation}\label{subsec:model-graph-modification}
 
@@ -118,22 +156,47 @@ Daraus ergeben sich die folgenden Modifikationsmodi:
     Dieser Modus wird nur den automatischen Prozessen exponiert, da die Erwartungshaltung im manuellen Format angegeben werden soll.
 \end{itemize}
 
-\subsection{Matching von Repräsentationen}\label{subsec:model-matching}
+\subsection{Matching von Artefakt-Repräsentationen}\label{subsec:model-matching}
 % Artefaktselektoren und Vererbungsregeln
 
-% Die \texttt{identification}-Sektion enthält Attribute wie \texttt{type} (z.B. \texttt{python}, \texttt{npm}), \texttt{name} und typspezifische \texttt{typeAttributes} (z.B. \texttt{scope}, \texttt{packageName} für NPM oder \texttt{supplier} für Java Runtimes), die eine präzise Identifikation des Artefakts ermöglichen.
-% Beispielsweise identifiziert der \texttt{artifact: "Redis Python Interface"}-Knoten Artefakte vom Typ \texttt{python} mit dem \texttt{name} \texttt{redis}.
-% Die Möglichkeit, Listen von Werten für Attribute wie \texttt{Id} oder \texttt{name} zu definieren, erlaubt eine ODER-Verknüpfung von Matching-Kriterien, wodurch verschiedene Ausprägungen eines Attributs abgedeckt werden können.
-% Die Unterstützung regulärer Ausdrücke, wie \texttt{redis-*/i} im \texttt{artifact: "Redis DB"}-Knoten, bietet zusätzliche Flexibilität bei der Mustererkennung.
-% Das Vererbungssystem für Artefakt-Selektoren (\hyperref[subsec:req-selektor-inheritance]{A-04}), visualisiert durch \texttt{INH}-Kanten im Dot-Graphen (z.B. von \texttt{n17} zu \texttt{n16}), ermöglicht es, generische Matching-Regeln zu definieren und spezifischere Regeln davon abzuleiten, was die Redundanz reduziert und die Pflege erleichtert.
+Der Fokus dieser Arbeit liegt darauf, den Produktgraphen für das neue Korrelationssystem vorzubereiten.
+Da in diesem Kontext die Traversierungsrichtung immer von Artefakt-Knoten zu anderen Repräsentationen ausgeht, wird zunächst der Fokus nur auf den Abgleich von Knoten des Typs \texttt{artefact} mit Artefakten gelegt.
+Die hier aufgeführten Regeln lassen sich daraus jedoch auch recht einfach für weitere Knotentypen ableiten.
 
-% Der Matching-Prozess im neuen Korrelationssystem ist darauf ausgelegt, eingehende Software-Artefakte präzise und effizient mit den im Graphen modellierten Produktrepräsentationen abzugleichen.
-% Dieser Prozess beginnt mit der Analyse eines vorliegenden Artefakts, das beispielsweise aus einem Software-Scan oder einer \acrshort{sbom} stammt.
+Eine der Qualitätsanforderungen an den Graphen (\hyperref[subsec:req-graph-inner-consistency]{A-10}) ist, dass genaue eine Repräsentation im Graphen mit einer Eingabe übereinstimmt.
+Das bedeutet auch, dass bei der Abfrage eines Artefakts nur ein einiger Knoten gefunden werden darf, der diesem entspricht.
+Es werden dafür in Folgenden zwar Mechanismen bereitgestellt, die dieses Verhalten möglichst einfach für einen Anwender ermöglichen, jedoch kann die explizite manuelle Modellierung eines solchen Falles nicht von der Konzeption her ausgeschlossen werden.
+Daher ist es so wichtig, einen sich selbst pflegenden Testdatensatz zu führen, der die Identifikationen regelmäßig automatisch prüft.
 
-% Der erste entscheidende Schritt ist die **Typinferenz**, wie in \hyperref[subsec:req-type-specific-matching]{A-03} gefordert.
-% Eine dedizierte Logik bereitet den Artefakttypen konsistent aus multiplen Quellen auf.
-% Ziel ist es, einen normalisierten Ökosystembezeichner (z.B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}) zu ermitteln.
-% Diese Normalisierung ist entscheidend, um die Herausforderung inkonsistenter Typinformationen (\hyperref[subsec:c-02-uneindeutige-artefakt-typinformation]{C-02}) zu lösen und eine einheitliche Grundlage für den Abgleich zu schaffen.
+Zunächst wird die Artefakt-Selektion auf einzelnen Knoten eingeführt, dann werden mehrere Knoten über Vererbungsregeln kombiniert und deren Regeln erläutert.
+
+\subsubsection{Artefakt-Selektor}
+
+Jeder Artefakt-Knoten enthält eine Liste an Selektoren, die durch ein logisches ODER verbunden werden, damit nur ein Selektor zutreffen muss, um ein Artefakt zu identifizieren.
+Das ermöglicht es, mehrere alternativen aufzuführen, wie sich ein reales Artefakt in seiner Attributmenge ausprägen kann und verhindert die Notwendigkeit, einen zweiten Knoten für dasselbe Artefakt anlegen zu müssen.
+
+Jeder Selektor besteht aus einer Menge an Attributen, von denen alle für ein Artefakt mit einem logischen UND übereinstimmen müssen, um den Eintrag zu aktivieren.
+Um \hyperref[subsec:req-multiple-attribute-values]{A-05} zu erfüllen, sind die Werte der abzugleichenden Attribute als Listen an möglichen Werten abgelegt, die mit einem weiteren logischen ODER verbunden sind, also von denen nur ein Wert zutreffen muss.
+Zudem können die Werte nach \hyperref[subsec:req-regex-support]{A-06} das bisherige inkrementelle Wildcard-System verwenden, um möglichst alle Matching-Fälle abzudecken.
+Die abfragbaren Attribute sind in zwei Mengen geteilt, die sich in ihrer Quellen unterscheiden.
+
+Rohe Artefakt-Attribute beziehen sich auf die Attribute, die das Artefakt direkt in sich speichert.
+Im alten System war diese Menge die einzige, die abgefragt werden konnte.
+Häufig verwendete Attribute sind \texttt{Id}, \texttt{Type} und Ökosystemspezifische wie \texttt{Group Id}.
+Da diese Art von Abfrage in dem neuen Format aufgrund ihrer Instabilität, der Unschärfe wegen der Kombination von mehreren Werten in einem Attribut und der anderen Herausforderungen auf Artefakt-Attributen in den Hintergrund treten soll, werden diese Abfragen explizit als solche gekennzeichnet werden müssen.
+
+Die neuen typspezifischen Attribute werden von den in \autoref{subsubsec:model-graph-knoten} aufgelisteten Extraktoren aufbereitet und in den Selektoren als First-Class Attribute zur Verfügung gestellt.
+Die Standard-Attribute sind \texttt{type} zur Auswahl eines erkannten Artefakttyps, \texttt{name} für einen ökosystemspezifischen Paketnamen und \texttt{version} für die Version.
+Basierend auf dem \texttt{type}-Wert wird in dem Objekt die Präsenz weiterer Attribute der typisierten Artefakte zugesichert und für Abgleiche exponiert.
+
+\subsubsection{Vererbung von Selektoren}
+
+Wie in \autoref{subsubsec:model-edges-relations} angerissen haben Artefakt-Knoten die Möglichkeit
+
+\subsubsection{Ergebnisse der Selektion}
+
+Das Ergebnis des Selektionsprozesses eine Menge an \texttt{artifact}-Knoten im Graphen, die dem eingehenden Software-Artefakt entsprechen.
+Diese gefundenen Knoten dienen als Ausgangspunkte für die anschließende Durchquerung des Graphen (\autoref{subsec:model-traversal}), um die zugehörigen Repräsentationen zu ermitteln.
 
 % Basierend auf dem erkannten Ökosystem oder Typ des Artefakts werden anschließend **typspezifische Extraktoren** angewendet.
 % Diese Extraktoren ziehen weitere Attribute aus den Artefakt-Metadaten, die als First-Class Matching-Kriterien dienen.
@@ -151,9 +214,6 @@ Daraus ergeben sich die folgenden Modifikationsmodi:
 % Wenn ein Attribut in einem Selektor mehrere Werte als Liste enthält, wird eine logische ODER-Verknüpfung angewendet.
 % Das bedeutet, dass ein Match zustande kommt, sobald der Wert des eingehenden Artefakts mit mindestens einem der gelisteten Werte übereinstimmt.
 % Trotz des Fokus auf typspezifische Attribute wird die **Unterstützung regulärer Ausdrücke** (\hyperref[subsec:req-regex-support]{A-06}) beibehalten, um weiterhin flexible und inkrementelle Wildcard-Systeme für komplexe Match-Fälle zu ermöglichen, die nicht rein über exakte Attribute abgebildet werden können.
-
-% Das Ergebnis des Matching-Prozesses ist die Identifikation eines oder mehrerer \texttt{artifact}-Knoten im Graphen, die dem eingehenden Software-Artefakt entsprechen.
-% Diese gefundenen Knoten dienen als Ausgangspunkte für die anschließende **Durchquerung des Graphen**, um die vollständige Produktidentifikation und alle zugehörigen Informationen zu ermitteln.
 
 \subsection{Durchquerungsregeln des Graphen}\label{subsec:model-traversal}
 % Auswertungslogik für Relationen und Versionstransformation
@@ -212,16 +272,30 @@ Beispielsweise wird ein \texttt{artefact}-Knoten durch \texttt{artifact: "npm @m
 An Knoten können mit \texttt{metadata} diverse Metadaten angefügt werden (\hyperref[subsec:req-reason-format]{A-08}).
 Das \texttt{metadata}-Feld ermöglicht es Beschreibungen (\texttt{description}) und externe Referenzen (\texttt{references}) unter beliebigen Keywords wie \texttt{homepage} abzulegen.
 
-Kantenbeziehungen werden innerhalb der Knotendefinitionen unter den festgelegten Schlüsseln \texttt{is}, \texttt{is not} und \texttt{inherit}.
-Die Felder enthalten je eine Liste von Zielknotenselektoren, zu denen die Beziehung aufgebaut werden soll, deren Format ebenfalls das \enquote{type: id}-Schema verwenden.
-
 Typspezifisch sind momentan nur für Produkt- und Artefakt-Knoten weitere Attribute geplant.
 Bei Artefakten ist das \texttt{identification}-Attribut, welches eine Liste von Selektoren mit den Kriterien für das Matching von eingehenden Artefakten enthält.
 Nach \hyperref[subsec:req-type-specific-matching]{A-03} ermöglicht es die Verwendung von normalisierten Ökosystembezeichnern (\texttt{type}, z.B. \texttt{python}, \texttt{npm}) und typspezifischen Attributen (\texttt{name}, \texttt{scope}, \texttt{packageName}), die über spezielle Extraktoren ermittelt werden.
-Wildcard-Selektoren \hyperref[subsec:req-regex-support]{A-06} können noch immer im alten Format inkrementell aktiviert werden.
+Wildcard-Selektoren können noch immer im alten Format inkrementell aktiviert werden (\hyperref[subsec:req-regex-support]{A-06}).
 Um mehrere Werte pro Attribut angeben zu können (\hyperref[subsec:req-multiple-attribute-values]{A-05}), können statt wie bisher nur Text-Werte auf den Attributen auch \acrshort{yaml}-Listen angegeben werden, deren Elemente durch eine logische ODER-Verknüpfung verbunden werden (z.B. \texttt{name: ["web3-react\_walletconnect", "walletconnect", "@web3-react/walletconnect"]}).
 
-\begin{lstlisting}[style=yaml,caption={Beispiel des \acrshort{yaml}-Modifikationsformats},label={lst:modell-graph-modification-yaml-demo},basicstyle=\ttfamily\scriptsize]
+Kantenbeziehungen werden innerhalb der Knotendefinitionen unter den festgelegten Schlüsseln \texttt{is}, \texttt{is not} und \texttt{inherit}.
+Die Attribute enthalten je eine Liste von Zielknotenselektoren, zu denen die Beziehung aufgebaut werden soll, deren Format ebenfalls das \enquote{type: id}-Schema verwenden.
+Auf dem gleichen Objekt werden zudem die Metadaten der Kante aufgeführt, die sie haben soll.
+Diese sind einmal die Begründungsfelder \texttt{why} mit der aus der Nachforschung abgeleiteten Entscheidung als Textattribut aufgenommen werden kann und \texttt{because}, in der die Begründung schrittweise als Text-Liste steht.
+
+Neben diesen Metadaten gibt es auf Kanten die \texttt{transform}-Anweisung, in der eine Liste an Transformationen an einen Zielknoten definiert, um dessen Bedeutung zu verändern.
+Neben den Transformationsattributen nimmt jeder Eintrag optional eine Anwendbarkeitsbedingung in dem Attribut \texttt{for} aufgeführt werden, die den Zielknoten auf einen Typen, die Id und weitere Attribute filtern kann.
+Auf Produkt-Knoten geschieht die Definition von Transformationen in dem \texttt{namespaces}-Attribut, welcher ein Objekt darstellt.
+Jeder Schlüssel in diesem Objekt stellt den Bezeichner eines Namespaces dar, den sowohl Quell- als auch Zielknoten besitzen müssen, um überhaupt in Frage zu kommen.
+In den Objekt-Werten sind über das \texttt{source}-Attribut weitere Filter auf den Quellknoten möglich, in \texttt{target} werden die anzuwendenden Transformationen aufgelistet.
+
+Die Begründungsfelder sind genau wie in \autoref{subsec:model-rationale} erklärt auf den Knoten und Kanten als Objekte und Listen verfügbar.
+
+Ein einfaches Beispiel für die Definition von drei Knoten und zwei Kanten kann in \autoref{lst:modell-graph-modification-yaml-demo} im \acrshort{yaml}-Format gefunden werden, wie sich die Auswertung davon im Graphen darstellt ist in \autoref{fig:modell-graph-modification-yaml-demo-rendered} abgebildet.
+Um die Fähigkeiten des Formats als \textit{Modifikations}format zu demonstrieren wird auf dem vorherigen Graphen mit einer weiteren Modifikation in \autoref{lst:modell-graph-modification-yaml-demo-append} aufgebaut, woraus sich der Graph in \autoref{fig:modell-graph-modification-yaml-demo-append-rendered} ergibt.
+Weitere Beispiele und die Referenzfälle können in \autoref{sec:beispiele-fertige-implementierung} gefunden werden.
+
+\begin{lstlisting}[style=yaml,caption={Beispiel des \acrshort{yaml}-Modifikationsformats (create mode)},label={lst:modell-graph-modification-yaml-demo},basicstyle=\ttfamily\scriptsize]
 - cpe: "cpe:/a:ellucian:banner"
   metadata:
     description: "Student information system"
@@ -248,17 +322,29 @@ Um mehrere Werte pro Attribut angeben zu können (\hyperref[subsec:req-multiple-
 \begin{figure}[htbp]
     \centering
     \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/example-graph-material-banner}}
-    \caption{Generierter Graph aus dem Beispiel des \acrshort{yaml}-Modifikationsformats}
+    \caption{Generierter Graph aus dem Beispiel des \acrshort{yaml}-Modifikationsformats (create mode)}
     \label{fig:modell-graph-modification-yaml-demo-rendered}
 \end{figure}
 
-% Das in \hyperref[subsec:req-selektor-inheritance]{A-04} geforderte Vererbungssystem für Artefakt-Selektoren wird ebenfalls durch das \acrshort{yaml}-Format abgebildet.
-% Obwohl nicht direkt im bereitgestellten Beispiel sichtbar, würde dies typischerweise durch ein zusätzliches Feld wie \texttt{inherits} oder ähnliche Mechanismen innerhalb der Artefakt-Selektor-Definitionen realisiert.
-% Dies erlaubt die Definition generischer Basis-Selektoren, von denen spezifischere Selektoren Attribute erben und bei Bedarf überschreiben können, was die Wartung von Selektoren erheblich vereinfacht und Duplizierung reduziert (\hyperref[subsec:c-03-duplizierte-artefakt-selektoren]{C-03}).
+\begin{lstlisting}[style=yaml,caption={Beispiel des \acrshort{yaml}-Modifikationsformats (append mode)},label={lst:modell-graph-modification-yaml-demo-append},basicstyle=\ttfamily\scriptsize]
+- cpe: "cpe:/a:blogstand_banner_plugin_project:blogstand-smart-banner"
 
-% Um der Herausforderung großer und unübersichtlicher \acrshort{yaml}-Dateien (\hyperref[subsec:c-04-groe-und-unubersichtliche-yaml-dateien]{C-04}) zu begegnen, wird die Organisation der manuell gepflegten Korrelationsdateien gemäß \hyperref[subsec:req-yaml-file-organization]{A-11} neu strukturiert.
-% Es wird eine Trennung in Verzeichnissen nach Typ und/oder Ökosystem vorgenommen, und innerhalb dieser Verzeichnisse können einzelne Hersteller- oder Produktgruppen in separaten Dateien geführt werden.
-% Diese modulare Struktur verbessert die Übersichtlichkeit, erleichtert die Navigation und fördert die Zusammenarbeit.
+- product: "NPM Material Design Banner Component"
+  mode: append
+  is not:
+    - cpe: "a:blogstand_banner_plugin_project:blogstand-smart-banner"
+      why: "Not a Material Design component, is an abandoned WordPress plugin"
+      because:
+        - "affects CVE-2014-4848"
+        - "http://packetstormsecurity.com/files/127290/WordPress-Blogstand-Smart-Banner-1.0-Cross-Site-Scripting.html"
+        - "http://wordpress.org/plugins/blogstand-smart-banner"
+        - "This plugin has been closed"
+        - "Only one version released 12 years ago"
+\end{lstlisting}
 
-% Schließlich wird die Überführung bestehender Einträge aus dem alten Korrelationsdatensatz (\hyperref[subsec:req-current-dataset-conversion]{A-12}) duch die Fähigkeit des neuen Formats unterstützt, die Funktionalitäten des alten Systems vollständig abzubilden und zu erweitern.
-% Dies ermöglicht einen parallelen Betrieb und eine schrittweise Migration der Daten, um einen reibungslosen Übergang zum neuen System zu gewährleisten.
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/example-graph-material-banner-append}}
+    \caption{Generierter Graph aus dem Beispiel des \acrshort{yaml}-Modifikationsformats (append mode)}
+    \label{fig:modell-graph-modification-yaml-demo-append-rendered}
+\end{figure}

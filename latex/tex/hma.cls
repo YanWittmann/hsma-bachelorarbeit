@@ -663,6 +663,7 @@ intoc=true]%
 
 \RequirePackage{makecell}
 \RequirePackage{svg}
+\RequirePackage{pdflscape}
 
 \lstdefinestyle{yaml}{
 	basicstyle=\ttfamily\footnotesize\color{black},

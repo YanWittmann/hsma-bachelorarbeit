@@ -213,12 +213,14 @@ Die Benutzeroberfläche in dieser Anordnung besteht links oben aus der Tabelle d
 Links unten ist ein Widget zu sehen, das eine Detailsicht mit allen Attributen des aktuell ausgewählten Artefakts anzeigt.
 Hier werden zudem über Web-Requests und lokale Datenbankabfragen diverse weitere Informationen, Links und Internetsuchen aggregiert und für den Nutzer vorbereitet.
 
-\begin{figure}
-    \centering
-    \makebox[\linewidth]{\includegraphics[keepaspectratio,width=1.3\linewidth]{../../images/correlation-utilities-demo}}
-    \caption{Das Artefakt \texttt{log4j-core-2.14.0.jar} in den Correlation Utilities}
-    \label{fig:correlation-utilities-demo}
-\end{figure}
+\begin{landscape}
+    \begin{figure}
+        \centering
+        \includegraphics[keepaspectratio,width=\linewidth]{../../images/correlation-utilities-demo}
+        \caption{Das Artefakt \texttt{log4j-core-2.14.0.jar} in den Correlation Utilities}
+        \label{fig:correlation-utilities-demo}
+    \end{figure}
+\end{landscape}
 
 Ein weiteres Widget auf der rechten Seite zeigt, welche Korrelationseinträge auf das aktuelle Artefakt angewendet wurden und erlaubt über eine Integration mit IntelliJ IDEA den direkten Zugriff auf die Korrelationseinträge im Editor und schlägt auf der Basis von einigen bekannten Mustern neue Einträge vor, die mit einem Klick übernommen werden können.
 Die Korrelationseinträge werden automatisch bei Änderungen in den Dateien neu geladen und ausgewertet.

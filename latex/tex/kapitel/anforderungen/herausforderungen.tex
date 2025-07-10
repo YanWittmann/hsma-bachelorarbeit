@@ -134,8 +134,8 @@ Beispielketten können sein:
 \begin{itemize}
     \itemsep0em
     \item \texttt{cpe:/a:apache:commons\_io --> https://github.com/apache/commons-io --> "library for IO operations" --> same as artifact}
-    \item \texttt{cpe:/a:golang:crypto --> https://github.com/golang/crypto / https://golang.org/x/crypto --> by golang (Go, [mirror] Go supplementary cryptography libraries) --> version range matches artifact}
-    \item \texttt{cpe:/a:setorinformatica:sil --> CVE-2024-22633 --> https://tomiodarim.io/posts/cve-2024-22632-3 --> "Setor Informatica is a Brazilian company that develops software for the Brazilian market" / "Smart System for Laboratories (S.I.L.)" --> they reported a vulnerability for another S.I.L. software --> cpe is applicable}
+    \item \texttt{cpe:/a:golang:crypto\ -->\\https://github.com/golang/crypto / https://golang.org/x/crypto\ --> by golang (Go, [mirror] Go supplementary cryptography libraries)\ --> version range matches artifact}
+    \item \texttt{cpe:/a:setorinformatica:sil\ --> CVE-2024-22633\ -->\\https://tomiodarim.io/posts/cve-2024-22632-3 -->\\"Setor Informatica is a Brazilian company that develops software for the Brazilian market" / "Smart System for Laboratories (S.I.L.)"\ -->\\they reported a vulnerability for another S.I.L. software -->\\cpe is applicable}
 \end{itemize}
 
 \subsection{C-06: Keine Einträge für Negatividentifikationen}\label{subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden}
@@ -148,7 +148,7 @@ Wenn eine Person ein Artefakt ohne \acrshort{cpe} darauf analysiert, ob diese Ab
 Das liegt daran, dass ein Korrelationseintrag nur dann gültig ist, wenn er eine Selektion und eine Modifikations-Aktion definiert, und damit gibt es keinen Eintrag, auf den die Erkenntnisse notiert werden könnten.
 Diese Wissenslücke führt zu wiederholtem Aufwand bei erneuten Analysen desselben Artefakts, da das Wissen über die korrekte Abwesenheit verloren gegangen ist.
 
-\subsection{C-07: Schlechtes Testframework, wenig Unterstützung für automatisierte Kontrolle}\label{subsec:c-07-test-framework}
+\subsection{C-07: Unzureichendes Testframework, wenig Unterstützung für automatisierte Prüfung der Daten}\label{subsec:c-07-test-framework}
 
 % The current correlation system does have a “validation” format that allows for the manual creation of test cases for the created correlation entries, but it’s quite tedious to use.
 % It would be much nicer, if the system used to create the correlation data (e.g. correlation utilities) would automatically (or with the press of a button) record the artifact the correlation was created on, the before and after states and create a test case with an expected result based on that.
@@ -162,7 +162,8 @@ Dieser Aufwand führt dazu, dass es in der Realität nicht von den Mitarbeitern 
 % The generated directory contains several automatically generated YAML correlation files, based on the data that is present in the index when generating.
 % These need to be converted into the new format somehow.
 
-Die automatisch generierten \acrshort{yaml}-Dateien, wie in \autoref{subsec:old-generated-correlation-data} gezeigt, müssen bei Datenänderungen manuell neu generiert werden, was nicht intransparent ist.
+Die automatisch generierten \acrshort{yaml}-Dateien, wie in \autoref{subsec:old-generated-correlation-data} gezeigt, müssen bei Datenänderungen manuell neu generiert werden, was nicht nur pflegeaufwändig, sondern auch nicht direkt offensichtlich für eine dritte Person ist.
+Dies könnte dazu führen, dass jemand die generierten Dateien manuell modifiziert, und diese Änderungen bei der nächsten Iteration verloren gehen.
 Zudem haben sich, vor allem bei den JRE/JDK-Generatoren einige Probleme mit der Abbildung auf das aktuelle Korrelationssystem gezeigt, die nur über die Verwendung von inkrementellen Korrelationseinträgen und dem Attribut \texttt{CPE URIs} (welches nicht mehr verwendet werden soll) gelöst werden konnten.
 Da eine der Anforderungen an das neue Korrelationssystem ist, weitere dynamische Quellen zu integrieren, muss dieses Konzept für generierte Daten von Anfang an mitgedacht werden.
 
@@ -184,7 +185,7 @@ So können firmeninterne Ergänzungen weiterhin in einem separaten, nicht öffen
 
 % Die inkrementelle Anwendung von Korrelationseinträgen erfordert eine strenge Reihenfolge, die aktuell nur durch die Position in der \acrshort{yaml}-Datei gesteuert wird. Änderungen in der Eintragsreihenfolge können unbeabsichtigte Seiteneffekte verursachen. Explizite Abhängigkeitsdeklarationen oder eine deklarative Priorisierungslogik (anstatt impliziter Dateiordnung) würden Robustheit und Verständlichkeit erhöhen.
 
-Das aktuelle System für Korrelationseinträge verarbeitet die Daten inkrementell (siehe \autoref{par:incremental-correlation-entries}), d.h.\ jeder Eintrag baut potenziell auf dem Zustand auf, der durch vorherige Einträge erarbeitet wurde.
+Das aktuelle System für Korrelationseinträge verarbeitet die Daten inkrementell (siehe \autoref{par:incremental-correlation-entries}), d.h.\ jeder Eintrag baut potenziell auf dem Zustand auf, der durch vorherige Einträge abgeleitet wurde.
 Da diese Abhängigkeiten zwischen Einträgen nicht explizit deklariert werden müssen, ergibt sich die Reihenfolge innerhalb einer \acrshort{yaml}-Datei wenigstens noch basierend auf der Position innerhalb der Datei, Dateiübergreifend jedoch ist die Verarbeitungsreihenfolge arbiträr basierend auf der Ordnung, die das Dateisystem dem Programm übergibt.
 Dies macht das System empfindlich gegenüber Umordnungen der Einträge, vor allem wenn über Dateien hinweg absichtlich oder unabsichtlich Abhängigkeiten erstellt wurden.
 
@@ -219,3 +220,20 @@ Weiterhin werden einige Transformationen an den Attributen vorgenommen, wie etwa
 Es wird daher im Quelltext der \acrshort{yaml}-Dateien Zeile für Zeile jeder Eintrag nach gewissen Schlüsselwörtern aus dem Datenmodell abgesucht, und der mit der höchsten Übereinstimmungsrate wird ausgewählt.
 
 Dieser Prozess funktioniert bei einer großen Anzahl der Einträge, jedoch kann es bei sehr ähnlichen Einträgen oder jenen, die viele komplizierte reguläre Ausdrücke verwenden passieren, dass die Zuordnung nicht erfolgreich ausgewertet wird.
+
+\subsection{C-12: Das Format arbeitet nur korrigierend}\label{subsec:c-12-format-nur-korrigierend}
+% Das Format ist nur korrigierend. Es kann keine zusätzlichen Daten aufnehmen, die zur Konsistenz- und Integritätsprüfung herangezogen werden könnten.
+
+Das vorhandene Korrelationsformat arbeitet nach dem Konzept, Korrekturen an den Eingabedaten vorzunehmen.
+Diese werden zwar effektiv mit dem Format formuliert und ausgewertet, allerdings kann es keine zusätzlichen Informationen aufnehmen, die zur Konsistenz- und Integritätsprüfung herangezogen werden könnten.
+Es enthält keine Metadaten über sich selbst, und jeder Eintrag steht lose neben dem nächsten, ohne Wissen über seinen Einfluss auf den größeren Kontext zu haben, in dem er steht.
+
+\subsection{C-13: Unzureichende Attributabbildungen}\label{subsec:c-13-attribut-abbildung-unzureichend}
+% Abbildung von Versionen nicht ausreichend erfasst.
+% Abhängigkeit auf Daten und erfassung parametrisierter Muster ist nicht möglich.
+
+Im vorhandenen Format ist es für jede bekannte Ausprägung einzelner Attributkombinationen die zu einer anderen Parametrisierung der Zielrepräsentation führen notwendig, einen neuen Eintrag zu erzeugen, der auf diese Attribute prüft und dann explizit die Zielform mit dem Parameter befüllt angibt.
+Dies ist besonders in \autoref{lst:correlation-generated-zulu-example} leicht zu erkennen, da hier für jede Version einer \acrshort{cpe} in einem neuen Eintrag eine entsprechende Versionsprüfung vorgenommen werden muss.
+
+Die dynamische Abhängigkeit auf Referenzdaten ist momentan also nur über die Erfassung mit parametrisierten Mustern möglich, was weder erweiterbar noch leicht zu pflegen ist.
+Das neue Format muss eine Abbildungslogik bereitstellen, in der Attribute dediziert ausgewertet werden können, um sie in die Zieldarstellung zu übernehmen.
