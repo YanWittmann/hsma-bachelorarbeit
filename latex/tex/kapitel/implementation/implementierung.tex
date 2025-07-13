@@ -56,6 +56,13 @@ Um Namenskonflikte zwischen anderen Modulen zu vermeiden und um ein einheitliche
 
 Die in dieser Sektion beschriebenen Klassen können in einem Klassendiagramm in \autoref{fig:impl-class-diagram-core-model} gefunden werden.
 
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/impl-class-diagram-core-model}}
+    \caption{Klassendiagramm der Kernkomponenten}
+    \label{fig:impl-class-diagram-core-model}
+\end{figure}
+
 Die zentrale Klasse \texttt{RepGraph} repräsentiert den Korrelationsgraphen und bietet Methoden zum Zugriff auf Knoten und Kanten.
 Sie verwaltet über eine Klasse \texttt{DbConnectionProvider} die Datenbankverbindung, stellt sicher, dass die Verbindung korrekt initialisiert und verwaltet wird und führt die SQL-Operationen aus, die für die Graphmanipulation erforderlich sind.
 Die Klasse implementiert auch Methoden zur Sicherung und Wiederherstellung von Backups des Graphen.
@@ -71,18 +78,12 @@ Die Klasse \texttt{RepCpeNode} beispielsweise implementiert die Logik für \acrs
 Um die programmatische Traversierung des Graphen für Abfragen möglichst einfach zu gestalten, werden in jedem Knoten die von diesem aus erreichbaren Knoten zusammen mit ihren Kanten in einer Liste als Attribut abgelegt.
 Diese Liste wird implizit erst bei dem ersten Zugriff auf referenzierte Knoten befüllt, um nicht automatisch rekursiv ganze Inseln im Graphen abzufragen.
 Ein weiterer Vorteil, einen Cache für die Instanziierung der Knoten und Kanten zu verwenden ist, dass bei zyklischen Verbindungen oder erneuten Zugriffen diese Liste nicht neu berechnet werden muss, und für einen konkreten Knoten die Instanz immer die selbe sein wird.
+Der Datenkonstruktor hat zwei Betriebsmodi \enquote{Read-Only} und \enquote{Read/Write}, wobei der Cache nur in dem Lesemodus verwendet wird, um zusichern zu können, dass immer der aktuelle Datensatz aus der Datenbank zurückgegeben wird.
 
 Kanten werden durch die Klasse \texttt{RepGraphEdge} repräsentiert, die Informationen über Quell- und Zielknoten und Beziehungstyp, sowie Metadaten enthält.
 Die Klasse implementiert auch die Logik für die Anwendung von Transformationen, die entlang der Kanten propagiert werden.
 
 % Über diese Liste an Referenzen zu anderen Knoten können nun beliebige komplexe Abfragen gebaut werden.
-
-\begin{figure}[htbp]
-    \centering
-    \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/impl-class-diagram-core-model}}
-    \caption{Klassendiagramm der Kernkomponenten}
-    \label{fig:impl-class-diagram-core-model}
-\end{figure}
 
 \subsubsection{Datenbankschema}
 
@@ -90,8 +91,53 @@ Zum Programmstart wird sichergestellt, dass die Datenbank die nötigen Tabellen,
 Das \acrshort{sql}-Skript mit dem entsprechenden Schema kann in \autoref{lst:create-node-table-sql} gefunden werden.
 Neben den vollständig als \acrshort{json} serialisierten Datenobjekten enthält die \texttt{nodes}-Tabelle die Knoten mit einer eindeutigen Id und einem Knotentyp und die \texttt{edges}-Tabelle Kanten mit Quell- und Zielknoten-Ids, Richtung, Beziehungstyp.
 
-\lstinputlisting[firstline=1,
+\lstinputlisting[
+    firstline=1,
     language=SQL,
     caption={Datenbankschema aus \texttt{create-node-table.sql}},
-    label=lst:create-node-table-sql]
-{code/create-node-table.sql}
+    label=lst:create-node-table-sql,
+    basicstyle=\ttfamily\scriptsize
+]{code/create-node-table.sql}
+
+\subsubsection{Modifikationssystem}
+
+Das Modifikationssystem ermöglicht die Änderung des Graphen durch verschiedene Quellen, sei es automatisiert oder auch manuell.
+Die zuständigen Klassen sind im Klassendiagramm in \autoref{fig:impl-class-diagram-modifiers} zu finden.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1\textwidth, inkscapelatex=false]{bilder/impl-class-diagram-modifiers}}
+    \caption{Klassendiagramm der Modifikationsklassen}
+    \label{fig:impl-class-diagram-modifiers}
+\end{figure}
+
+Die Klasse \texttt{RepGraphModifierEntry} ist die Basisklasse für Modifikationsanweisungen und ist dafür verantwortlich, sie auf den Graphen anzuwenden.
+Wie in \autoref{subsec:model-graph-modification} beschrieben unterstützt sie mit den verschiedenen Modi die Erwartungshaltung an den Graphen auszudrücken und arbeitet allgemein inkrementell auf den Daten.
+Um eine Menge an Modifikationseinträgen auf den Graphen anzuwenden wird das System in zwei Phasen aufgeteilt und wird anhand vom Pseudocode in \autoref{lst:modifikation-pseudocode} erklärt.
+
+In der ersten Phase wird für jeden Eintrag der Graph nach dem Knoten mit dem eindeutigen Typ und Id-Paar durchsucht, um je nach \texttt{ModificationType} das Prüfen der Knotenexistenz durchzuführen und den Knoten optional anzulegen.
+Diese erste Phase sorgt dafür, dass alle referenzierten Knoten instanziiert sind, sodass in der nächsten Phase die Relationen zwischen diesen korrekt aufgebaut werden können.
+In der zweiten Phase werden die Knotenattribute und Kanten in drei getrennten Schritten befüllt.
+Zunächst werden in \texttt{baseModification} einige Basisattribute ausgewertet, die für alle Knotentypen gültig sind, wie Namensräume und Metadaten.
+Die Methode \texttt{processRelations} verarbeitet dann alle konfigurierten Relationen.
+Schließlich wird die \texttt{implementationSpecificModification} ausgeführt, in der je nach Knotentyp weitere Attribute aufgefüllt werden und dann wird der aktualisierte Knoten mit \texttt{graph.insertOrUpdateNode} persistiert.
+
+\begin{lstlisting}[language=pseudo,caption={Ablauf des Modifikationssystems für eine Menge an Modifikationen},label=lst:modifikation-pseudocode,basicstyle=\ttfamily\scriptsize]
+FOR EACH entry IN entries DO
+    node := graph.findNode(entry.nodeType, entry.nodeId)
+    IF entry.mode == CREATE AND node EXISTS THEN
+        THROW "Node exists"
+    ELSE IF (entry.mode == RESET OR APPEND) AND node DOES NOT EXIST THEN
+        THROW "Node missing"
+    END IF
+    graph.ensureExists(entry)
+END FOR
+
+FOR EACH entry IN entries DO
+    node := graph.findNode(entry.nodeType, entry.nodeId)
+    entry.baseModification(graph, node)
+    entry.processRelations(graph, node)
+    entry.implementationSpecificModification(graph, node)
+    graph.insertOrUpdateNode(node, (old, new) --> new)
+END FOR
+\end{lstlisting}

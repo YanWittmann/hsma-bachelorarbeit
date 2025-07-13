@@ -692,3 +692,16 @@ intoc=true]%
 	keywordstyle=\color{green!50!black},
 	keywords={true,false,null}
 }
+
+\lstdefinelanguage{pseudo}{
+	morekeywords={FOR, EACH, IN, DO, IF, THEN, ELSE, END, THROW, AND, OR, NOT, EXISTS, DOES, NOT, CREATE, RESET, APPEND},
+	sensitive=true,
+	morecomment=[l]{//},
+	commentstyle=\color{gray},
+	morestring=[b]",
+	stringstyle=\color{blue},
+	showstringspaces=false,
+	basicstyle=\ttfamily\scriptsize\color{black},
+	keywordstyle=\color{orange!80!black},
+	rulecolor=\color{black}
+}
