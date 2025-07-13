@@ -141,3 +141,21 @@ FOR EACH entry IN entries DO
     graph.insertOrUpdateNode(node, (old, new) --> new)
 END FOR
 \end{lstlisting}
+
+\paragraph{RepContributor}
+
+Die abstrakte Klasse \texttt{RepContributor} definiert über einen einheitlichen Mechanismus die Struktur für verschiedene Datenquellen, die Daten zum Korrelationsgraphen beitragen wollen.
+Die Implementierungen stellen fast alle die automatischen Anteile dar, die \acrshortpl{vdb} oder anderen Datenquellen automatisch auswerten, um Informationen abzuleiten.
+Allerdings gibt es natürlich die eine Implementierung, die das manuelle \acrshort{yaml}-Format auswertet und auf den Graphen anwendet.
+Dieser manuelle Contributor ist der letzte, der ausgeführt wird, um sicherzustellen, dass alle vorherigen Contributors durch den manuellen korrigiert werden können.
+
+Auch wenn jede Implementierung sich auf andere Daten- und Knotentypen bezieht, funktionieren alle nach demselben Muster:
+Zunächst wird die entsprechende Datenquelle analysiert, um die betreffenden Datenobjekte zu finden, die als Knoten repräsentiert werden sollen.
+Mit diesen werden programmatisch Modifikatoren für den Graphen zusammengestellt und erst ganz zum Schluss wird die Methode aufgerufen, die die Modifikationen einheitlich auf den Graphen anwendet.
+
+Ein Beispiel ist der \texttt{CpeDictionaryRepContributor}, der als erster Contributor das offizielle \acrshort{cpe}-Dictionary des \acrshort{nist} vollständig importiert, um alle \acrshort{cpe}-Knoten mit ihren Metadaten einzufügen.
+Diese Klasse durchsucht den \acrshort{cpe}-Index nach Vendor-Produkt-Paaren und extrahiert die zugehörigen Metadaten wie Titel und Beschreibungen, um sie als Knoten im Graphen anzulegen.
+
+Mit dem \texttt{RepGraphModifierParser}, der für das rekursive Einlesen von \acrshort{yaml}-Dateien zuständig ist, wird der \texttt{FileRepContributor} implementiert.
+Er konvertiert die \acrshort{yaml}-Struktur in \texttt{RepGraphModifierEntry}-Objekte, die dann auf den Graphen angewendet werden können.
+Fehler beim Parsing werden mit aussagekräftigen Meldungen mit Referenzen auf die originale Datei und die Zeile des Eintrags in der Datei protokolliert, um die Fehlersuche zu erleichtern.
