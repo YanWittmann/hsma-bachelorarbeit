@@ -1,0 +1,76 @@
+@startuml
+
+!theme plain
+skinparam linetype ortho
+left to right direction
+
+package "Graph Core" {
+    class RepGraph {
+        mode: OperationMode
+        connection: Connection
+    }
+    class RepGraphQuery {
+        dataConstructor: DataConstructor
+    }
+    class TraversalQuery {
+        edgeFilters: List<Predicate<RepGraphEdge>>
+        nodeFilters: List<Predicate<RepGraphNode>>
+        queryDirection: TraversalQueryDirection
+    }
+    class RepGraphNode {
+        graph: RepGraph
+        uid: Long
+        id: String
+        nodeType: String
+        namespaces: Set<String>
+        metadata: RepGraphNodeMetadata
+        contributors: Set<String>
+        relatedNodes: Map<RepGraphEdge, RepGraphNode>
+    }
+    class RepGraphEdge {
+        uid: Long
+        sourceUid: Long
+        targetUid: Long
+        transform: List<RepEdgeTransform>
+        relationshipType: RelationshipType
+        relationshipSubType: RelationshipSubType
+        metadata: RepGraphEdgeMetadata
+        contributors: Set<String>
+    }
+}
+
+package "Node Types" {
+    class RepArtifactNode {
+        identification: List<RepArtifactMatcher>
+    }
+    class RepCpeNode {
+        cpe: String
+    }
+    class RepEolNode {
+        eolId: String
+    }
+    class RepMsProductIdNode {
+        msId: String
+    }
+    class RepProductNode {
+        namespaces: List<RepGraphProductNamespace>
+    }
+    class RepPurlNode {
+        purl: String
+    }
+}
+
+TraversalQuery -up[hidden]- RepGraphQuery
+
+RepArtifactNode -[#000082,plain]-^ RepGraphNode
+RepCpeNode -[#000082,plain]-^ RepGraphNode
+RepEolNode -[#000082,plain]-^ RepGraphNode
+RepMsProductIdNode -[#000082,plain]-^ RepGraphNode
+RepPurlNode -[#000082,plain]-^ RepGraphNode
+RepProductNode -[#000082,plain]-^ RepGraphNode
+RepGraph <-[#820000,plain]- RepGraphNode
+RepGraphEdge <-[#820000,plain]- RepGraphNode
+RepGraphQuery <-[#820000,plain]- RepGraph
+TraversalQuery <-[#820000,plain]- RepGraphQuery
+
+@enduml

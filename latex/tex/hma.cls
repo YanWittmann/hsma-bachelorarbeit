@@ -656,10 +656,14 @@ intoc=true]%
 
 \RequirePackage{pdfcomment}
 
+% hover tooltip
 \let\acrshortplain\acrshort
 \renewcommand*{\acrshort}[1]{\pdftooltip{\acrshortplain{#1}}{\glsentrylong{#1}}}
 \let\acrshortplainpl\acrshortpl
 \renewcommand*{\acrshortpl}[1]{\pdftooltip{\acrshortplainpl{#1}}{\glsentrylong{#1}}}
+
+% full acronym in reverse order
+\newcommand{\acrfullr}[1]{\acrshort{#1} (\acrlong{#1})}
 
 \RequirePackage{makecell}
 \RequirePackage{svg}

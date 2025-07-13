@@ -4,8 +4,94 @@ Das in \autoref{sec:model-modellierungsansatz} entworfene Modell des neuen Korre
 Dazu werden zunächst die technischen und architekturellen Entscheidungen aufgeführt, dann die Implementierung vorgestellt.
 
 \subsection{Technische Grundentscheidungen}\label{subsec:impl-tech-choices}
-% Wahl von Java, SQLite, Bibliotheken
+
+Bei der Implementierung des neuen Korrelationssystems wurden mehrere technische Grundentscheidungen aus den Anforderungen und Rahmenbedingungen des Projekt- und Firmenkontexts getroffen, auf denen das Modell implementiert werden soll.
+
+\paragraph{Programmiersprache}
+
+Als Programmiersprache wurde Java in der Version 8 gewählt, da das bestehende Schwachstellenmanagement der \metaeffektsp in dieser Sprache und Version implementiert ist und das neue Korrelationssystem sich damit integrieren können muss.
+Das Ökosystem von Java bietet zudem eine umfangreiche Liste an Bibliotheken über das Repository von Maven Central\footnote{\url{https://search.maven.org}} für alle Nutzungskontexte und das robuste Typsystem mit Unterstützung für Generics wird die Entwicklung der Datenstrukturen für den Korrelationsgraphen vereinfachen.
+
+\paragraph{Datenbanktechnologie}
+
+Für die persistente Speicherung des Korrelationsgraphen wurde SQLite\footnote{\url{https://sqlite.org}} als relationale Datenbank aufgrund von mehreren Faktoren ausgewählt.
+SQLite benötigt keinen separaten Datenbankserver, sondern speichert die gesamte Datenbank in einer einzigen Datei, was die Verwaltung, Sicherung, Auslieferung und den Einsatz auf der Seite von Kunden stark vereinfacht.
+
+Als relationale Datenbank muss von Anfang an ein einheitliches Schema für die Tabellen definiert werden.
+Die Kernattribute der Datenelemente werden als dedizierte Attribute in den Spalten der Tabellen abgelegt.
+Um aber für zukünftige Formatänderungen vorzusorgen, und um die stark typabhängigen zusätzlichen Attribute in den Spalten vernünftig zur serialisierung und deserialisierung abspeichern zu können, wird einfach das gesamte Datenobjekt als \acrfullr{json}-Objekt in einer zusätzlichen Spalte abgelegt und bei Bedarf ausgelesen.
+Das ermöglicht eine flexible Erweiterung der Attribute ohne Schemaänderungen und dank Funktionen wie \texttt{json\_extract}\footnote{\url{https://sqlite.org/json1.html}} von SQLite kann dennoch bei Bedarf auf Attribute in den Objekten über \acrfullr{sql} zugegriffen.
+
+Alternativen, die in Betracht gezogen wurden, sind:
+
+\begin{itemize}
+    \itemsep0em
+    \item Ein Lucene-Index\footnote{\url{https://lucene.apache.org}}, da Apache Lucene bereits im Projektumfeld für die performante Speicherung anderer Schwachstellendaten genutzt wird und eine sehr schnelle Volltextsuche auf strukturierter und unstrukturierten Information erlaubt.
+    Jedoch wäre nicht nur das Verteilen der Datenbank komplizierter, da es sich um einen Ordner an Dateien handelt der zunächst komprimiert und entkomprimiert werden müsste, sondern auch das iterative Arbeiten mit dem Index wäre schwerer, da bei diesem nicht einfach eine Datei als Backup verwendet werden könnte, die die Arbeitsversion einfach überschreiben könnte, sondern ein ganzer Ordner ersetzt werden muss.
+    \item Die direkte Speicherung der Daten als \acrshort{json}-Dateien auf dem Dateisystem, was die einfachste Version ist, da es keine weiteren Treiber oder Bibliotheken bedarf.
+    Diese Option wurde verworfen, da sie keine effiziente Abfrage bereitstellt und dementsprechend nicht skalierbar genug ist und zudem Integritätsgarantien fehlen.
+    \item Der Einsatz einer dokumentenorientierten NoSQL Datenbank wie MongoDB\footnote{\url{https://www.mongodb.com}}, welche native JSON-Speicherung und flexible Schemata bietet.
+    Aufgrund des Overheads durch eine zusätzliche Serverkomponente und Lizenzüberlegungen wurde diese Lösung nicht weiterverfolgt.
+\end{itemize}
+
+\paragraph{Bibliotheken und Frameworks}
+
+Für die Implementierung wurden verschiedene Bibliotheken eingesetzt, um die Entwicklung zu beschleunigen:
+
+\begin{itemize}
+    \itemsep0em
+    \item Gson\footnote{\url{https://github.com/google/gson}}: Für die \acrshort{json}-Serialisierung und -Deserialisierung der Knoten- und Kantendaten.
+    \item Guava\footnote{\url{https://github.com/google/guava}}: Bietet erweiterte Datenstrukturen und Hilfsmethoden, vor allem für das Caching von Abfrageergebnissen.
+    \item Apache Commons\footnote{\url{https://commons.apache.org}}: Stellt Hilfsfunktionen für die Datei- und Stringverarbeitung bereit.
+    \item Lombok\footnote{\url{https://projectlombok.org}}: Reduziert Boilerplate-Code durch Annotation-basierte Codegenerierung für Getter, Setter und weitere Methoden.
+    \item Für die Verarbeitung von diversen Datentypen wurden spezialisierte Bibliotheken integriert, wie die Bibliothek \texttt{us.springett.parsers.cpe}\footnote{\url{https://github.com/stevespringett/cpe-parser}} um \acrshort{cpe}-Strings zu verarbeiten.
+\end{itemize}
 
 \subsection{Architekturübersicht}\label{subsec:impl-arch-overview}
 
-\subsection{Implementierung}\label{subsec:impl-implementation}
+Das Korrelationssystem wird über mehrere Klassen implementiert, um die Erstellung, Verwaltung und Abfrage des Graphen zu ermöglichen.
+Um Namenskonflikte zwischen anderen Modulen zu vermeiden und um ein einheitliches Namensschema zu definieren, werden alle relevanten Klassen mit \enquote{Rep} als Präfix gekennzeichnet.
+
+\subsubsection{Kernkomponenten}
+
+Die in dieser Sektion beschriebenen Klassen können in einem Klassendiagramm in \autoref{fig:impl-class-diagram-core-model} gefunden werden.
+
+Die zentrale Klasse \texttt{RepGraph} repräsentiert den Korrelationsgraphen und bietet Methoden zum Zugriff auf Knoten und Kanten.
+Sie verwaltet über eine Klasse \texttt{DbConnectionProvider} die Datenbankverbindung, stellt sicher, dass die Verbindung korrekt initialisiert und verwaltet wird und führt die SQL-Operationen aus, die für die Graphmanipulation erforderlich sind.
+Die Klasse implementiert auch Methoden zur Sicherung und Wiederherstellung von Backups des Graphen.
+
+Um eine klare Trennung der Manipulation des Graphen und der Abfragelogik zu haben, wird eine Klasse \texttt{RepGraphQuery} eingeführt, die Methoden zur Traversierung und Filterung des Graphen bereitstellt.
+Die Klasse nutzt das \enquote{Weak References}-Feature der Caching-Mechanismen die Guava bereitstellt, um die Leistung bei wiederholten Abfragen zu verbessern und trotzdem vom Java Garbage Collector profitiert, um nicht erreichbare Instanzen aufzuräumen \autocite{GuavaCachesExplained}.
+
+Das Knotenmodell wird durch eine Hierarchie von Klassen repräsentiert, die von der abstrakten Basisklasse \texttt{RepGraphNode} abgeleitet werden.
+Jeder Knotentyp (\acrshort{cpe}, \acrshort{purl}, Artefakt, Produkt usw.) wird durch eine spezialisierte Klasse implementiert, die die spezifischen Attribute und Verhaltensweisen des jeweiligen Typs kapselt.
+Die Klasse \texttt{RepCpeNode} beispielsweise implementiert die Logik für \acrshort{cpe}-Knoten, einschließlich der Verarbeitung von CPE-Strings und der Anwendung von Transformationen.
+Ähnlich implementiert \texttt{RepArtifactNode} die Logik für Artefaktknoten, einschließlich der Matching-Algorithmen für die Identifikation von Artefakten.
+
+Um die programmatische Traversierung des Graphen für Abfragen möglichst einfach zu gestalten, werden in jedem Knoten die von diesem aus erreichbaren Knoten zusammen mit ihren Kanten in einer Liste als Attribut abgelegt.
+Diese Liste wird implizit erst bei dem ersten Zugriff auf referenzierte Knoten befüllt, um nicht automatisch rekursiv ganze Inseln im Graphen abzufragen.
+Ein weiterer Vorteil, einen Cache für die Instanziierung der Knoten und Kanten zu verwenden ist, dass bei zyklischen Verbindungen oder erneuten Zugriffen diese Liste nicht neu berechnet werden muss, und für einen konkreten Knoten die Instanz immer die selbe sein wird.
+
+Kanten werden durch die Klasse \texttt{RepGraphEdge} repräsentiert, die Informationen über Quell- und Zielknoten und Beziehungstyp, sowie Metadaten enthält.
+Die Klasse implementiert auch die Logik für die Anwendung von Transformationen, die entlang der Kanten propagiert werden.
+
+% Über diese Liste an Referenzen zu anderen Knoten können nun beliebige komplexe Abfragen gebaut werden.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/impl-class-diagram-core-model}}
+    \caption{Klassendiagramm der Kernkomponenten}
+    \label{fig:impl-class-diagram-core-model}
+\end{figure}
+
+\subsubsection{Datenbankschema}
+
+Zum Programmstart wird sichergestellt, dass die Datenbank die nötigen Tabellen, Spalten und Indizes enthält.
+Das \acrshort{sql}-Skript mit dem entsprechenden Schema kann in \autoref{lst:create-node-table-sql} gefunden werden.
+Neben den vollständig als \acrshort{json} serialisierten Datenobjekten enthält die \texttt{nodes}-Tabelle die Knoten mit einer eindeutigen Id und einem Knotentyp und die \texttt{edges}-Tabelle Kanten mit Quell- und Zielknoten-Ids, Richtung, Beziehungstyp.
+
+\lstinputlisting[firstline=1,
+    language=SQL,
+    caption={Datenbankschema aus \texttt{create-node-table.sql}},
+    label=lst:create-node-table-sql]
+{code/create-node-table.sql}
