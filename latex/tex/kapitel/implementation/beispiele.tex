@@ -4,13 +4,206 @@ Zur Validierung des implementierten Systems werden die vier Referenzfälle aus \
 Jedes Beispiel zeigt spezifische Aspekte des neuen Modells.
 
 \subsection{Referenzfall 1: JavaScript-Paket}\label{subsec:example-js-package}
-% \autoref{par:reference-case-walletconnect}
+\autoref{par:reference-case-walletconnect}
+
+\begin{lstlisting}[style=yaml,caption={Produktmodellierung zu react-walletconnect},label={lst:new-correlation-walletconnect},basicstyle=\ttfamily\scriptsize]
+- cpe: "cpe:/a:uniswap:web3-react_walletconnect"
+
+- product: "NPM React Walletconnect"
+  is:
+    - cpe: "a:uniswap:web3-react_walletconnect"
+
+- artifact: "npm react walletconnect"
+  identification:
+    - type: npm
+      name: [ "web3-react_walletconnect", "walletconnect", "@web3-react/walletconnect" ]
+  is:
+    - product: "NPM React Walletconnect"
+\end{lstlisting}
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/example-graph-walletconnect}}
+    \caption{Generierter Graph zu react-walletconnect}
+    \label{fig:example-graph-walletconnect}
+\end{figure}
 
 \subsection{Referenzfall 2: Java-Runtimes}\label{subsec:example-java-runtimes}
-% \autoref{par:reference-case-java-runtimes}
+\autoref{par:reference-case-java-runtimes}
 
-\subsection{Referenzfall 3: Windows 10}\label{subsec:example-windows}
-% \autoref{par:reference-case-windows}
+\begin{lstlisting}[style=yaml,caption={Produktmodellierung zu Amazon Correto},label={lst:new-correlation-java-runtimes},basicstyle=\ttfamily\scriptsize]
+- cpe: "cpe:/a:amazon:corretto"
+  namespace: "corretto (artifact to cpe)"
+- cpe: "cpe:/a:oracle:jdk"
+  namespace: "corretto (artifact to cpe)"
+- cpe: "cpe:/a:oracle:jre"
+  namespace: "corretto (artifact to cpe)"
 
-\subsection{Referenzfall 4: Redis}\label{subsec:example-redis}
-% \autoref{par:reference-case-redis}
+- artifact: "java runtime amazon-corretto base identification"
+  namespace: "corretto (artifact to cpe)"
+  identification:
+    - type: java-runtime
+      supplier: "AMAZON_CORRETTO"
+  is:
+    - product: "Amazon Corretto Java Runtime"
+
+- product: "Amazon Corretto Java Runtime"
+  namespaces:
+    "corretto (artifact to cpe)":
+      - source: [ version: "/1\\.1\\.6[^0-9](.*[^0-9])?0*9([^0-9].*)?/i" ]
+        target: [ version: "1.1.6_009" ]
+      - source: [ version: "/1\\.1\\.6[^0-9](.*[^0-9])?0*8([^0-9].*)?/i" ]
+        target: [ version: "1.1.6_008" ]
+  is:
+    - cpe: "a:amazon:corretto"
+    - cpe: "a:oracle:jdk"
+    - cpe: "a:oracle:jre"
+\end{lstlisting}
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/example-graph-java-runtimes}}
+    \caption{Generierter Graph zu Amazon Correto}
+    \label{fig:example-graph-java-runtimes}
+\end{figure}
+
+\subsection{Referenzfall 3: Redis}\label{subsec:example-redis}
+\autoref{par:reference-case-redis}
+
+\begin{lstlisting}[style=yaml,caption={Produktmodellierung zu Redis},label={lst:new-correlation-redis},basicstyle=\ttfamily\scriptsize]
+- cpe: "cpe:/a:redis:redis"
+  metadata:
+    description: "For developers, who are building real-time data-driven [...]"
+    references:
+      homepage: https://redis.io
+      repository: https://github.com/redis/redis
+- cpe: "cpe:/a:redislabs:redis"
+- cpe: "cpe:/a:pivotal_software:redis"
+
+- cpe: "cpe:/a:redis:redis-py"
+
+- product: "Redis DB"
+  is:
+    - cpe: "a:redis:redis"
+    - cpe: "a:redislabs:redis"
+    - cpe: "a:pivotal_software:redis"
+
+- product: "Redis Python Interface"
+  is:
+    - cpe: "a:redis:redis-py"
+
+- artifact: "Redis DB"
+  identification:
+    - attributes:
+        Id: [ "Redis", "redis-*/i" ]
+        Component: "redis/i"
+  is:
+    - product: "Redis DB"
+
+- artifact: "Redis Python Interface"
+  identification:
+    - type: python
+      name: "redis"
+  is:
+    - product: "Redis Python Interface"
+  is not:
+    - product: "Redis DB"
+\end{lstlisting}
+
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth]{\includesvg[width=1\textwidth, inkscapelatex=false]{bilder/example-graph-redis}}
+  \caption{Generierter Graph zu Redis}
+  \label{fig:example-graph-redis}
+\end{figure}
+
+\subsection{Referenzfall 4: Windows 10}\label{subsec:example-windows}
+\autoref{par:reference-case-windows}
+
+\begin{lstlisting}[style=yaml,caption={Produktmodellierung zu Windows 10},label={lst:new-correlation-windows-10},basicstyle=\ttfamily\scriptsize]
+- cpe: "cpe:/a:windows:media_player"
+- cpe: "cpe:/o:microsoft:windows"
+- cpe: "cpe:/o:microsoft:windows_10_21h2"
+- cpe: "cpe:/o:microsoft:windows_10"
+
+- ms: "11929"
+- ms: "11931"
+
+- eol: "windows"
+
+- product: "Windows 10"
+  is:
+    - cpe: "o:microsoft:windows_10"
+    - eol: "windows"
+  is not:
+    - cpe: "a:windows:media_player"
+    - cpe: "o:microsoft:windows"
+
+- product: "Windows 10 21H2"
+  is:
+    - cpe: "o:microsoft:windows_10_21h2"
+    - cpe: "o:microsoft:windows_10"
+      transform:
+        - version: 21h2
+    - eol: "windows"
+    - ms: "11931"
+  inherit:
+    - product: "Windows 10"
+
+- product: "Windows 10 21H2 32bit"
+  is:
+    - ms: "11929"
+  inherit:
+    - product: "Windows 10 21H2"
+
+- product: "Windows 10 21H2 64bit"
+  is:
+    - ms: "11931"
+  inherit:
+    - product: "Windows 10 21H2"
+
+- artifact: "Windows 10"
+  identification:
+    - type: operating system
+      attributes:
+        Id: [ "Microsoft Windows 10*", "Windows 10*" ]
+  is:
+    - product: "Windows 10"
+  metadata:
+    description: "The base microsoft Windows 10 identification"
+    references:
+      release information: https://learn.microsoft.com/de-de/windows/release-health/release-information
+
+- artifact: "Windows 10 21H2"
+  identification:
+    - version: "10.0.19044*"
+  is:
+    - product: "Windows 10 21H2"
+  inherit:
+    artifact: "Windows 10"
+
+- artifact: "Windows 10 21H2 32 bit"
+  identification:
+    - attributes:
+        Architecture: "*32*"
+  inherit:
+    - artifact: "Windows 10 21H2"
+  is:
+    - product: "Windows 10 21H2 32bit"
+
+- artifact: "Windows 10 21H2 64 bit"
+  identification:
+    - attributes:
+        Architecture: "*64*"
+  inherit:
+    - artifact: "Windows 10 21H2"
+  is:
+    - product: "Windows 10 21H2 64bit"
+\end{lstlisting}
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/example-graph-windows-10}}
+    \caption{Generierter Graph zu Windows 10}
+    \label{fig:example-graph-windows-10}
+\end{figure}

@@ -47,7 +47,7 @@ Für die Implementierung wurden verschiedene Bibliotheken eingesetzt, um die Ent
     \item Für die Verarbeitung von diversen Datentypen wurden spezialisierte Bibliotheken integriert, wie die Bibliothek \texttt{us.springett.parsers.cpe}\footnote{\url{https://github.com/stevespringett/cpe-parser}} um \acrshort{cpe}-Strings zu verarbeiten.
 \end{itemize}
 
-\subsection{Architekturübersicht}\label{subsec:impl-arch-overview}
+\subsection{Architekturübersicht und Implementierung}\label{subsec:impl-arch-overview}
 
 Das Korrelationssystem wird über mehrere Klassen implementiert, um die Erstellung, Verwaltung und Abfrage des Graphen zu ermöglichen.
 Um Namenskonflikte zwischen anderen Modulen zu vermeiden und um ein einheitliches Namensschema zu definieren, werden alle relevanten Klassen mit \enquote{Rep} als Präfix gekennzeichnet.
@@ -156,6 +156,254 @@ Mit diesen werden programmatisch Modifikatoren für den Graphen zusammengestellt
 Ein Beispiel ist der \texttt{CpeDictionaryRepContributor}, der als erster Contributor das offizielle \acrshort{cpe}-Dictionary des \acrshort{nist} vollständig importiert, um alle \acrshort{cpe}-Knoten mit ihren Metadaten einzufügen.
 Diese Klasse durchsucht den \acrshort{cpe}-Index nach Vendor-Produkt-Paaren und extrahiert die zugehörigen Metadaten wie Titel und Beschreibungen, um sie als Knoten im Graphen anzulegen.
 
-Mit dem \texttt{RepGraphModifierParser}, der für das rekursive Einlesen von \acrshort{yaml}-Dateien zuständig ist, wird der \texttt{FileRepContributor} implementiert.
+Mithilfe des \texttt{RepGraphModifierParser}, der für das rekursive Einlesen von \acrshort{yaml}-Dateien zuständig ist, wird der \texttt{FileRepContributor} implementiert.
 Er konvertiert die \acrshort{yaml}-Struktur in \texttt{RepGraphModifierEntry}-Objekte, die dann auf den Graphen angewendet werden können.
 Fehler beim Parsing werden mit aussagekräftigen Meldungen mit Referenzen auf die originale Datei und die Zeile des Eintrags in der Datei protokolliert, um die Fehlersuche zu erleichtern.
+
+\subsubsection{Artefakt-Typ-Erkennung}\label{subsubsec:impl-artifact-type-detection}
+
+Um die Art eines Artefakts automatisch zu bestimmen, wird die Klasse \texttt{RepTypedArtifact} verwendet, die als Wrapper über einem generischen Artefakt liegt und dessen Typisierung kapselt.
+Instanzen dieser Klasse werden als Ausgangslage für die Verarbeitung von Artefakten, bei z.\,B. den Matching-Algorithmen oder für die bedingte Anwendung von Transformationen auf Kanten.
+\autoref{fig:impl-class-diagram-typed-artifacts} zeigt das zugrunde liegende Klassendiagramm der Typ-Erkennung.
+
+Die Typisierung erfolgt durch eine statische Factory-Methode und basiert nicht auf den definierten Knotentypen, sondern einem weiteren generischen Typsystem, um das System in weiteren Kontexten wiederverwenden zu können.
+Damit kann die Typisierung unabhängig von dem Korrelationssystem entwickelt, getestet und eingesetzt werden.
+Der Pseudocode in \autoref{lst:artifact-typing-code} zeigt die Entscheidungslogik zur Typauswahl.
+
+Die Erkennung basiert auf den Attributkombinationen, die in \autoref{subsec:erkennung-typspezifische-artefakte} aufgeführt werden.
+Wenn kein bekannter Typ ermittelt werden kann, fällt die Erkennung auf \texttt{GenericTypedArtifact} zurück, in dem keine spezialisierte Verarbeitung geschieht.
+
+Ein Beispiel ist die Klasse \texttt{JavaTypedArtifact}, die Artefakte mit Bezug zum Java-Ökosystem erkennt, und erweiterte Informationen aus diesen extrahiert.
+Falls vorhanden, wird die \acrshort{purl} auf dem Artefakt verwendet, um die Koordinatenbestandteile \texttt{groupId}, \texttt{artifactId} und \texttt{version} zu erhalten.
+Fehlende Informationen werden aus den verbleibenden Attributen heuristisch ergänzt, wie die Analyse des Dateinamens, um eine plausible \texttt{groupId} oder \texttt{artifactId} zu rekonstruieren, falls diese nicht explizit angegeben ist.
+Zudem werden qualifizierte Bezeichner innerhalb der \texttt{artifactId} bereinigt, um durch fehlerhafte Eingaben in das System wie Namensdopplungen (\enquote{io.quarkus.quarkus-vertx-deployment} zu \enquote{quarkus-vertx-deployment}) zu vermeiden.
+Diese Logik kann so ein einziges Mal in Code implementiert werden, statt auf jede Kombination im Graphen prüfen zu müssen.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1.3\textwidth, inkscapelatex=false]{bilder/impl-class-diagram-typed-artifacts}}
+    \caption{Klassendiagramm der Artefakt-Typ-Erkennung}
+    \label{fig:impl-class-diagram-typed-artifacts}
+\end{figure}
+
+\begin{lstlisting}[language=pseudo,caption={Typisierung eines Artefakts basierend auf Attributen},label=lst:artifact-typing-code,basicstyle=\ttfamily\scriptsize]
+id            := LOWERCASE(artifact.Id)
+type          := artifact.Type
+specificType := artifact.SpecificType
+ecosystem     := artifact.Ecosystem
+
+IF type == "file" OR FILE_EXTENSION(artifact.id) IN otherFileExtensions THEN
+    RETURN OtherFileTypedArtifact(artifact)
+END IF
+
+IF specificType == "jar-module" OR ecosystem == "maven" OR id.endsWith(".jar") THEN
+    RETURN JavaTypedArtifact(artifact)
+END IF
+
+IF type == "python-module" THEN
+    RETURN PythonModuleTypedArtifact(artifact)
+END IF
+
+IF type == "operating system" THEN
+    RETURN OperatingSystemTypedArtifact(artifact)
+END IF
+
+IF type IN ["web-module", "npm-module", "nodejs-module"] OR specificType == "npm-module" THEN
+    RETURN NpmTypedArtifact(artifact)
+END IF
+
+IF specificType == "java-runtime" THEN
+    RETURN JavaRuntimeTypeArtifact(artifact)
+ELSE IF (id CONTAINS "jdk" OR id CONTAINS "jre") AND isEmpty(artifact.GroupId) THEN
+    RETURN JavaRuntimeTypeArtifact(artifact)
+END IF
+
+IF type == "package" OR ecosystem IN linuxPurlTypes THEN
+    RETURN LinuxTypedArtifact(artifact)
+END IF
+
+RETURN GenericTypedArtifact(artifact)
+\end{lstlisting}
+
+\subsubsection{Artefakt-Matching}
+
+Die Implementierung des Artefakt-Matchings erfolgt über die Klasse \texttt{RepArtifactMatcher}, die verschiedene Strategien für den Abgleich von Artefakten mit Knotenpunkten im Graphen bereitstellt.
+Jeder \texttt{RepArtifactNode}-Knotenpunkt enthält eine Liste von Instanzen dieser Klasse, die mit einem logischen ODER verbunden sind.
+Die in \autoref{subsubsec:model-matching} beschriebene Typ-Erkennung ist die Grundlage der Erkennung.
+
+Die Klasse \texttt{RepFieldMatcher} ist der Ersatz für das bisherige System des Wildcard-Abgleichs.
+Eine Herausforderung des alten Wildcard-Systems war es, dass ein \texttt{Object} für den zu prüfenden Wert eingesetzt werden musste, da sowohl ein Text, als auch ein \texttt{Pattern} als Grundlage dienen konnte.
+So musste zunächst immer ein Typabgleich und ein Cast gemacht werden und im Fall des regulären Ausdrucks konnte der originale Wildcard-String nicht mehr vollständig rekonstruiert werden, da er durch das inkrementelle Wildcard-System potenziell transformiert wurde.
+Die neue Klasse enthält immer den Eingabetext als \texttt{String}-Attribut und optional ein erkanntes \texttt{Pattern}.
+Bei der Serialisierung in den Graphen wird immer nur der Eingabetext wieder zurückgeschrieben.
+
+Der Selektor prüft alle konfigurierten Attribute, wobei die Logik für UND- und ODER-Verknüpfungen wie im Modell beschrieben umgesetzt werden.
+Um die typspezifischen Attribute der Knoten prüfen zu können, stellt das \texttt{TypedArtifact} eine Methode \texttt{buildTypeSpecificAttributes()} bereit, mit der auf eine Menge an benannten Eigenschaften zugegriffen werden kann.
+
+\subsubsection{Traversierung}
+
+Um die Traversierung des Graphen möglichst einfach zu gestalten, wird in der \texttt{TraversalQuery}-Klasse eine fluent \acrshort{api} für die Definition von Durchquerungsregeln bereitgestellt.
+Mit Methoden wie \texttt{outgoing()}, \texttt{incoming()} und \texttt{undirected()} kann die Richtung der Traversierung gesteuert werden.
+Zusätzlich können Filter für Knotentypen (\texttt{targetNodeType(type)}), Beziehungstypen (\texttt{relationshipType(type)}) und benutzerdefinierte Prädikate für Knoten und Kanten definiert werden.
+Die Abfragen können wiederverwendet werden und die am häufigsten eingesetzten werden als statische Konstanten definiert.
+
+Um die Abfragen direkt an einen Knotenpunkt stellen zu können, enthält jeder Knoten eine Referenz auf das \texttt{RepGraph}-Objekt in dem er liegt.
+Da in dem System häufig mehrere Abfragen auf einen selben Knotenpunkt gemacht werden, merkt sich ein Knoten beim ersten Zugriff seine erreichbaren Knoten und Kanten, um diese bei der nächsten Anfrage einfach zugänglich zu machen.
+
+Die Ergebnisse einer Traversierung werden in der \texttt{TraversalResult}-Klasse gekapselt, um auf die gefundenen Knoten und die dabei verwendeten Kanten zuzugreifen.
+Ein Beispiel für den Zugriff ist in \autoref{lst:graph-traversal-code} zu finden.
+
+\begin{lstlisting}[language=Java,caption={Durchquerungsabfragen in Java},label=lst:graph-traversal-code,basicstyle=\ttfamily\scriptsize]
+RepGraphQuery.TraversalQuery outgoingInheritanceArtifactQuery = traversalQuery()
+    .outgoing()
+    .relationshipType(RepGraphEdge.RelationshipType.INHERITANCE)
+    .targetNodeType(RepArtifactNode.class);
+
+for (RepGraphQuery.TraversalResultEntry entry :
+         currentNode.traverse(outgoingInheritanceArtifactNodeQuery)) {
+    RepGraphNode node = (RepArtifactNode) entry.getNode();
+    RepGraphEdge edge = entry.getEdge();
+}
+\end{lstlisting}
+
+\subsection{Anwendung auf Artefakte}\label{subsec:impl-apply-to-artifacts}
+
+Die in \autoref{subsec:model-apply-to-artifact} beschriebenen Schritte das neue Korrelationssystem auf ein Artefakt anzuwenden werden im Folgenden anhand der Code-Implementierung erklärt.
+Der erste Schritt der Artefakt-Typ-Erkennung wurde bereits in \autoref{subsubsec:impl-artifact-type-detection} gezeigt.
+
+\subsubsection{Durchsuchung des Graphen nach anwendbaren Artefakt-Knoten}
+
+Die in \autoref{subsec:model-apply-to-artifact} beschriebenen Schritte das neue Korrelationssystem auf ein Artefakt anzuwenden werden im Folgenden anhand der Code-Implementierung erklärt.
+Die Verarbeitung eines Artefakts beginnt mit der Erstellung einer Instanz eines \texttt{RepTypedArtifact}, wie in \autoref{subsubsec:impl-artifact-type-detection} beschrieben.
+Auf dieser Basis kann nun der Matching-Prozess gestartet werden.
+
+\autoref{lst:impl-findMatchingNodes} zeigt mit der Methode \texttt{findMatchingNodes} den Einstiegspunkt, der zur Identifikation von Knoten im Repräsentationsgraphen dient.
+Diese nimmt ein typisiertes Artefakt entgegen und erstellt zunächst eine leere Ergebnismenge \texttt{matches}.
+Anschließend wird mit der Hilfsmethode \texttt{processNodesByType} über alle Knoten eines bestimmten Typs, hier \texttt{artifact}, im Graphen zu iterieren.
+Um nicht alle Knoteninstanzen gleichzeitig im Speicher lagern zu müssen, wird statt einem Rückgabewert vom Typ \texttt{List<N>} eher ein Ansatz mit einem \texttt{Consumer} gewählt, der über einen Lambda-Ausdruck in der ursprünglichen Methode beliebige Aktionen auf den Knoten ausführen kann.
+
+Für jeden dieser Artefakt-Knoten wird dann überprüft, ob er mit dem gegebenen Artefakt übereinstimmt.
+In diesem ersten Schritt werden alle Vererbungsregeln ignoriert, da bei der Vererbung von Artefakt-Knoten bereits vom Konzept her beabsichtigt jeder Knoten in der Vererbungshierarchie mit einem seiner Selektoren zutreffen muss, um die darüberliegenden zu ermöglichen.
+Dies geschieht mittels der Methode \texttt{matchIdentification}, die über alle Selektoren in dem Knoten iteriert und den ersten erfolgreichen Vergleich als Instanz zurückgibt.
+Liefert diese Methode ein nicht-\texttt{null}-Ergebnis, ist der Knoten ein Treffer und wird zur Menge \texttt{matches} hinzugefügt.
+
+\begin{lstlisting}[language=Java,caption={Methoden \texttt{findMatchingNodes} und \texttt{processNodesByType}},label=lst:impl-findMatchingNodes,basicstyle=\ttfamily\scriptsize]
+public Set<RepGraphNode> findMatchingNodes(TypedArtifact artifact) {
+    Set<RepGraphNode> matches = new HashSet<>();
+    processNodesByType(RepArtifactNode.TYPE, RepArtifactNode.class, node -> {
+        if (node.matchIdentification(artifact) != null) {
+            matches.add(node);
+        }
+    });
+    return filterByInheritance(matches, null);
+}
+
+public <N extends RepGraphNode> void processNodesByType(String type, Class<N> clazz, Consumer<N> nodeConsumer) {
+    try (QueryResult qr = graph.executeQuery("SELECT * FROM nodes WHERE nodeType = ?", type)) {
+        dataConstructor.processNodes(qr.resultSet, node -> nodeConsumer.accept(clazz.cast(node)));
+    }
+}
+\end{lstlisting}
+
+Nachdem die initialen Übereinstimmungen gefunden wurden, erfolgt in einem zweiten Schritt die Anwendung einer Vererbungslogik über die Methode \texttt{filterByInheritance}, wie in \autoref{lst:impl-filterByInheritance} zu sehen.
+Diese dient dazu, Vererbungshierarchien auszuwerten und Knoten aus der Hierarchie zu entfernen, sofern auch eine direkt spezifischere Variante des Knotens gefunden wurde.
+
+Zunächst wird über eine Traversierung des Graphen entlang der definierten Vererbungskanten eine Zuordnung aufgebaut, in der jedem der identifizierten Knoten die Menge seiner unmittelbaren Vererbungsbasen gegenübergestellt wird.
+Dann wird über alle Eingabeknoten iteriert, um zu prüfen, ob sich innerhalb ihrer jeweiligen Vererbungshierarchie ebenfalls Knoten befinden, die in der ursprünglichen Treffermenge enthalten sind.
+Trifft dies zu, wird der jeweils allgemeinere Knoten, also derjenige, der höher in der Hierarchie steht, aus der Ergebnismenge entfernt, sodass nur die spezifischeren Varianten verbleiben.
+Zusätzlich wird überprüft, ob ein Knoten ausschließlich Basen besitzt, die selbst keine Treffer sind.
+In einem solchen Fall wird der Knoten ebenfalls ausgeschlossen, da er sich auf keine ausreichend spezifische Grundlage stützt.
+
+\begin{lstlisting}[language=Java,caption={Methode \texttt{filterByInheritance}},label=lst:impl-filterByInheritance,basicstyle=\ttfamily\scriptsize]
+private Set<RepGraphNode> filterByInheritance(Set<RepGraphNode> matches, RepMatchingContext context) {
+    if (matches.isEmpty()) return matches;
+
+    Map<RepGraphNode, Collection<RepGraphNode>> baseMap = new HashMap<>();
+    for (RepGraphNode node : matches)
+        baseMap.put(node, node.traverse(RepArtifactNode.OUTGOING_INHERITANCE_ARTIFACT_NODE_QUERY).values());
+
+    final Set<RepGraphNode> toRemove = new HashSet<>();
+    for (RepGraphNode node : matches) {
+        Stack<RepGraphNode> stack = new Stack<>();
+        Set<RepGraphNode> seen = new HashSet<>();
+        stack.push(node);
+        seen.add(node);
+        while (!stack.isEmpty()) {
+            for (RepGraphNode base : baseMap.getOrDefault(stack.pop(), Collections.emptyList())) {
+                if (!seen.add(base)) continue;
+                if (matches.contains(base)) {
+                    toRemove.add(base);
+                    stack.push(base);
+                } else {
+                    toRemove.add(node);
+                    stack.clear();
+                    break;
+                }
+            }
+        }
+    }
+
+    if (context != null)
+        toRemove.forEach(n -> context.getTrace(n).markFilteredByInheritance());
+
+    return matches.stream().filter(n -> !toRemove.contains(n)).collect(Collectors.toSet());
+}
+\end{lstlisting}
+
+\subsubsection{Anwendung der gefundenen Knoten auf Artefakte}
+
+Die identifizierten Knotenpunkten werden nun mit der \texttt{applyToArtifact()}-Methode auf das Quellartefakt angewendet.
+Wie in \autoref{subsubsec:model-result-processing-apply-nodes-to-artifact} beschrieben, implementiert die Klasse \texttt{RepGraphNode} eine Methode \texttt{collectApplyNodes()}, die rekursiv alle erreichbaren Knoten sammelt und dabei den Kontext mit Informationen über den Pfad und die gesammelten Transformationen verwaltet.
+Die innere Klasse \texttt{ApplyContext} kapselt diesen Kontext und bietet Methoden zur Prüfung der Anwendbarkeit von Transformationen und zur Bestimmung des effektiven Beziehungstyps.
+
+Für jeden Knotentyp gibt es spezifische Implementierungen der \texttt{applyToArtifact()}-Methode, die die typspezifischen Attribute auf das Zielartefakt anwenden.
+Beispielsweise fügt die \texttt{RepCpeNode}-Klasse wie in \autoref{lst:impl-cpe-applyToArtifact} zu sehen, bei einer positiven Beziehung die CPE zu den \texttt{Additional CPE URIs} des Artefakts hinzu und entfernt sie aus den \texttt{Inapplicable CPE URIs}, während bei einer negativen Beziehung das Gegenteil geschieht.
+Die Transformationen werden zunächst ausgewertet, um optional einige Attribute der \acrshort{cpe} zu ersetzen oder den Beziehungstyp zu überschreiben.
+
+\begin{lstlisting}[language=Java,caption={Methode \texttt{applyToArtifact} in \texttt{RepNodeCpe}},label=lst:impl-cpe-applyToArtifact,basicstyle=\ttfamily\scriptsize]
+protected void applyToArtifact(Artifact artifact, ApplyContext applyContext) {
+    String applyCpe = this.cpe;
+    List<RepEdgeTransform> activeTransforms = applyContext.getActiveTransforms(this);
+    if (!activeTransforms.isEmpty()) {
+        Cpe parsedCpe = parseCpe(this.cpe);
+        for (RepGraphEdge.RepEdgeTransform transform : activeTransforms) {
+            parsedCpe = applyTransformer(transform.getTransformProperties()).apply(parsedCpe);
+        }
+        applyCpe = parsedCpe.toString();
+    }
+
+    RelationshipSubType subType = applyContext.getEffectiveRelationshipSubType(activeTransforms);
+    switch (subType) {
+        case APPLICABLE:
+            super.applyRemoveValue(artifact, InventoryAttribute.INAPPLICABLE_CPE.getKey(), applyCpe);
+            super.applyAppendValue(artifact, InventoryAttribute.ADDITIONAL_CPE.getKey(), applyCpe);
+            break;
+        case INAPPLICABLE:
+            super.applyRemoveValue(artifact, InventoryAttribute.ADDITIONAL_CPE.getKey(), applyCpe);
+            super.applyAppendValue(artifact, InventoryAttribute.INAPPLICABLE_CPE.getKey(), applyCpe);
+            break;
+        default:
+            log.warn("Unrecognized apply type for CPE node [{}]: [{}]", this.cpe, useRelationshipSubType);
+    }
+}
+
+private ThrowingFunction<Cpe, Cpe> applyTransformer(Map<String, String> transforms) {
+    return original -> {
+        final CpeBuilder builder = builder().from(original);
+        for (Entry<String, String> entry : transforms.entrySet()) {
+            final String field = entry.getKey();
+            final String value = entry.getValue();
+            switch (field.toLowerCase()) {
+                case "part" -> builder.part(Part.getEnum(value));
+                case "vendor" -> builder.vendor(value);
+                case "product" -> builder.product(value);
+                case "version" -> builder.version(value);
+                case "update" -> builder.update(value);
+                case "edition" -> builder.edition(value);
+                case "language" -> builder.language(value);
+            }
+        }
+        return builder.build();
+    };
+}
+\end{lstlisting}

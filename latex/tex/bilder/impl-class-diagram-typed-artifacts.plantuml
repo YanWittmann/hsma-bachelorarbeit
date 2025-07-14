@@ -1,0 +1,46 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+skinparam nodesep 10
+skinparam ranksep 30
+skinparam Padding 2
+
+package "Typed Artifacts" {
+    class TypedArtifact {
+        purl: String
+        version: String
+        name: String
+        sourceArtifact: Artifact
+    }
+    class JavaTypedArtifact {
+        groupId: String
+    }
+    class JavaRuntimeTypeArtifact {
+        supplier: Supplier
+        variant: Variant
+    }
+    class LinuxTypedArtifact {
+        distribution: String
+    }
+    class OperatingSystemTypedArtifact
+    class OtherFileTypedArtifact {
+        type: Type
+    }
+    class NpmTypedArtifact {
+        packageName: String
+        scope: String
+    }
+    class PythonModuleTypedArtifact
+}
+
+JavaRuntimeTypeArtifact -[#000082,plain]-^ TypedArtifact
+JavaTypedArtifact -[#000082,plain]-^ TypedArtifact
+LinuxTypedArtifact -[#000082,plain]-^ TypedArtifact
+NpmTypedArtifact -[#000082,plain]-^ TypedArtifact
+OperatingSystemTypedArtifact -[#000082,plain]-^ TypedArtifact
+OtherFileTypedArtifact -[#000082,plain]-^ TypedArtifact
+PythonModuleTypedArtifact -[#000082,plain]-^ TypedArtifact
+
+@enduml

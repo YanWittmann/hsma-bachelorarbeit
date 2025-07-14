@@ -71,6 +71,16 @@ Zur Erkennung der Version sollte mindestens noch immer das Wildcard-System zur V
     CPE URIs: cpe:/a:azul:zulu:8:update282
 \end{lstlisting}
 
+\paragraph{Redis: Kontextabhängige Produktdifferenzierung}\label{par:reference-case-redis} (s. \autoref{lst:correlation-order-depdendency-example})
+
+Der Redis-Fall zeigt die Herausforderung von ökosystemabhängigen überladenen Artefaktbezeichnern.
+Der gleiche Basisname \texttt{redis-*} repräsentiert in den Referenzeinträgen aus den Software-Inventaren mindestens zwei unterschiedliche Entitäten: die Datenbankserver-Software und die Client-Bibliothek als Python-Modul.
+Im alten Format erfordert dies entweder eine Wiederholung des Artefakt-Selektors in dem spezifischeren Eintrag als \texttt{ignores}, oder eine \texttt{remove}-Ausschlussregel mit der die generelle Modifikation wieder rückgängig gemacht wird.
+Dies ist durch die bedingte Reihenfolge fehleranfällig und die Entscheidungslogik kann nicht zureichend dokumentiert werden.
+
+Die klare Trennung zwischen Produkten und Repräsentationen (\hyperref[subsec:req-product-concept]{A-02}) im Graphenmodell soll eine bessere Ausprägung der Repräsentationen ermöglichen.
+Durch die \enquote{is}/\enquote{is not}-Relationen soll der spezifischste Knotenpunkt explizit angeben können, wie mit einer referenzierten Repräsentation umgegangen werden soll (\hyperref[subsec:req-format-product-graph]{A-01}), und strukturierte Metadaten (\hyperref[subsec:req-reason-format]{A-08}) sollen die Dokumentation maschinenlesbar machen.
+
 \paragraph{Windows 10: Betriebssystem mit mehreren Identifikatoren}\label{par:reference-case-windows} (s. \autoref{lst:reference-case-windows})
 
 Die Modellierung von Windows 10 in den alten Korrelationsdaten stellt einige größere Herausforderungen dar.
@@ -131,13 +141,3 @@ Zudem ist hier besonders die Dokumentation der unterschiedlichen Knotenpunkte un
   append:
     Additional CPE URIs: cpe:/o:microsoft:windows_10_21h2, cpe:/o:microsoft:windows_10:21h2
 \end{lstlisting}
-
-\paragraph{Redis: Kontextabhängige Produktdifferenzierung}\label{par:reference-case-redis} (s. \autoref{lst:correlation-order-depdendency-example})
-
-Der Redis-Fall zeigt die Herausforderung von ökosystemabhängigen überladenen Artefaktbezeichnern.
-Der gleiche Basisname \texttt{redis-*} repräsentiert in den Referenzeinträgen aus den Software-Inventaren mindestens zwei unterschiedliche Entitäten: die Datenbankserver-Software und die Client-Bibliothek als Python-Modul.
-Im alten Format erfordert dies entweder eine Wiederholung des Artefakt-Selektors in dem spezifischeren Eintrag als \texttt{ignores}, oder eine \texttt{remove}-Ausschlussregel mit der die generelle Modifikation wieder rückgängig gemacht wird.
-Dies ist durch die bedingte Reihenfolge fehleranfällig und die Entscheidungslogik kann nicht zureichend dokumentiert werden.
-
-Die klare Trennung zwischen Produkten und Repräsentationen (\hyperref[subsec:req-product-concept]{A-02}) im Graphenmodell soll eine bessere Ausprägung der Repräsentationen ermöglichen.
-Durch die \enquote{is}/\enquote{is not}-Relationen soll der spezifischste Knotenpunkt explizit angeben können, wie mit einer referenzierten Repräsentation umgegangen werden soll (\hyperref[subsec:req-format-product-graph]{A-01}), und strukturierte Metadaten (\hyperref[subsec:req-reason-format]{A-08}) sollen die Dokumentation maschinenlesbar machen.
