@@ -23,15 +23,13 @@ Weitere Metadaten können optional ergänzt werden.
 - cpe: "cpe:/a:uniswap:web3-react_walletconnect"
 
 - product: "NPM React Walletconnect"
-  is:
-    - cpe: "a:uniswap:web3-react_walletconnect"
+  is: [ cpe: "a:uniswap:web3-react_walletconnect" ]
 
 - artifact: "npm react walletconnect"
   identification:
     - type: npm
       name: [ "web3-react_walletconnect", "walletconnect", "@web3-react/walletconnect" ]
-  is:
-    - product: "NPM React Walletconnect"
+  is: [ product: "NPM React Walletconnect" ]
 \end{lstlisting}
 
 \begin{figure}[htbp]
@@ -70,8 +68,7 @@ Die im alten System notwendigen redundanten Einträge werden durch diese Struktu
   identification:
     - type: java-runtime
       supplier: "AMAZON_CORRETTO"
-  is:
-    - product: "Amazon Corretto Java Runtime"
+  is: [ product: "Amazon Corretto Java Runtime" ]
 
 - product: "Amazon Corretto Java Runtime"
   namespaces:
@@ -128,25 +125,21 @@ Der sich daraus ergebende Graph in \autoref{fig:example-graph-redis} zeigt die k
     - cpe: "a:pivotal_software:redis"
 
 - product: "Redis Python Interface"
-  is:
-    - cpe: "a:redis:redis-py"
+  is: [ cpe: "a:redis:redis-py" ]
 
 - artifact: "Redis DB"
   identification:
     - attributes:
         Id: [ "Redis", "redis-*/i" ]
         Component: "redis/i"
-  is:
-    - product: "Redis DB"
+  is: [ product: "Redis DB" ]
 
 - artifact: "Redis Python Interface"
   identification:
     - type: python
       name: "redis"
-  is:
-    - product: "Redis Python Interface"
-  is not:
-    - product: "Redis DB"
+  is: [ product: "Redis Python Interface" ]
+  is not: [ product: "Redis DB" ]
 \end{lstlisting}
 
 \begin{figure}[htbp]
@@ -199,28 +192,22 @@ Dieses Verhalten kann im resultierenden Graph in \autoref{fig:example-graph-wind
         - version: 21h2
     - eol: "windows"
     - ms: "11931"
-  inherit:
-    - product: "Windows 10"
+  inherit: [ product: "Windows 10" ]
 
 - product: "Windows 10 21H2 32bit"
-  is:
-    - ms: "11929"
-  inherit:
-    - product: "Windows 10 21H2"
+  is: [ ms: "11929" ]
+  inherit: [ product: "Windows 10 21H2" ]
 
 - product: "Windows 10 21H2 64bit"
-  is:
-    - ms: "11931"
-  inherit:
-    - product: "Windows 10 21H2"
+  is: [ ms: "11931" ]
+  inherit: [ product: "Windows 10 21H2" ]
 
 - artifact: "Windows 10"
   identification:
     - type: operating system
       attributes:
         Id: [ "Microsoft Windows 10*", "Windows 10*" ]
-  is:
-    - product: "Windows 10"
+  is: [ product: "Windows 10" ]
   metadata:
     description: "The base microsoft Windows 10 identification"
     references:
@@ -229,28 +216,22 @@ Dieses Verhalten kann im resultierenden Graph in \autoref{fig:example-graph-wind
 - artifact: "Windows 10 21H2"
   identification:
     - version: "10.0.19044*"
-  is:
-    - product: "Windows 10 21H2"
-  inherit:
-    artifact: "Windows 10"
+  is: [ product: "Windows 10 21H2" ]
+  inherit: [ artifact: "Windows 10" ]
 
 - artifact: "Windows 10 21H2 32 bit"
   identification:
     - attributes:
         Architecture: "*32*"
-  inherit:
-    - artifact: "Windows 10 21H2"
-  is:
-    - product: "Windows 10 21H2 32bit"
+  inherit: [ artifact: "Windows 10 21H2" ]
+  is: [ product: "Windows 10 21H2 32bit" ]
 
 - artifact: "Windows 10 21H2 64 bit"
   identification:
     - attributes:
         Architecture: "*64*"
-  inherit:
-    - artifact: "Windows 10 21H2"
-  is:
-    - product: "Windows 10 21H2 64bit"
+  inherit: [ artifact: "Windows 10 21H2" ]
+  is: [ product: "Windows 10 21H2 64bit" ]
 \end{lstlisting}
 
 \begin{figure}[htbp]
