@@ -4,7 +4,20 @@ Zur Validierung des implementierten Systems werden die vier Referenzfälle aus \
 Jedes Beispiel zeigt spezifische Aspekte des neuen Modells.
 
 \subsection{Referenzfall 1: JavaScript-Paket}\label{subsec:example-js-package}
-\autoref{par:reference-case-walletconnect}
+
+Der ursprüngliche Fall in \autoref{par:reference-case-walletconnect} zeigte die Herausforderung, ein NPM-Paket mit drei alternativen Namensformen zu identifizieren.
+Im alten System waren drei Selektoren mit wiederholenden Attributen nötig, wobei die Typerkennung durch einen regulären Ausdruck passieren musste.
+Das neue Modell, wie in \autoref{lst:new-correlation-walletconnect} gezeigt, löst dies durch:
+
+\begin{itemize}
+    \itemsep0em
+    \item Klare Trennung von Identifikation (\texttt{artifact}) und einer zentralen Produktdefinition (\enquote{NPM React Walletconnect})
+    \item Typspezifische Attributerkennung via \texttt{type: npm} ohne Verwendung von regulären Ausdrücken
+    \item Mehrfachwerte im \texttt{name}-Attribut (ODER-Verknüpfung)
+\end{itemize}
+
+Die Graphstruktur in \autoref{fig:example-graph-walletconnect} zeigt die direkte Verbindung zwischen Artefakt, Produkt und \acrshort{cpe} ohne Redundanz in den Attributen.
+Weitere Metadaten können optional ergänzt werden.
 
 \begin{lstlisting}[style=yaml,caption={Produktmodellierung zu react-walletconnect},label={lst:new-correlation-walletconnect},basicstyle=\ttfamily\scriptsize]
 - cpe: "cpe:/a:uniswap:web3-react_walletconnect"
@@ -29,7 +42,20 @@ Jedes Beispiel zeigt spezifische Aspekte des neuen Modells.
 \end{figure}
 
 \subsection{Referenzfall 2: Java-Runtimes}\label{subsec:example-java-runtimes}
-\autoref{par:reference-case-java-runtimes}
+
+Wie im Referenzfall in \autoref{par:reference-case-java-runtimes} beschrieben, erforderte die Versionstransformation bei Java-Runtimes im alten System pro zu unterstützende Version einer Runtime jeweils einen redundanten Eintrag mit sich wiederholenden Informationen.
+Das neue Modell in \autoref{lst:new-correlation-java-runtimes} adressiert diese Herausforderungen durch:
+
+\begin{itemize}
+    \itemsep0em
+    \item Nur ein einziger Knoten für jede \acrshort{cpe}-Repräsentation und das Artefakt
+    \item Versionstransformation im zentralen Produktknoten mit Artefakt-Versionsmustern wie \verb|/1\.1\.6[^0-9].*9/| für die Konvertierung nach zu \acrshort{cpe}-Versionen wie \texttt{1.1.6\_009}
+    \item Ein Namespace \enquote{corretto (artifact to cpe)} kapselt diese Transformationsregeln, sodass sie optional verwendet werden können
+    \item Statt drei Eigenschaften mit regex-basierter Erkennung aus der \texttt{Id} auszulesen, wird über eine explizite Typisierung (\texttt{type: java-runtime}) das \texttt{supplier}-Attribut programmatisch bereitgestellt und die Version wird explizit später geprüft
+\end{itemize}
+
+Der resultierende Graph in \autoref{fig:example-graph-java-runtimes} zeigt, wie die Versionstransformationen von einzelnen Einträgen auf einen einzigen Produktknoten gewandert sind.
+Die im alten System notwendigen redundanten Einträge werden durch diese Struktur ersetzt.
 
 \begin{lstlisting}[style=yaml,caption={Produktmodellierung zu Amazon Correto},label={lst:new-correlation-java-runtimes},basicstyle=\ttfamily\scriptsize]
 - cpe: "cpe:/a:amazon:corretto"
@@ -68,7 +94,20 @@ Jedes Beispiel zeigt spezifische Aspekte des neuen Modells.
 \end{figure}
 
 \subsection{Referenzfall 3: Redis}\label{subsec:example-redis}
-\autoref{par:reference-case-redis}
+
+Der in \autoref{par:reference-case-redis} beschriebene Redis-Fall zeigt die Herausforderung von überladenen Artefaktbezeichnern, bei denen der gleiche Basisname \texttt{redis-*} sowohl die Datenbankserver-Software als auch ein Python-Client-Modul repräsentiert.
+Im alten System (\autoref{lst:correlation-order-depdendency-example}) waren dafür Reihenfolgeabhängige \texttt{remove}-Regeln nötig.
+Im neuen Korrelationssystem werden die Herausforderungen gelöst, wie in \autoref{lst:new-correlation-redis} im Modifikationsformat zu sehen.
+
+\begin{itemize}
+    \itemsep0em
+    \item Explizite Trennung in zwei Produktknoten (\enquote{Redis DB} und \enquote{Redis Python Interface})
+    \item Statt doppelter Auflistung von der DB-\acrshort{cpe} bei dem Python Interface wird eine einzige \texttt{is not}-Relation zur Angabe der falschen \acrshort{cpe} angegeben
+    \item Typspezifische Identifikation des Python-Moduls via \texttt{type: python}
+    \item Dokumentation über Knotenmetadaten
+\end{itemize}
+
+Der sich daraus ergebende Graph in \autoref{fig:example-graph-redis} zeigt die klare Trennung der Produkte, die im alten System nur implizit durch die Reihenfolge der Einträge definiert war.
 
 \begin{lstlisting}[style=yaml,caption={Produktmodellierung zu Redis},label={lst:new-correlation-redis},basicstyle=\ttfamily\scriptsize]
 - cpe: "cpe:/a:redis:redis"
@@ -111,14 +150,27 @@ Jedes Beispiel zeigt spezifische Aspekte des neuen Modells.
 \end{lstlisting}
 
 \begin{figure}[htbp]
-  \centering
-  \makebox[\textwidth]{\includesvg[width=1\textwidth, inkscapelatex=false]{bilder/example-graph-redis}}
-  \caption{Generierter Graph zu Redis}
-  \label{fig:example-graph-redis}
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1\textwidth, inkscapelatex=false]{bilder/example-graph-redis}}
+    \caption{Generierter Graph zu Redis}
+    \label{fig:example-graph-redis}
 \end{figure}
 
 \subsection{Referenzfall 4: Windows 10}\label{subsec:example-windows}
-\autoref{par:reference-case-windows}
+
+Das Szenario in \autoref{par:reference-case-windows} zeigt die Abbildung von hierarchischen Betriebssystemstrukturen im alten Modell.
+Im alten System mussten einzelne Versionen und Architekturunterschiede jeweils separat mit duplizierten Basisinformationen modelliert werden.
+
+Im neuen Modell in \autoref{lst:new-correlation-windows} wird diese Komplexität über eine mehrstufige Struktur mit Vererbung und Ausschlussregeln modelliert.
+Die Basisdefinition von Windows 10 wird mit den relevanten Attributen als eigenständiger Knoten definiert.
+Versions- und architekturabhängige Merkmale wie \texttt{21H2}, \texttt{amd64} oder \texttt{x86} werden als eigene Knoten mit einer Vererbungskante zu der jeweils darunter liegenden Identifikation geführt.
+Jede Artefakt-Identifikation besitzt einen zugehörigen Produktknoten, der diese Ausprägung der Attributkombinationen darstellt.
+Über diese Produkte sind die weiteren Repräsentationen erreichbar.
+Die negatividentifikation von Komponenten wie der Media Player kann durch \texttt{is not}-Relationen ausgeschlossen werden.
+
+Ein wichtiger Fall ist die Kante von \enquote{Windows 10 21H2} zu \enquote{o:microsoft:windows\_10\_21h2}, bei der eine Transformation des Versionsattributs angewendet wird.
+Da in dem Algorithmus zum Auflösen der erreichbaren Knoten von einem Knoten aus bei mehreren Wegen zu einem Knoten immer die spezifischste (in der Vererbungshierarchie oben liegende) Kante gewählt wird, wird bei einem Match des Knotens \enquote{Windows 10 21H2} trotz der Erreichbarkeit des \acrshort{cpe}-Knotens über das Basisprodukt \enquote{Windows 10} nicht die Basiskante unten gewählt, sondern die spezifische oben mit der Transformation.
+Dieses Verhalten kann im resultierenden Graph in \autoref{fig:example-graph-windows-10} beobachtet werden.
 
 \begin{lstlisting}[style=yaml,caption={Produktmodellierung zu Windows 10},label={lst:new-correlation-windows-10},basicstyle=\ttfamily\scriptsize]
 - cpe: "cpe:/a:windows:media_player"

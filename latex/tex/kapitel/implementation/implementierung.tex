@@ -254,13 +254,12 @@ Die Ergebnisse einer Traversierung werden in der \texttt{TraversalResult}-Klasse
 Ein Beispiel für den Zugriff ist in \autoref{lst:graph-traversal-code} zu finden.
 
 \begin{lstlisting}[language=Java,caption={Durchquerungsabfragen in Java},label=lst:graph-traversal-code,basicstyle=\ttfamily\scriptsize]
-RepGraphQuery.TraversalQuery outgoingInheritanceArtifactQuery = traversalQuery()
+RepGraphQuery.TraversalQuery query = traversalQuery()
     .outgoing()
-    .relationshipType(RepGraphEdge.RelationshipType.INHERITANCE)
+    .relationshipType(RelationshipType.INHERITANCE)
     .targetNodeType(RepArtifactNode.class);
 
-for (RepGraphQuery.TraversalResultEntry entry :
-         currentNode.traverse(outgoingInheritanceArtifactNodeQuery)) {
+for (RepGraphQuery.TraversalResultEntry entry : currentNode.traverse(query)) {
     RepGraphNode node = (RepArtifactNode) entry.getNode();
     RepGraphEdge edge = entry.getEdge();
 }
@@ -320,7 +319,7 @@ private Set<RepGraphNode> filterByInheritance(Set<RepGraphNode> matches, RepMatc
 
     Map<RepGraphNode, Collection<RepGraphNode>> baseMap = new HashMap<>();
     for (RepGraphNode node : matches)
-        baseMap.put(node, node.traverse(RepArtifactNode.OUTGOING_INHERITANCE_ARTIFACT_NODE_QUERY).values());
+        baseMap.put(node, node.traverse(OUTGOING_INHERITANCE_ARTIFACT_NODE_QUERY).values());
 
     final Set<RepGraphNode> toRemove = new HashSet<>();
     for (RepGraphNode node : matches) {
@@ -367,27 +366,22 @@ protected void applyToArtifact(Artifact artifact, ApplyContext applyContext) {
     if (!activeTransforms.isEmpty()) {
         Cpe parsedCpe = parseCpe(this.cpe);
         for (RepGraphEdge.RepEdgeTransform transform : activeTransforms) {
-            parsedCpe = applyTransformer(transform.getTransformProperties()).apply(parsedCpe);
+            parsedCpe = createTransformer(transform.getTransformProps()).apply(parsedCpe);
         }
         applyCpe = parsedCpe.toString();
     }
 
-    RelationshipSubType subType = applyContext.getEffectiveRelationshipSubType(activeTransforms);
-    switch (subType) {
-        case APPLICABLE:
-            super.applyRemoveValue(artifact, InventoryAttribute.INAPPLICABLE_CPE.getKey(), applyCpe);
-            super.applyAppendValue(artifact, InventoryAttribute.ADDITIONAL_CPE.getKey(), applyCpe);
-            break;
-        case INAPPLICABLE:
-            super.applyRemoveValue(artifact, InventoryAttribute.ADDITIONAL_CPE.getKey(), applyCpe);
-            super.applyAppendValue(artifact, InventoryAttribute.INAPPLICABLE_CPE.getKey(), applyCpe);
-            break;
-        default:
-            log.warn("Unrecognized apply type for CPE node [{}]: [{}]", this.cpe, useRelationshipSubType);
+    RelationshipSubType subType = applyContext.getEffectiveRelSubType(activeTransforms);
+    if (subType == REPRESENTED_BY) {
+        removeValue(artifact, INAPPLICABLE_CPE, applyCpe);
+        appendValue(artifact, ADDITIONAL_CPE, applyCpe);
+    } else if (subType == NOT_REPRESENTED_BY) {
+        removeValue(artifact, ADDITIONAL_CPE, applyCpe);
+        appendValue(artifact, INAPPLICABLE_CPE, applyCpe);
     }
 }
 
-private ThrowingFunction<Cpe, Cpe> applyTransformer(Map<String, String> transforms) {
+private Function<Cpe, Cpe> createTransformer(Map<String, String> transforms) {
     return original -> {
         final CpeBuilder builder = builder().from(original);
         for (Entry<String, String> entry : transforms.entrySet()) {
@@ -407,3 +401,9 @@ private ThrowingFunction<Cpe, Cpe> applyTransformer(Map<String, String> transfor
     };
 }
 \end{lstlisting}
+
+\subsection{Integration in das bestehende System}\label{subsec:impl-integration}
+
+Die Integration des neuen Korrelationssystems in das bestehende Schwachstellenmanagement erfolgt über das System der sogenannten \enquote{Inventory Enrichment Pipeline}, über die das aktuelle Schwachstellenmanagement ausgeführt wird.
+Um auch das Korrelationssystem dafür verfügbar zu machen, wird es als zusätzlicher Schritt in der Verarbeitungspipeline eingebunden.
+Zunächst wird das alte Korrelationssystem als Schritt beibehalten, um in der Übergangsphase erst nach und nach die alten \acrshort{yaml}-Dateien in das neue Format übersetzen zu müssen.
