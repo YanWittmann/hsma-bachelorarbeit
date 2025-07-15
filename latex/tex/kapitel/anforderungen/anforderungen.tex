@@ -173,27 +173,6 @@ Danach steigt die Laufzeit annähernd linear mit der Anzahl der Artefakte an, de
 Da der Korrelationsschritt bisher bei weitem nicht der zeitintensivste Schritt in der Schwachstellenanalyse ist, ist die Optimierung nie eine kritische Anforderung gewesen.
 Das neue Korrelationsmodell sollte diese Zeiten jedoch bei vergleichbaren Datenmengen dennoch nicht um den Faktor von 2 überschreiten.
 
-% \begin{table}[h!]
-%     \centering
-%     \label{tab:new-correlation-performance}
-%     \begin{tabular}{l r r r}
-%         \toprule
-%         \textbf{Artefakte} & \textbf{Ø [s]} & \textbf{Min. [s]} & \textbf{Max. [s]} \\
-%         \midrule
-%         0                  & 0,000          & 0,000             & 0,000             \\
-%         1                  & 0,034          & 0,001             & 0,134             \\
-%         500                & 2,303          & 2,078             & 2,950             \\
-%         1000               & 4,249          & 4,022             & 4,790             \\
-%         2000               & 8,582          & 8,109             & 9,658             \\
-%         3000               & 12,639         & 12,156            & 13,730            \\
-%         4000               & 16,702         & 16,113            & 17,446            \\
-%         5000               & 20,693         & 20,179            & 21,175            \\
-%         6000               & 24,601         & 24,093            & 25,503            \\
-%         \bottomrule
-%     \end{tabular}
-%     \caption{Laufzeiten des neuen Korrelationsformats bei unterschiedlichen Artefakt-Anzahlen.}
-% \end{table}
-
 \subsection{A-14: Auslieferung des Datensatzes}\label{subsec:req-correlation-data-delivery}
 
 Der Aufwand, den Korrelationsdatensatz zu verteilen, muss vergleichbar mit dem alten Korrelationssystem sein.

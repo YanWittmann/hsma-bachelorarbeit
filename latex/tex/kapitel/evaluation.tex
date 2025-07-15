@@ -4,10 +4,9 @@ Das in dieser Arbeit entwickelte Korrelationssystem soll in diesem Kapitel aufgr
 
 
 \section{Prüfen der Qualitätsmetriken}
-% \section{Evaluationsmethodik}
 
-Anforderung \hyperref[subsec:req-graph-inner-consistency]{A-10} führt relevante Qualitäts- und Integritätsmetriken auf, die das neue Korrelationssystem erfüllen sollte.
-Diese werden in den folgenden Paragrafen aufgeführt und jeweils Maßnahmen aufgeführt, durch welche diese erreicht werden oder ob diese eventuell nicht erreicht werden konnten.
+Anforderung \hyperref[subsec:req-graph-inner-consistency]{A-10} definiert Qualitäts‑ und Integritätsbedingungen auf, die das neue Korrelationssystem erfüllen sollte.
+Im Folgenden werden die einzelnen Metriken beschrieben und es wird erläutert, wie der Graph diesen Anforderungen gerecht wird oder wo noch Lücken bestehen.
 
 \paragraph{Maximal eine Knotenidentifikation pro Repräsentation}
 Auf dieses Ziel wurde in der Modellierung des Graphens in \autoref{subsubsec:model-matching} eingegangen, und es wurde durch mehrere Maßnahmen verfolgt.
@@ -42,64 +41,93 @@ Da dieses nicht Teil der bisherigen Implementierung ist, kann hier keine weitere
 Im Testframework muss ebenfalls auf diese geprüft werden, um sicherzustellen, dass diese Situation nicht passieren kann.
 
 
-\section{Ergebnisse}
+\section{Weitere Evaluation}
 
-Da es noch keinen manuell gepflegten Datensatz gibt, auf den Statistiken gefahren werden könnten, erschwert dies die Analysen des Graphenmodells.
+\subsection{Performanceanalyse}\label{subsec:evaluation-performanceanalyse}
 
+In einem weiteren Durchlauf mit einem künstlich erzeugten Datensatz derselben Größe wie in \autoref{subsec:req-correlation-format-performance} wurde dasselbe Testinventar mit unterschiedlichen Größen auf die Laufzeit untersucht.
+Bei der Betrachtung der Ergebnisse in \autoref{tab:new-correlation-performance} ist es wichtig zu betonen, dass auf der Implementierung des neuen Korrelationssystems neben dem Caching der Knotenpunkte noch keine weiteren Performance-Optimierungen angewendet wurden und dies die ersten Messungsergebnisse sind.
+Der Vergleich der beiden Laufzeiten ist in \autoref{fig:correlation-performance-comparison} als Diagramm zu vergleichen.
+
+Da der Graph im neuen Korrelationssystem aus der Datenbank nur bei Bedarf ausgelesen wird, ergibt es Sinn, dass es keine zusätzliche Startup-Zeit gibt, wenn keine Datenmengen angefordert werden.
+Wie auch bei dem alten Korrelationssystem ist ein linearer Zuwachs zu erkennen, da für jedes zusätzliche Artefakt ähnlich viele Berechnungen vorgenommen werden müssen.
+Auf eine realistische Anzahl an Artefakten betrachtet ist das neue System also bisher circa 1.8-Mal langsamer als das alte.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{l r r r}
+        \toprule
+        \textbf{Artefakte} & \textbf{Ø [s]} & \textbf{Min. [s]} & \textbf{Max. [s]} \\
+        \midrule
+        0                  & 0,000          & 0,000             & 0,000             \\
+        1                  & 0,034          & 0,001             & 0,134             \\
+        500                & 2,303          & 2,078             & 2,950             \\
+        1000               & 4,249          & 4,022             & 4,790             \\
+        2000               & 8,582          & 8,109             & 9,658             \\
+        3000               & 12,639         & 12,156            & 13,730            \\
+        4000               & 16,702         & 16,113            & 17,446            \\
+        5000               & 20,693         & 20,179            & 21,175            \\
+        6000               & 24,601         & 24,093            & 25,503            \\
+        \bottomrule
+    \end{tabular}
+    \caption{Laufzeiten des neuen Korrelationsformats bei unterschiedlichen Artefakt-Anzahlen.}
+    \label{tab:new-correlation-performance}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=1\textwidth, inkscapelatex=false]{bilder/laufzeitvergleich}}
+    \caption{Vergleich der Laufzeiten: Altes vs. neues Korrelationssystem}
+    \label{fig:correlation-performance-comparison}
+\end{figure}
 
 \section{Diskussion}
 
-% Kritische Würdigung der Arbeit:
-% - what went wrong
-% - what went well
+In dieser Diskussion wird eine kritische Würdigung der Arbeit vorgenommen, in der zunächst aufgeführt wird, was die erreichten Ziele und Gewinne sind, und was noch Verbesserungswürdig ist.
+Auf diesem Verbesserungspotential wird im Ausblick in \autoref{sec:schluss-ausblick} aufgebaut, um die nächsten Schritte zu definieren.
 
-% Was ist gut gelaufen?
-% - Funktionierendes Graphenmodell wurde erreicht, alle Refernzbeispiele (komplizierteste Fälle) konnten abgebildet werden
-% - Leichtere Erweiterbarkeit auf weitere Ökosystem in den Artefakten durch Typisierung
-% - Wesentliche Verbesserung der Artefakt-Selektoren durch
-%   - Typauswertung in Code statt durch Attributkombinationen
-%   - Extraktion von Typ-spezifischen Attributen, die in den Selektoren direkt zur Verfügung gestellt werden%
-%   - Mehrere Werte in einem Attribut prüfbar (OR)
-%   - Vererbung ermöglicht Wiederverwendung von Attributen
-% - Reduktion der Knotenzahl durch Zentralisierung von Transformationen auf Produktknoten und Kanten
-% - Explizite Trennung zwischen Repräsentationen und Produkten
+\subsection{Was ist gut gelaufen?}\label{subsec:discussion-positive}
 
-% Herausforderungen die das neue Modell mit sich bringt:
-% - Komplexität bei verschachtelter Vererbung (z. B. Windows-Beispiel)
-% - Versionsmappings verwenden immer noch Regexe
-% - Konzept des Graphens/Namespaces/... macht das Modell zwar mächtiger, aber auch wesentlich Komplexer und erklärungsbedürftiger
-% - längere Einarbeitungszeit?
+Das neue Korrelationssystem wurde erfolgreich in einem funktionalen Prototyp konzipiert und implementiert und erfüllt die zentralen Anforderungen.
+Alle Referenzfälle konnten in dem neuen System modelliert und getestet werden.
+Da die Referenzfälle so gewählt wurden, dass sie die grundlegenden Fälle und aus verschiedenen Bereichen die kompliziertesten Fälle abdecken, bedeutet dies implizit auch, dass der große Großteil der verbleibenden Fälle abgebildet werden kann.
 
-% Was fehlt auf jeden Fall noch?
-% - Integration in die Correlation Utilities mit Visualisierung
-% - Code-Seitige Validierung des Graphens
-% - Testframework, um Erwartungshaltungen früherer Iterationen festhalten zu können
-% - JSON Schema zum bearbeiten der YAML-Dateien
+Der Punkt, an dem eine der größten Verbesserungen gemessen werden konnte, ist die Neu-Konzipierung der Artefakt-Selektion.
+Die neuen Selektoren erlauben durch eine typbasierte Auswertung anstelle einer Kombination von Attributen eine wesentlich zuverlässigere Identifikation, die für zukünftige Anpassungen an der Erkennung offen ist.
+Die Einführung typ-spezifischer Attribute, die in den Selektoren als first-class-Attribute verfügbar gemacht werden und die Möglichkeit, in einem Selektor mehrere Werte für ein Attribut prüfen zu können unterstützt die Zuverlässigkeit und reduziert die Redundanz weiter.
+Durch die Verwendung von Vererbungsbeziehungen über die Selektoren mehrerer Knoten hinweg können gemeinsame Attribute wiederverwendet werden.
 
-% ---
+Das neue Graphmodell führt eine explizite Trennung zwischen Repräsentationen und Produkten ein.
+Damit können Metadaten, die für ein gesamtes Produkt mit all seinen Repräsentationen gelten, an einem Ort gesammelt und ausgewertet werden.
+Diese Metadaten können einfache Beschreibungen oder Referenzen sein, aber auch die Modellierung von Transformationen in den Produktknoten und Kanten zählt dazu.
+Durch das Einführen von Transformationen konnte die Anzahl der notwendigen Knoten in gewissen Situationen drastisch reduziert werden.
+Durch den Einsatz eines Graphens mit Knoten wird allgemein die Redundanz in den Ausprägungen der Repräsentationen reduziert, indem jede Repräsentation in nur einem Knoten modelliert wird, der durch Kanten beliebig oft in weiteren Knoten referenziert werden kann.
+Mit der Typisierung der Knoten entsteht ein Modell, das leicht auf weitere Produktidentifikationsstandard-Ökosysteme erweitert werden kann.
 
-% \subsection{Zusammenfassung und Ausblick}\label{subsec:impl-summary}
+Bei der Architektur des Graphen und der Implementierung in Java wurde an das Testframework gedacht, um eine frühzeitige Erkennung von Modellierungsfehlern im manuellen Prozess zu ermöglichen.
 
-% Die Implementierung des neuen Korrelationssystems als Graphdatenbank mit spezialisierten Knotentypen und Beziehungen ermöglicht eine flexible und erweiterbare Lösung für die Korrelation von Softwareartefakten mit verschiedenen Repräsentationen.
-% Durch die Verwendung von SQLite als Datenbanktechnologie wird eine einfache Verteilung und Verwaltung der Daten ermöglicht, während die Implementierung in Java eine nahtlose Integration in das bestehende Schwachstellenmanagement gewährleistet.
+\subsection{Welche Herausforderungen bestehen weiterhin?}\label{subsec:discussion-negative}
 
-% Das System bietet mehrere Vorteile gegenüber dem bisherigen Ansatz:
-% \begin{itemize}
-%     \itemsep0em
-%     \item Eine klare Trennung zwischen verschiedenen Repräsentationstypen durch spezialisierte Knotenklassen
-%     \item Flexible Erweiterbarkeit durch das Hinzufügen neuer Knotentypen und Beziehungen
-%     \item Verbesserte Nachvollziehbarkeit durch explizite Begründungen für Korrelationsentscheidungen
-%     \item Effiziente Abfragen durch die Verwendung einer Graphstruktur und Caching-Mechanismen
-%     \item Einfache Wartung und Aktualisierung durch das YAML-basierte Modifikationsformat
-% \end{itemize}
+Trotzdem bringt das neue Modell auch neue Herausforderungen mit sich, insbesondere im Hinblick auf die Komplexität des Konzepts eines Graphens.
+Auch wenn dadurch die Stabilität und Integrität des Modells deutlich besser gesichert werden kann, ist die Einarbeitung in die Konzepte für interne oder externe Beitragende ist deutlich höher als bei dem bisherigen flachen Modellierungsansatz.
+Gerade Fälle wie bei den verschachtelten Konstellationen des Windows-Referenzfalls (\autoref{subsec:example-windows}) zeigen, dass die Nachvollziehbarkeit über die Abhängigkeit der Knoten untereinander erschwert wird.
+Auch wenn diese durch klare Regeln abgebildet werden und vom Konzept her gerade bei einer höheren Skalierung in der Modellierung einfacher zu handhaben sind, führt dies zu einem höheren Bedarf an Visualisierung und dokumentierter Herleitung.
 
-% Für zukünftige Erweiterungen des Systems sind mehrere Möglichkeiten denkbar:
-% \begin{itemize}
-%     \itemsep0em
-%     \item Integration weiterer Repräsentationstypen wie SWID-Tags oder andere Identifikationsstandards
-%     \item Entwicklung einer grafischen Benutzeroberfläche für die Visualisierung und Bearbeitung des Graphen
-%     \item Automatisierte Validierung der Graphkonsistenz und Erkennung von Widersprüchen
-%     \item Erweiterung der Abfragesprache für komplexere Traversierungen und Filterungen
-% \end{itemize}
+Die Versionserkennung der Artefakte in den Transformationen erfolgt weiterhin über reguläre Ausdrücke.
+Dies erlaubt zwar die Handhabung verschiedenster Versionierungsschemata, stellen jedoch in ihrer Erstellung und Pflege einen zusätzlichen Aufwand dar, der in zukünftigen Iterationen assistiert werden sollte.
 
-% Insgesamt bietet die Implementierung eine solide Grundlage für die Weiterentwicklung des Korrelationssystems und die Integration in das bestehende Schwachstellenmanagement.
+Ein für die Praxis relevantes Element, das derzeit noch nicht umgesetzt ist, ist die Integration des neuen Systems in die bestehenden Correlation Utilities.
+So fehlt etwa eine Visualisierungskomponente für den Graphen, mit der die Knoten und Beziehungen zwischen ihnen nachvollziehbar dargestellt werden kann.
+Diese sollte durch Suchbegriffe Inseln im Graphen lokalisieren können, aber auch auf dem aktuell ausgewählten Artefakt alle ausgewerteten Pfade visualisieren.
+Zudem wäre diese Visualisierung für die Entwicklung hilfreich sein, da der bisherige Ansatz den Graphen mit Graphviz\footnote{\url{https://graphviz.org}} zu rendern bei größeren Graphen nicht tragfähig ist.
+Eine weitere Chance wäre es, eine Möglichkeit zu bieten, das Modifikationsformat nicht manuell in \acrshort{yaml} anlegen zu müssen, sondern auch dies durch ein Nutzerinterface zu ermöglichen.
+
+Weiterhin ist das Testframework mit der automatischen Validierungskomponente noch nicht genügend ausspezifiziert und nicht implementiert.
+Die Grundlagen für eine solche Prüfung sind gelegt, sie müssten jedoch in konkrete Werkzeuge umgesetzt werden.
+Dieses soll den Graphen bei Modellierungs- und Aktualisierungsschritt auf innere Inkonsistenzen prüfen und als eine Grundlage für Regressionstests dienen.
+
+Ein weiteres fehlendes Element ist ein JSON-Schema\footnote{\url{https://json-schema.org}} zur Validierung der manuellen Bearbeitung von \acrshort{yaml}-Modellierungsdateien.
+Ein solches Schema ist im alten Korrelationssystem eine der einzigen Assistenzen, die Arbeitende mit den \acrshort{yaml}-Dateien erhalten und wird als sehr nützlich eingeschätzt.
+
+Wie in \autoref{subsec:evaluation-performanceanalyse} aufgeführt, ist das neue Korrelationssystem im Vergleich zum alten langsamer in der Laufzeit.
+Da das System noch unoptimiert ist, sollte mit einem Profiler noch einige recht einfach zu findende Optimierungspotentiale offen sein.
