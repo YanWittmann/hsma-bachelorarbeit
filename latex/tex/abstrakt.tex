@@ -6,7 +6,11 @@
 
 % Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Deutsch
 \newcommand{\hsmaabstractde}{
-    Zu schreiben.
+    Um die Zuordnung von Softwareartefakten zu verschiedenen Produktrepräsentationen (wie CPE, PURL, MS Product IDs) zu ermöglichen hat diese Arbeit das Ziel, ein neues Korrelationssystem für den Schwachstellenscanner der \metaeffektsp GmbH zu entwicklen.
+    Basierend auf einer Analyse der Schwächen des bestehenden YAML-basierten Korrelationsformats, darunter Übergeneralisierung von Selektoren, inkonsistente Typinformationen und unstrukturierte Entscheidungsdokumentation, wird ein graphenbasiertes Modell entworfen.
+    Dieses Modell ermöglicht eine eindeutige Identifikation von heterogenen Produktrepräsentationen und die Abbildungen zwischen diesen durch explizite Knoten und Kanten (\enquote{is}, \enquote{is not}, Vererbung).
+    Die Implementierung in Java nutzt SQLite zur Persistenz, ermöglicht durch eine typspezifische Attributextraktion und weitere Verbesserungen an den Artefakt-Selektoren ein präziseres Matching und bietet weiterhin ein YAML-Modifikationsformat für manuelle Anpassungen.
+    Zudem wird die automatische Generierung öffentlicher Datenanteile und innere Konsistenzprüfung adressiert.
 }
 
 % Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Englisch

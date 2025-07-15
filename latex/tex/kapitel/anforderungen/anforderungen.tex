@@ -113,7 +113,7 @@ Durch diese Trennung in mehrere \enquote{Contributors} am Graphen kann \hyperref
 Um verifizieren zu können, dass der Graph sinnhaft strukturiert und in sich selbst konsistent ist, müssen einige Prüfungen darauf ablaufen können.
 Diese prüfen mindestens die folgenden Eigenschaften:
 
-\begin{itemize}
+\begin{enumerate}
     \item Zu jeder Repräsentation eines Produkts in dem Graphen darf maximal genau eine eindeutige Identifikation stattfinden.
     Dies bedeutet, dass jeder Knoten exakt eine Repräsentation vollständig modellieren sollte und diese nicht noch einmal von einem anderen Knoten partiell abgedeckt sein darf.
     Diese Metrik muss sowohl in dem Matching-Algorithmus, als auch als Modellierungsvorschrift umgesetzt werden.
@@ -125,7 +125,7 @@ Diese prüfen mindestens die folgenden Eigenschaften:
     \item Der Graph soll sich selbst prüfen können: Nachdem ein Software-Inventar manuell geprüft wurde, sollen alle Quell-Artefakte mit ihren Identifikationen in einem separaten Datensatz abgelegt werden, um diese bei zukünftigen Änderungen am Graphen automatisch prüfen zu können.
     So kann die Identifikation eines bekannten Produktes sich nicht einfach so ändern, ohne, dass man es mitbekommen würde.
     \item Eine Prüfung auf zirkuläre Vererbungs-Referenzen soll sicherstellen, dass es immer einen spezifischeren Knoten gibt und keine Schleife entsteht.
-\end{itemize}
+\end{enumerate}
 
 \subsection{A-11: Organisation der \acrshort{yaml}-Dateien}\label{subsec:req-yaml-file-organization}
 

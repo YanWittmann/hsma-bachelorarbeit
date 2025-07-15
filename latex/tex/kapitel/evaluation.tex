@@ -1,14 +1,82 @@
 \chapter{Evaluation}\label{ch:evaluation}
 
+Das in dieser Arbeit entwickelte Korrelationssystem soll in diesem Kapitel aufgrund von Qualitätsmetriken untersucht werden, die Ergebnisse dieser Analyse vorgestellt und diskutiert werden.
 
-\section{Evaluationsmethodik}
+
+\section{Prüfen der Qualitätsmetriken}
+% \section{Evaluationsmethodik}
+
+Anforderung \hyperref[subsec:req-graph-inner-consistency]{A-10} führt relevante Qualitäts- und Integritätsmetriken auf, die das neue Korrelationssystem erfüllen sollte.
+Diese werden in den folgenden Paragrafen aufgeführt und jeweils Maßnahmen aufgeführt, durch welche diese erreicht werden oder ob diese eventuell nicht erreicht werden konnten.
+
+\paragraph{Maximal eine Knotenidentifikation pro Repräsentation}
+Auf dieses Ziel wurde in der Modellierung des Graphens in \autoref{subsubsec:model-matching} eingegangen, und es wurde durch mehrere Maßnahmen verfolgt.
+Indem der Graph bei der Identifikation in einer Vererbungshierarchie immer nur den spezifischsten Knoten zur Identifikation auswählt und alle darüber und darunterliegenden verwirft, ist dieses Szenario abgedeckt.
+Indem die Notwendigkeit, mehrere versionsspezifische Repräsentationsknoten zur Versionserkennung zu definieren, durch die zentralen Transformationen in den dazwischenliegenden Produktknoten genommen wurde, muss hier nur noch ein Knoten pro Repräsentation definiert werden.
+Allgemein ist es nun ebenfalls nicht mehr nötig, eine Repräsentation mehrfach zu modellieren, da ein einziger Knoten auf beliebig viele weitere Knoten mit einer Kante seine Beziehung dazu modellieren kann.
+Diese Überlegungen stellen jedoch nur Muster bereit, wie eine Produktkonstellation modelliert werden kann und über manuelle Anpassungen am Graphen kann es dazu kommen, dass Situationen erzeugt werden, in denen die eindeutige Identifikation nicht mehr gegeben ist.
+Dazu muss das Testframework des Graphens einen Datensatz an bereits manuell geprüften Inventaren führen und auf diese Situation prüfen, um sicherzustellen, dass weitere Modifikationen diese Integrität nicht gefährden.
+
+\paragraph{Nur ein einziger positiver Produktknoten pro Repräsentation}
+Als Erweiterung zu der vorhergegangenen Metrik soll eine Repräsentation nur einen einzigen Produktknoten über eine \enquote{is}-Beziehung erreichen können.
+Dies stellt das Konzept sicher, dass jede Produktmodellierung in sich konsistent ist.
+Dieser Fall muss ebenfalls durch das Testframework recht einfach ohne Datensatz nur auf dem Graphen geprüft werden.
+
+\paragraph{Keine losen Knoten im Graphen}
+Um sicherzustellen, dass mit jeder Identifikation einer Repräsentation im Graphen ein Informationsgewinn stattfindet, muss auch für jeden Knoten über mindestens eine Kante ein weiterer Knoten erreicht werden können.
+Diese Qualitätsmetrik lässt sich ebenso einfach überprüfen, jedoch stellt sie einige ungelöste Herausforderungen auf konzeptioneller Ebene.
+Wenn ein automatischer Contributor auf dem Graphen z.\ B.\ alle Knoten für die \acrshort{cpe}-Datenquelle mit ihren Metadaten erzeugt, dann kann nur basierend auf einer \acrshort{cpe} in den meisten Fällen nicht entschieden werden, welche weiteren Repräsentationen es dazu geben könnte, oder welchem abstrakten Produkt diese \acrshort{cpe} zugehört.
+Eine Limitation dieser Qualitätsmetrik ausschließlich auf Knoten, die vom manuellen Modifikationsformat berührt wurden, macht diese Anforderung in der Praxis anwendbar und nützlich, indem von den automatisch erzeugten, mit Metadaten gefüllten Knoten profitiert werden kann, und dennoch sichergestellt wird, dass bei der manuellen Modifikation keine Knoten vergessen werden und mindestens ein Produktknoten zu einer Repräsentation modelliert werden muss.
+Die Unterscheidung der Knoten kann über das \enquote{\texttt{contributors}}-Attribut geschehen, in dem alle auf einem Knoten beitragenden Schritte eingetragen werden.
+
+\paragraph{Metadaten auf jedem Knoten und jeder Kante}
+Um sicherzustellen, dass jede manuelle Entscheidung nachvollzogen werden kann, muss auf jedem Knoten und jeder Kante das Metadaten-Attribut gefüllt sein.
+Hier präsentiert sich jedoch dieselbe Herausforderung mit den automatisch erzeugten Knoten und Kanten wie in der vorherigen Metrik, da diese Information nicht immer automatisch aus den Datenquellen abgeleitet werden kann.
+Auch hier muss also eine Filterung der Prüfung auf diejenigen Datenelemente im Testframework passieren, die von dem manuellen Schritt berührt wurden.
+
+\paragraph{Ein sich selbst pflegender Datensatz}
+Wie in der ersten Metrik in diesem Kapitel bereits aufgeführt, muss das Testframework in der Lage sein, einen Bestand an Inventaren zu pflegen, für das es als Erwartungshaltung den jeweiligen Zustand der letzten Prüfung festhält und bei Abweichungen in der nächsten Iteration den Nutzer warnt.
+Da dieses nicht Teil der bisherigen Implementierung ist, kann hier keine weitere Erklärung folgen.
+
+\paragraph{Zirkuläre Vererbungshierarchien}
+Im Testframework muss ebenfalls auf diese geprüft werden, um sicherzustellen, dass diese Situation nicht passieren kann.
 
 
 \section{Ergebnisse}
 
+Da es noch keinen manuell gepflegten Datensatz gibt, auf den Statistiken gefahren werden könnten, erschwert dies die Analysen des Graphenmodells.
+
 
 \section{Diskussion}
 
+% Kritische Würdigung der Arbeit:
+% - what went wrong
+% - what went well
+
+% Was ist gut gelaufen?
+% - Funktionierendes Graphenmodell wurde erreicht, alle Refernzbeispiele (komplizierteste Fälle) konnten abgebildet werden
+% - Leichtere Erweiterbarkeit auf weitere Ökosystem in den Artefakten durch Typisierung
+% - Wesentliche Verbesserung der Artefakt-Selektoren durch
+%   - Typauswertung in Code statt durch Attributkombinationen
+%   - Extraktion von Typ-spezifischen Attributen, die in den Selektoren direkt zur Verfügung gestellt werden%
+%   - Mehrere Werte in einem Attribut prüfbar (OR)
+%   - Vererbung ermöglicht Wiederverwendung von Attributen
+% - Reduktion der Knotenzahl durch Zentralisierung von Transformationen auf Produktknoten und Kanten
+% - Explizite Trennung zwischen Repräsentationen und Produkten
+
+% Herausforderungen die das neue Modell mit sich bringt:
+% - Komplexität bei verschachtelter Vererbung (z. B. Windows-Beispiel)
+% - Versionsmappings verwenden immer noch Regexe
+% - Konzept des Graphens/Namespaces/... macht das Modell zwar mächtiger, aber auch wesentlich Komplexer und erklärungsbedürftiger
+% - längere Einarbeitungszeit?
+
+% Was fehlt auf jeden Fall noch?
+% - Integration in die Correlation Utilities mit Visualisierung
+% - Code-Seitige Validierung des Graphens
+% - Testframework, um Erwartungshaltungen früherer Iterationen festhalten zu können
+% - JSON Schema zum bearbeiten der YAML-Dateien
+
+% ---
 
 % \subsection{Zusammenfassung und Ausblick}\label{subsec:impl-summary}
 
