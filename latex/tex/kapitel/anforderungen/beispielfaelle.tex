@@ -19,10 +19,10 @@ In diesem Fall handelt es sich um eine Positividentifikation auf einer \acrshort
 Um die drei alternative Namensformen in dem Selektor in der \texttt{affects}-Sektion erfassen zu können, müssen diese alle separat mit Wiederholung der restlichen Attribute in alternativen Selektoren geführt werden.
 Über dem Eintrag ist ein \texttt{reason}-Kommentar, der eine Referenz auf das Paket auf NPM und auf die Homepage des Herstellers enthält.
 
-Dieser Fall, wie auch die folgenden, demonstriert die Notwendigkeit, ökosystemspezifisch-normalisierte Bezeichner zu extrahieren (\hyperref[subsec:req-type-specific-matching]{A-ARTIFACT-TYPES-IDENTIFICATION}).
+Dieser Fall, wie auch die folgenden, demonstriert die Notwendigkeit, ökosystemspezifisch-normalisierte Bezeichner zu extrahieren (\hyperref[subsec:req-type-specific-matching]{A-06}).
 Die \enquote{-*}-Suffixe können zu einer Übergeneralisierung der Einträge führen, aber auch der häufig wiederholte reguläre Ausdruck \texttt{/(web|nodejs|npm)-module/} für die Erkennung des Artefakt-Typen kann zu Fehlern führen und stellt die üblichen Probleme von Redundanz dar.
 
-\hyperref[subsec:req-multiple-attribute-values]{A-MULTIPLE-VALUES-PER-ATTRIBUTE} ist aus der Notwendigkeit entstanden, innerhalb eines Eintrages die Wiederholung nah identischer Selektoren zu vermeiden.
+\hyperref[subsec:req-multiple-attribute-values]{A-08} ist aus der Notwendigkeit entstanden, innerhalb eines Eintrages die Wiederholung nah identischer Selektoren zu vermeiden.
 In diesem Fall war es nötig, für jede Namensform einen neuen Selektor zu erstellen, und alle weiteren Attribute zu wiederholen.
 
 \paragraph{Java-Runtimes: Komplexe Versionstransformation}\label{par:reference-case-java-runtimes} (s. \autoref{lst:reference-case-java-runtimes})
@@ -33,12 +33,12 @@ Diese wurden einmal aus der Notwendigkeit eingeführt, da die \acrshortpl{cpe} d
 Einige häufige Beispiele für das Format der Version- und Update Parts sind: \texttt{21.0.6:*}, \texttt{23:*}, \texttt{*:update32}, \texttt{*:update\_32}, \texttt{1.6.0:update32\_b31}, \texttt{1.6.0:update32\_b32}.
 Für jede dieser Versionen ist ein neuer Eintrag in den \acrshort{yaml}-Dateien nötig, da jeder Eintrag nur eine versionierte \acrshort{cpe} adressieren kann.
 
-Die zugehörige Anforderung für die automatische Befüllung des Graphen ist \hyperref[subsec:req-generated-data]{A-GENERATION-FRAMEWORK}.
-Die Anforderung \hyperref[subsec:req-type-specific-matching]{A-ARTIFACT-TYPES-IDENTIFICATION} trifft hier ebenfalls zu, denn die Erkennung des Artefakts als Java Runtime, des Anbieters und die Versionserkennung muss implizit an derselben Stelle in der \texttt{Id} passieren.
+Die zugehörige Anforderung für die automatische Befüllung des Graphen ist \hyperref[subsec:req-generated-data]{A-13}.
+Die Anforderung \hyperref[subsec:req-type-specific-matching]{A-06} trifft hier ebenfalls zu, denn die Erkennung des Artefakts als Java Runtime, des Anbieters und die Versionserkennung muss implizit an derselben Stelle in der \texttt{Id} passieren.
 Die Erkennung von drei Metriken über ein einziges Artefakt-Attribut ist weder zuverlässig, noch ist es gut auf weitere Formate der \texttt{Id} erweiterbar.
 In dem neuen Format sollte die Identifikation von diesen zusammengesetzen Attributen durch programmatische Unterstützung in der Selektorlogik auf einzelne Attribute aufgetrennt werden.
-Mit der Änderung des Formats als Graphen (\hyperref[subsec:req-format-product-graph]{A-GRAPH-MODEL}), in dem jede Repräsentation versions-agnostisch nur einmal als Knotenpunkt ausgeprägt ist und mit der Anforderung, dass es ein ausgeprägtes Produkt-Konzept mit Produkt-Knotenpunkten gibt (\hyperref[subsec:req-product-concept]{A-PRODUCT-CONCEPT}), kann die Versionserkennung und Modifikation der Version in der \acrshort{cpe} in den einzelnen Knotenpunkten der Repräsentationen nicht mehr wie früher modelliert werden, sondern muss auf einen zentral die Repräsentationen verknüpenden Produkt-Knotenpunkt, der diese Mappings unter einem Namensraum an die Knotenpunkte zur Verfügung stellt.
-Zur Erkennung der Version sollte mindestens noch immer das Wildcard-System zur Verfügung gestellt werden (\hyperref[subsec:req-regex-support]{A-REGULAR-EXPRESSIONS}).
+Mit der Änderung des Formats als Graphen (\hyperref[subsec:req-format-product-graph]{A-01}), in dem jede Repräsentation versions-agnostisch nur einmal als Knotenpunkt ausgeprägt ist (\hyperref[subsec:req-unique-product-representations]{A-05}) und mit der Anforderung, dass es ein ausgeprägtes Produkt-Konzept mit Produkt-Knotenpunkten gibt (\hyperref[subsec:req-product-concept]{A-04}), kann die Versionserkennung und Modifikation der Version in der \acrshort{cpe} in den einzelnen Knotenpunkten der Repräsentationen nicht mehr wie früher modelliert werden, sondern muss auf einen zentral die Repräsentationen verknüpenden Produkt-Knotenpunkt, der diese Mappings unter einem Namensraum an die Knotenpunkte zur Verfügung stellt.
+Zur Erkennung der Version sollte mindestens noch immer das Wildcard-System zur Verfügung gestellt werden (\hyperref[subsec:req-regex-support]{A-09}).
 
 % FIXME-KKL: /zulu.*-(?:jre|jdk)-headless-11\.0\.10.*/i ist nicht korrekt: was wäre denn dann richtig? so steht es in den korrelationsdaten drin.
 \begin{lstlisting}[style=yaml,caption={Java-Runtime-Korrelation mit Versionstransformation},label={lst:reference-case-java-runtimes},basicstyle=\ttfamily\scriptsize]
@@ -78,8 +78,8 @@ Der gleiche Basisname \texttt{redis-*} repräsentiert in den Referenzeinträgen 
 Im alten Format erfordert dies entweder eine Wiederholung des Artefakt-Selektors in dem spezifischeren Eintrag als \texttt{ignores}, oder eine \texttt{remove}-Ausschlussregel mit der die generelle Modifikation wieder rückgängig gemacht wird.
 Dies ist durch die bedingte Reihenfolge fehleranfällig und die Entscheidungslogik kann nicht zureichend dokumentiert werden.
 
-Die klare Trennung zwischen Produkten und Repräsentationen (\hyperref[subsec:req-product-concept]{A-PRODUCT-CONCEPT}) im Graphenmodell soll eine bessere Ausprägung der Repräsentationen ermöglichen.
-Durch die \enquote{is}/\enquote{is not}-Relationen soll der spezifischste Knotenpunkt explizit angeben können, wie mit einer referenzierten Repräsentation umgegangen werden soll (\hyperref[subsec:req-format-product-graph]{A-GRAPH-MODEL}), und strukturierte Metadaten (\hyperref[subsec:req-reason-format]{A-REASON-RATIONALE}) sollen die Dokumentation maschinenlesbar machen.
+Die klare Trennung zwischen Produkten und Repräsentationen (\hyperref[subsec:req-product-concept]{A-04}) im Graphenmodell soll eine bessere Ausprägung der Repräsentationen ermöglichen.
+Durch die \enquote{is}/\enquote{is not}-Relationen soll der spezifischste Knotenpunkt explizit angeben können, wie mit einer referenzierten Repräsentation umgegangen werden soll (\hyperref[subsec:req-format-product-graph]{A-01}), und strukturierte Metadaten (\hyperref[subsec:req-reason-format]{A-12}) sollen die Dokumentation maschinenlesbar machen.
 
 \paragraph{Windows 10: Betriebssystem mit mehreren Identifikatoren}\label{par:reference-case-windows} (s. \autoref{lst:reference-case-windows})
 
@@ -90,8 +90,8 @@ Selbst innerhalb eines Eintrages müssen die Selektoren wiederholt werden, um di
 Dies führt zu einer großen Menge an Redundanzen.
 Zudem ist die Hierarchie der Einträge (Windows 10, 21H2, Architektur) nur impliziert modelliert und muss von einem Leser erst als solche erkannt werden.
 
-Die relevanten Anforderungen sind die Vererbung von Artefakt-Selektoren (\hyperref[subsec:req-selektor-inheritance]{A-ARTIFACT-INHERITANCE}), die die Wiederholung über Einträge hinweg vermeidet, und die Auflistung mehrerer Werte pro Attribut (\hyperref[subsec:req-multiple-attribute-values]{A-MULTIPLE-VALUES-PER-ATTRIBUTE}).
-Zudem ist hier besonders die Dokumentation der unterschiedlichen Knotenpunkte und Kanten relevant (\hyperref[subsec:req-reason-format]{A-REASON-RATIONALE}).
+Die relevanten Anforderungen sind die Vererbung von Artefakt-Selektoren (\hyperref[subsec:req-selektor-inheritance]{A-07}), die die Wiederholung über Einträge hinweg vermeidet, und die Auflistung mehrerer Werte pro Attribut (\hyperref[subsec:req-multiple-attribute-values]{A-08}).
+Zudem ist hier besonders die Dokumentation der unterschiedlichen Knotenpunkte und Kanten relevant (\hyperref[subsec:req-reason-format]{A-12}).
 
 \begin{lstlisting}[style=yaml,caption={Windows-Korrelation mit mehreren Identifikatoren},label={lst:reference-case-windows},basicstyle=\ttfamily\scriptsize]
 - affects:

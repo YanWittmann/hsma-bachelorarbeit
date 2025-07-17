@@ -2,7 +2,7 @@
 
 Basierend auf der Analyse der bestehenden Herausforderungen und weiteren Rahmenbedingungen werden die Anforderungen an das neue Korrelationssystem abgeleitet.
 
-\subsection{A-GRAPH-MODEL: Graphstruktur als Datenmodell}\label{subsec:req-format-product-graph}
+\subsection{A-01: Graphstruktur als Datenmodell}\label{subsec:req-format-product-graph}
 
 \textbf{Ziel:}
 Das System muss ein gerichtetes Graphmodell verwenden, in dem Knoten typisierte Produktrepräsentationen (z.\ B. Artefakte, \acrshort{cpe}, \acrshort{eol}-Id, MS Product ID) abbilden und Kanten explizite Relationen zwischen diesen darstellen.
@@ -19,7 +19,7 @@ Die Verwendung eines Graphmodells zur Abbildung der Produktbeziehungen und deren
 Das System verwendet ein gerichtetes Graphmodell mit Knoten für typisierte Produktrepräsentationen und Kanten für Relationstypen \enquote{is} und \enquote{is not}.
 Traversierungen der Kanten sind möglich und können ausgewertet werden.
 
-\subsection{A-NODE-IDENTIFICATION: Knotenidentifikation}\label{subsec:req-node-id-type}
+\subsection{A-02: Knotenidentifikation}\label{subsec:req-node-id-type}
 
 \textbf{Ziel:}
 Jeder Knotenpunkt besitzt einen textuellen Identifikator, der in Kombination mit dem Knotentyp im Graph eindeutig ist.
@@ -31,7 +31,7 @@ Einen Eintrag im alten Korrelationssystem in den Eingabedaten zu identifizieren 
 \textbf{Fit-Kriterium:}
 Jeder Knoten besitzt eine Typ-Id-Kombination, die im Graph eindeutig ist und den Zugriff sowie die Manipulation des Knotens erlaubt.
 
-\subsection{A-NODES-WITHOUT-IDENTIFICATIONS: Modellierung isolierter Identifikationen}\label{subsec:req-nodes-without-identification}
+\subsection{A-03: Modellierung isolierter Identifikationen}\label{subsec:req-nodes-without-identification}
 
 \textbf{Ziel:}
 Das System muss ein Gefüge an Knoten erlauben, in dem Repräsentationen ohne Kanten zu weiteren Repräsentationen modelliert werden können, um die Dokumentation von Produkten ohne Abbildungen zu ermöglichen.
@@ -42,7 +42,7 @@ So können isolierte Identifikationen abgebildet werden, was \hyperref[subsec:c-
 \textbf{Fit-Kriterium:}
 Repräsentationen können ohne Abbildung zu weiteren Repräsentationen im Graph vorhanden sein.
 
-\subsection{A-PRODUCT-CONCEPT: Produkt-Konzept}\label{subsec:req-product-concept}
+\subsection{A-04: Produkt-Konzept}\label{subsec:req-product-concept}
 
 \textbf{Ziel:}
 Die Unterscheidung zwischen einem \enquote{Produkt} und der \enquote{Repräsentation eines Produkts} (s.\ \autoref{subsec:produkte-vs-reprasentation}).
@@ -61,7 +61,7 @@ Im Graph existieren unterschiedliche Knotentypen für Produkte und Repräsentati
 Produktknoten enthalten Metainformationen zu umliegenden Repräsentationen und deren Versionsräumen.
 Repräsentationen sind über Kanten mit dem Produkt verbunden.
 
-\subsection{A-UNIQUE-PRODUCT-REPRESENTATION: Eindeutigkeit von Repräsentationen}\label{subsec:req-unique-product-representations}
+\subsection{A-05: Eindeutigkeit von Repräsentationen}\label{subsec:req-unique-product-representations}
 
 \textbf{Ziel:}
 Jedes Produkt und jede Repräsentation eines Produkts darf sich in nur einem Knoten ausprägen.
@@ -76,7 +76,7 @@ Zudem wird die Reihenfolgenabhängigkeit (\hyperref[subsec:c-10-order-dependency
 \textbf{Fit-Kriterium:}
 Im Graph existiert pro Repräsentation exakt ein Knoten, der über Kanten mit anderen Repräsentationen desselben Produkts verbunden ist.
 
-\subsection{A-ARTIFACT-TYPES-IDENTIFICATION: Normalisierte Typidentifikation und typspezifische Attribute für Software-Artefakte}\label{subsec:req-type-specific-matching}
+\subsection{A-06: Normalisierte Typidentifikation und typspezifische Attribute für Software-Artefakte}\label{subsec:req-type-specific-matching}
 
 \textbf{Ziel:}
 Im Bezug auf Artefakte als Datenmodell muss eine Typinferenz-Logik existieren, die Artefakttypen konsistent aus der Kombination von mehreren Attributen identifiziert und auf normalisierte Ökosystembezeichner (z.B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}) abbildet.
@@ -92,7 +92,7 @@ Dazu gehört die Erkennung des Typs, aber auch die Extraktion von den aufgeführ
 Diese müssen für den Abgleich verfügbar gemacht werden.
 Artefakte unbekannter Typen werden mit Basisattributen bereitgestellt.
 
-\subsection{A-ARTIFACT-INHERITANCE: Vererbung von Artefaktmerkmalen}\label{subsec:req-selektor-inheritance}
+\subsection{A-07: Vererbung von Artefaktmerkmalen}\label{subsec:req-selektor-inheritance}
 
 \textbf{Ziel:}
 Ein Vererbungssystem für Artefakt-Selektoren muss existieren, bei dem mit Basis-Selektoren generische Attribute (z.\ B.\ für alle Microsoft Windows-Varianten) definiert werden können und abgeleitete Selektoren spezifische Erweiterungen (z.\ B.\ Architektur) hinzufügen.
@@ -107,7 +107,7 @@ Die Logik der Vererbungshierarchie von Artefakt-Selektoren muss korrekt implemen
 Basis-Knoten definieren dabei generische Selektoren, während abgeleitete Knoten Selektoren mit ergänzenden Attributen führen können.
 Bei der Auswertung eines Artefakts müssen die in der Anforderung geführten Regeln zutreffen.
 
-\subsection{A-MULTIPLE-VALUES-PER-ATTRIBUTE: Auflistung mehrerer Werte pro Attribut}\label{subsec:req-multiple-attribute-values}
+\subsection{A-08: Auflistung mehrerer Werte pro Attribut}\label{subsec:req-multiple-attribute-values}
 
 \textbf{Ziel:}
 Artefakt-Selektoren müssen je Attribut mehrere Werte als ODER-Verknüpfung unterstützen.
@@ -120,7 +120,7 @@ Lösung der Herausforderung \hyperref[subsec:c-03-duplizierte-artefakt-selektore
 Jedes Attribut der Artefakt-Selektoren auf das geprüft werden kann akzeptiert Wertelisten.
 Der Abgleich ist erfolgreich, wenn ein Listenelement mit dem Zielartefakt übereinstimmt.
 
-\subsection{A-REGULAR-EXPRESSIONS: Unterstützung regulärer Ausdrücke}\label{subsec:req-regex-support}
+\subsection{A-09: Unterstützung regulärer Ausdrücke}\label{subsec:req-regex-support}
 
 \textbf{Ziel:}
 Artefakt-Selektoren sollen über das bestehende inkrementelle Wildcard-System, wie in \autoref{sec:current-correlation-format} beschrieben, weiterhin bestehen bleiben.
@@ -128,19 +128,19 @@ Mit dem System können mehrere Stufen von Text-Vergleichen bis hin zu vollen reg
 Das zugehörige Datenmodell in einer Implementierung sollte im Gegensatz zur aktuellen Implementierung der originale Eingabetext dennoch persistiert werden, und nicht nur der daraus abgeleitete reguläre Ausdruck.
 
 \textbf{Begründung:}
-Trotz der Reduzierung des Einsatzes von Wildcards und Mustern durch \hyperref[subsec:req-type-specific-matching]{A-ARTIFACT-TYPESIDENTIFICATION} bleibt die Notwendigkeit, komplexere Vergleiche durchzuführen als nur Gleichheitsprüfungen von Attributen.
+Trotz der Reduzierung des Einsatzes von Wildcards und Mustern durch \hyperref[subsec:req-type-specific-matching]{A-06} bleibt die Notwendigkeit, komplexere Vergleiche durchzuführen als nur Gleichheitsprüfungen von Attributen.
 Eine Erweiterung durch die Erfassung von Gruppen und Bereitstellung als Variablen kann optional erfolgen.
 
 \textbf{Fit-Kriterium:}
 Attributwerte können reguläre Ausdrücke enthalten.
 Diese werden bei der Artefaktidentifikation korrekt interpretiert.
 
-\subsection{A-MANUAL-MODIFICATION: Modifikation des Graphen}\label{subsec:req-manual-format-modification}
+\subsection{A-10: Modifikation des Graphen}\label{subsec:req-manual-format-modification}
 
 \textbf{Ziel:}
 Das neue Korrelationssystem muss ein Modifikationsformat bereitstellen, das die vollständige Manipulation der Graphstruktur ermöglicht.
 Dies umfasst die Erstellung, Änderung und Löschung aller Knotentypen sowie die Verwaltung ihrer Kantenbeziehungen.
-Die Selektion von Knoten muss ausschließlich über ihre eindeutige Typ-ID-Kombination erfolgen, um Konsistent mit \hyperref[subsec:req-node-id-type]{A-NODE-IDENTIFICATION} zu sein.
+Die Selektion von Knoten muss ausschließlich über ihre eindeutige Typ-ID-Kombination erfolgen, um Konsistent mit \hyperref[subsec:req-node-id-type]{A-02} zu sein.
 Das Format muss so gestaltet sein, dass es sowohl für manuelle Bearbeitungen als auch für automatische Prozesse geeignet ist.
 
 \textbf{Begründung:}
@@ -151,22 +151,22 @@ Das System stellt eine Menge an Operationen für die Modifikation von allen Grap
 Knoten werden ausschließlich über ihre Typ-ID-Kombination referenziert.
 Das gleiche Format wird sowohl für manuelle Eingaben als auch für automatische Prozesse verwendet.
 
-\subsection{A-MODIFICATION-YAML-FORMAT: Manuelles Modifikationsformat}\label{subsec:req-manual-format-modification-for-real}
+\subsection{A-11: Manuelles Modifikationsformat}\label{subsec:req-manual-format-modification-for-real}
 
 \textbf{Ziel:}
-Das manuelle Modifikationsformat muss als \acrshort{yaml}-basierte Schnittstelle zu dem in \hyperref[subsec:req-manual-format-modification]{A-MANUAL-MODIFICATION} geforderten Modifikationssystem dienen.
+Das manuelle Modifikationsformat muss als \acrshort{yaml}-basierte Schnittstelle zu dem in \hyperref[subsec:req-manual-format-modification]{A-10} geforderten Modifikationssystem dienen.
 Das Einführen eines Graphens in das Korrelationssystems erhöt die Komplexität mit diesem umzugehen.
 Die Syntax des Formats muss die komplexen Graphoperationen daher so abstrahieren, dass sie für Benutzer einfach handhabbar sind und dennoch die volle Funktionalität erhalten bleibt.
 
 \textbf{Begründung:}
 Diese Anforderung ermöglicht notwendige manuelle Korrekturen der automatischen \acrshort{cpe}-Erkennung, welche eine der Hauptaufgaben des aktuellen Korrelationssystems ist.
-Da die Kombination aus Typ und Id jedes Knotens im Graphen eindeutig ist (s. \hyperref[subsec:req-node-id-type]{A-NODE-IDENTIFICATION}), wird das Auffinden von Einträgen in dem \acrshort{yaml}-Format deterministisch sein, was \hyperref[subsec:c-11-finding-yaml-entries]{C-11} löst.
+Da die Kombination aus Typ und Id jedes Knotens im Graphen eindeutig ist (s. \hyperref[subsec:req-node-id-type]{A-02}), wird das Auffinden von Einträgen in dem \acrshort{yaml}-Format deterministisch sein, was \hyperref[subsec:c-11-finding-yaml-entries]{C-11} löst.
 
 \textbf{Fit-Kriterium:}
 Jede Graphmodifikation kann über das \acrshort{yaml}-Format ausgedrückt werden und Benutzer können das Format ohne tiefe technische Kenntnisse des Graphmodells effektiv nutzen.
 Es existiert eine bidirektionale, deterministische Mapping-Logik zwischen \acrshort{yaml}-Einträgen und Graph-Elementen.
 
-\subsection{A-REASON-RATIONALE: Maschinenlesbare Entscheidungsdokumentation}\label{subsec:req-reason-format}
+\subsection{A-12: Maschinenlesbare Entscheidungsdokumentation}\label{subsec:req-reason-format}
 
 \textbf{Ziel:}
 Das System muss in den strukturierten Metadaten der Knoten und Kanten Dokumentationseigenschaften als deren Bestandteil speichern.
@@ -180,7 +180,7 @@ Hiermit soll die mangelhafte Dokumentation im bestehenden System (\hyperref[subs
 \textbf{Fit-Kriterium:}
 Alle angesprochenen Metadaten sind in strukturierter Form gespeichert.
 
-\subsection{A-GENERATION-FRAMEWORK: Generierungsframework für dynamische Daten}\label{subsec:req-generated-data}
+\subsection{A-13: Generierungsframework für dynamische Daten}\label{subsec:req-generated-data}
 
 \textbf{Ziel:}
 Diese Anforderung verlangt vom neuen System, dass die Erzeugung eines effektiven Korrelationsdatensatzes in einen zweistufigen Prozess aufgeteilt wird.
@@ -202,7 +202,7 @@ Im Erzeugungsprozess des Korrelationsdatensatzes ist die automatische Generierun
 Generierte und manuelle Daten können klar voneinander getrennt angewandt werden.
 Der generierte Anteil ist quellentransparent als solcher gekennzeichnet und kann einfach exportiert werden.
 
-\subsection{A-YAML-FILES-ORGANIZATION: Organisation der \acrshort{yaml}-Dateien}\label{subsec:req-yaml-file-organization}
+\subsection{A-14: Organisation der \acrshort{yaml}-Dateien}\label{subsec:req-yaml-file-organization}
 
 \textbf{Ziel:}
 Manuelle Korrelationseinträge sollen noch immer in einer hierarchischen Verzeichnisstruktur organisiert werden.
@@ -214,7 +214,7 @@ Damit sollen die Herausforderungen der tausenden Zeilen langen \acrshort{yaml}-D
 \textbf{Fit-Kriterium:}
 Logische Gruppierung nach den genannten Kriterien.
 
-\subsection{A-OLD-FILES-TRANSFER: Überführung von Einträgen aus dem alten Korrelationsdatensatz}\label{subsec:req-current-dataset-conversion}
+\subsection{A-15: Überführung von Einträgen aus dem alten Korrelationsdatensatz}\label{subsec:req-current-dataset-conversion}
 
 \textbf{Ziel:}
 In der Transitionsphase vom alten Korrelationssystem zum neuen muss ein paralleler Betrieb beider Systeme ermöglicht werden.
@@ -229,7 +229,7 @@ Konvertierung wird in den Ausblick der Arbeit mit aufgenommen.
 Beide System können unabhängig voneinander eingesetzt werden.
 Um alle alten Einträge in das neue Format übersetzen zu können muss sichergestellt werden, dass der neue Graph mindestens die Fähigkeiten des alten Formats abdeckt.
 
-\subsection{A-PERFORMANCE-OPTIMIZATION: Performance des neuen Korrelationsformats}\label{subsec:req-correlation-format-performance}
+\subsection{A-16: Performance des neuen Korrelationsformats}\label{subsec:req-correlation-format-performance}
 
 \textbf{Analyse:}
 Das alte Korrelationssystem wurde bei unterschiedlichen Inventar-Größen mit dem aktuellen Datensatz mit 6400 Korrelationseinträgen getestet.
@@ -271,7 +271,7 @@ Trotz erweiterter Funktionalität müssen für Produktivumgebungen geeignete Ver
 \textbf{Fit-Kriterium:}
 Messbare Einhaltung der Performance-Grenzwerte bei Testinventaren, geringere Startzeit und linearer Anstieg mit Faktor <2 gegenüber Referenzwerten.
 
-\subsection{A-DATA-DELIVERY: Auslieferung des Datensatzes}\label{subsec:req-correlation-data-delivery}
+\subsection{A-17: Auslieferung des Datensatzes}\label{subsec:req-correlation-data-delivery}
 
 \textbf{Ziel:}
 Der entstehende Korrelationsdatensatz muss als reiner Dateisystem-Export auslieferbar sein, ohne Abhängigkeiten von externen Infrastrukturkomponenten wie Datenbankkomponenten zu verlangen.
@@ -283,7 +283,7 @@ Es soll eine Kompatibilität mit den bestehenden Deployment-Prozessen und eine M
 Vollständige Systemfunktionalität ohne zusätzliche installierte Komponenten neben der Software der \metaeffekt.
 Auslieferung erfolgt ausschließlich durch Dateikopieroperationen.
 
-\subsection{A-TECHNOLOGIES-USE: Zu verwendende Technologien}\label{subsec:req-lang-java}
+\subsection{A-18: Zu verwendende Technologien}\label{subsec:req-lang-java}
 
 Da die bestehende Software zum Schwachstellenmanagement der \metaeffektsp in Java geschrieben ist, muss auch die Implementierung des neuen Korrelationssystems in Java geschehen.
 Zum Abspeichern des Graphen kommen die Bibliotheken infrage, die bereits auf dem Classpath des Projekts sind, um weitere Abhängigkeiten zu vermeiden.
@@ -300,7 +300,7 @@ Berücksichtigung des Technologiestack und Vermeidung von Lizenz- und Wartungsko
 Keine zusätzlichen Projektabhängigkeiten, falls nicht anders vereinbart.
 Lauffähigkeit in der vorhandenen JVM-Umgebung.
 
-\subsection{A-QUALITY-METRICS: Qualitätsmetriken des Graphen}\label{subsec:req-graph-inner-consistency}
+\subsection{A-19: Qualitätsmetriken des Graphen}\label{subsec:req-graph-inner-consistency}
 
 Um verifizieren zu können, dass der Graph sinnhaft strukturiert und in sich selbst konsistent ist, müssen einige Prüfungen darauf ablaufen können.
 Diese prüfen mindestens die folgenden Eigenschaften:
