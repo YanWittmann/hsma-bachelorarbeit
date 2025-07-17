@@ -4,7 +4,7 @@ Aufgrund der abgeleiteten Anforderungen und den Referenzfällen wird in den folg
 
 \subsection{Struktur des Graphen}\label{subsec:model-graph-struktur}
 
-Wie in \hyperref[subsec:req-format-product-graph]{A-01} und \hyperref[subsec:req-product-concept]{A-02} gefordert, wird das neue Korrelationssystem mithilfe eines Graphens modelliert, in dem jeder Knotenpunkt entweder einem Produkt oder einer Repräsentation eines Produktes entspricht und durch Kanten verbunden sind, die die Beziehungen zwischen diesen modellieren.
+Wie in \hyperref[subsec:req-format-product-graph]{A-GRAPH-MODEL} und \hyperref[subsec:req-product-concept]{A-PRODUCT-CONCEPT} gefordert, wird das neue Korrelationssystem mithilfe eines Graphens modelliert, in dem jeder Knotenpunkt entweder einem Produkt oder einer Repräsentation eines Produktes entspricht und durch Kanten verbunden sind, die die Beziehungen zwischen diesen modellieren.
 
 \subsubsection{Knotenpunkte}\label{subsubsec:model-graph-knoten}
 
@@ -81,13 +81,13 @@ So überschreibt eine einzige Kante vom Typ \enquote{is not} bei allen direkt un
 Dies ist nötig, da es nicht korrekt wäre, eine Repräsentation als Anwendbar zu klassifizieren, nur weil die direkte Kante von der vorherigen Repräsentation sie als auf sich Anwendbar sieht.
 Die Nicht-Anwendbarkeit wird also durch den Graphen propagiert.
 
-Darüber hinaus existiert eine dritte Art von Kante, die eine Vererbung von Informationen repräsentiert (inheritance, \hyperref[subsec:req-selektor-inheritance]{A-04}).
+Darüber hinaus existiert eine dritte Art von Kante, die eine Vererbung von Informationen repräsentiert (inheritance, \hyperref[subsec:req-selektor-inheritance]{A-ARTIFACT-INHERITANCE}).
 Über diese sollen Basis-Eigenschaften von einem Eltern-Knoten an einen Kind-Knoten weitergegeben werden, mit dem Ziel, die Redundanz im Datenmodell zu reduzieren und die Pflege zu vereinfachen.
 Im Stand dieser Arbeit sind zwei Anwendungsfälle für diese vorgesehen.
 Mit der Verwendung dieses Kantentyps zwischen Artefakt-Knotenpunkten müssen zum erfolgreichen Matching eines Knotens auch alle darüberliegenden Knotenpunkte erkannt werden.
 Bei der Auswahl der übereinstimmenden Artefakt-Knoten wird nur der spezifischste ausgewählt.
 Der zweite Nutzungsfall sind Produkt-Knotenpunkte, bei denen auch alle geerbten Kanten zu anderen Knotenpunkten ausgewertet werden.
-Eine Prüfung auf zirkuläre Vererbungs-Referenzen ist dabei nötig, um Schleifen zu verhindern und eine eindeutige Auflösung zu garantieren (\hyperref[subsec:req-graph-inner-consistency]{A-10}).
+Eine Prüfung auf zirkuläre Vererbungs-Referenzen ist dabei nötig, um Schleifen zu verhindern und eine eindeutige Auflösung zu garantieren (\hyperref[subsec:req-graph-inner-consistency]{A-QUALITY-METRICS}).
 
 Falls es nötig ist, eine bidirektionale Beziehung darzustellen, kann mit einer identische, umgekehrten Kante die Richtung auf beide Seiten erweitert werden.
 
@@ -119,7 +119,7 @@ Um jedoch die Erweiterbarkeit zu sichern, kann als Schlüssel jeder Wert verwend
 
 \subsection{Graphmodifikation}\label{subsec:model-graph-modification}
 
-Um es nach \hyperref[subsec:req-manual-format-modification]{A-07} zu ermöglichen, auf eine normalisierte Weise den Graphen von den automatisierten oder manuellen Prozessen zu modifizieren, ist ein allgemeines Schema nötig, das von allen gleichermaßen verwendet werden kann.
+Um es nach \hyperref[subsec:req-manual-format-modification]{A-MANUAL-MODIFICATION} zu ermöglichen, auf eine normalisierte Weise den Graphen von den automatisierten oder manuellen Prozessen zu modifizieren, ist ein allgemeines Schema nötig, das von allen gleichermaßen verwendet werden kann.
 Das Modifikationsformat muss grundlegende Operationen auf dem Graphen erlauben: die Erstellung, Änderung und Entfernung von Knotenpunkten jeden Typs sowie die Erstellung, Änderung und Entfernung von Kanten zwischen diesen Knoten.
 
 Das Subjekt einer Modifikation ist ein typisierter Knotenpunkt, von dem die Metadaten oder angrenzenden Kanten modifiziert werden können.
@@ -158,7 +158,7 @@ Daraus ergeben sich die folgenden Modifikationsmodi:
 
 \subsection{\acrshort{yaml}-Format für Graphmodifikationen}\label{subsec:modell-graph-modification-yaml}
 
-Über einen iterativen Designprozess wurde ein \acrshort{yaml}-basiertes Format entwickelt, um die Nutzerfreundlichkeit des Formats zu gewährleisten (\hyperref[subsec:req-manual-format-modification]{A-07}).
+Über einen iterativen Designprozess wurde ein \acrshort{yaml}-basiertes Format entwickelt, um die Nutzerfreundlichkeit des Formats zu gewährleisten (\hyperref[subsec:req-manual-format-modification]{A-MANUAL-MODIFICATION}).
 Das Format muss auf dem Modifikationsformat aufbauen und sich darin abbilden lassen.
 Eine Priorität des Formats war nicht nur die Lesbarkeit und Einfachheit das \acrshort{yaml} zu schreiben, sondern auch die Länge der einzelnen Einträge so kurz wie möglich zu halten.
 
@@ -169,14 +169,14 @@ Zudem wird dieses Muster (\enquote{type: id}) immer wieder im Format verwendet u
 Da im Moment keine der geplanten Knotentypen, neben Produkt- und Artefakt-Knoten, weitere komplexen identifizierenden Attribute besitzen, wurde diese Adressierungslogik noch weiter vereinfacht, sodass direkt eine Repräsentation des gegebenen Typs angegeben werden kann und daraus nach den Regeln aus \autoref{subsubsec:model-graph-knoten} eine Id erzeugt wird.
 Beispielsweise wird ein \texttt{artefact}-Knoten durch \texttt{artifact: "npm @material / banner"} adressiert, oder ein Knoten vom Typ \texttt{cpe} durch \texttt{cpe: "cpe:/a:redis:redis"} angegeben, woraus automatisch die Id \texttt{a:redis:redis} abgeleitet wird.
 
-An Knoten können mit \texttt{metadata} diverse Metadaten angefügt werden (\hyperref[subsec:req-reason-format]{A-08}).
+An Knoten können mit \texttt{metadata} diverse Metadaten angefügt werden (\hyperref[subsec:req-reason-format]{A-REASON-RATIONALE}).
 Das \texttt{metadata}-Feld ermöglicht es Beschreibungen (\texttt{description}) und externe Referenzen (\texttt{references}) unter beliebigen Keywords wie \texttt{homepage} abzulegen.
 
 Typspezifisch sind momentan nur für Produkt- und Artefakt-Knoten weitere Attribute geplant.
 Bei Artefakten ist das \texttt{identification}-Attribut, welches eine Liste von Selektoren mit den Kriterien für das Matching von eingehenden Artefakten enthält.
-Nach \hyperref[subsec:req-type-specific-matching]{A-03} ermöglicht es die Verwendung von normalisierten Ökosystembezeichnern (\texttt{type}, z.B. \texttt{python}, \texttt{npm}) und typspezifischen Attributen (\texttt{name}, \texttt{scope}, \texttt{packageName}), die über spezielle Extraktoren ermittelt werden.
-Wildcard-Selektoren können noch immer im alten Format inkrementell aktiviert werden (\hyperref[subsec:req-regex-support]{A-06}).
-Um mehrere Werte pro Attribut angeben zu können (\hyperref[subsec:req-multiple-attribute-values]{A-05}), können statt wie bisher nur Text-Werte auf den Attributen auch \acrshort{yaml}-Listen angegeben werden, deren Elemente durch eine logische ODER-Verknüpfung verbunden werden (z.B. \texttt{name: ["web3-react\_walletconnect", "walletconnect", "@web3-react/walletconnect"]}).
+Nach \hyperref[subsec:req-type-specific-matching]{A-ARTIFACT-TYPES-IDENTIFICATION} ermöglicht es die Verwendung von normalisierten Ökosystembezeichnern (\texttt{type}, z.B. \texttt{python}, \texttt{npm}) und typspezifischen Attributen (\texttt{name}, \texttt{scope}, \texttt{packageName}), die über spezielle Extraktoren ermittelt werden.
+Wildcard-Selektoren können noch immer im alten Format inkrementell aktiviert werden (\hyperref[subsec:req-regex-support]{A-REGULAR-EXPRESSIONS}).
+Um mehrere Werte pro Attribut angeben zu können (\hyperref[subsec:req-multiple-attribute-values]{A-MULTIPLE-VALUES-PER-ATTRIBUTE}), können statt wie bisher nur Text-Werte auf den Attributen auch \acrshort{yaml}-Listen angegeben werden, deren Elemente durch eine logische ODER-Verknüpfung verbunden werden (z.B. \texttt{name: ["web3-react\_walletconnect", "walletconnect", "@web3-react/walletconnect"]}).
 
 Kantenbeziehungen werden innerhalb der Knotendefinitionen unter den festgelegten Schlüsseln \texttt{is}, \texttt{is not} und \texttt{inherit}.
 Die Attribute enthalten je eine Liste von Zielknotenselektoren, zu denen die Beziehung aufgebaut werden soll, deren Format ebenfalls das \enquote{type: id}-Schema verwenden.
@@ -269,7 +269,7 @@ Diese Schritte werden in den folgenden Unterkapiteln detailliert.
 
 \subsubsection{Matching von Artefakt-Repräsentationen}\label{subsubsec:model-matching}
 
-Eine der Qualitätsanforderungen an den Graphen (\hyperref[subsec:req-graph-inner-consistency]{A-10}) ist, dass genaue eine Repräsentation im Graphen mit einer Eingabe übereinstimmt.
+Eine der Qualitätsanforderungen an den Graphen (\hyperref[subsec:req-graph-inner-consistency]{A-QUALITY-METRICS}) ist, dass genaue eine Repräsentation im Graphen mit einer Eingabe übereinstimmt.
 Das bedeutet auch, dass bei der Abfrage eines Artefakts nur ein einiger Knoten gefunden werden darf, der diesem entspricht.
 Es werden dafür in Folgenden zwar Mechanismen bereitgestellt, die dieses Verhalten möglichst einfach für einen Anwender ermöglichen, jedoch kann die explizite manuelle Modellierung eines solchen Falles nicht von der Konzeption her ausgeschlossen werden.
 Daher ist es so wichtig, einen sich selbst pflegenden Testdatensatz zu führen, der die Identifikationen regelmäßig automatisch prüft.
@@ -287,8 +287,8 @@ Jeder Artefakt-Knoten enthält eine Liste an Selektoren, die durch ein logisches
 Das ermöglicht es, mehrere alternativen aufzuführen, wie sich ein reales Artefakt in seiner Attributmenge ausprägen kann und verhindert die Notwendigkeit, einen zweiten Knoten für dasselbe Artefakt anlegen zu müssen.
 
 Jeder Selektor besteht aus einer Menge an Attributen, von denen alle für ein Artefakt mit einem logischen UND übereinstimmen müssen, um den Eintrag zu aktivieren.
-Um \hyperref[subsec:req-multiple-attribute-values]{A-05} zu erfüllen, sind die Werte der abzugleichenden Attribute als Listen an möglichen Werten abgelegt, die mit einem weiteren logischen ODER verbunden sind, also von denen nur ein Wert zutreffen muss.
-Zudem können die Werte nach \hyperref[subsec:req-regex-support]{A-06} das bisherige inkrementelle Wildcard-System verwenden, um möglichst alle Matching-Fälle abzudecken.
+Um \hyperref[subsec:req-multiple-attribute-values]{A-MULTIPLE-VALUES-PER-ATTRIBUTE} zu erfüllen, sind die Werte der abzugleichenden Attribute als Listen an möglichen Werten abgelegt, die mit einem weiteren logischen ODER verbunden sind, also von denen nur ein Wert zutreffen muss.
+Zudem können die Werte nach \hyperref[subsec:req-regex-support]{A-REGULAR-EXPRESSIONS} das bisherige inkrementelle Wildcard-System verwenden, um möglichst alle Matching-Fälle abzudecken.
 Die abfragbaren Attribute sind in zwei Mengen geteilt, die sich in ihrer Quellen unterscheiden.
 
 Rohe Artefakt-Attribute beziehen sich auf die Attribute, die das Artefakt direkt in sich speichert.
@@ -307,7 +307,7 @@ Eine solche Beziehung bedeutet, dass der Knoten, von dem geerbt wird, ebenfalls 
 Diese Beziehung kann verkettet werden, indem von dem geerbten Knoten eine weitere Vererbungskante losgeht.
 Auf diese Weise können beliebig viele Identifikationen aufeinander folgen.
 
-Dies führt zu einer weiteren Herausforderung in der Identifikationslogik, da nach \hyperref[subsec:req-graph-inner-consistency]{A-10} immer nur genau ein Knotenpunkt für eine zu identifizierende Repräsentation gefunden werden darf.
+Dies führt zu einer weiteren Herausforderung in der Identifikationslogik, da nach \hyperref[subsec:req-graph-inner-consistency]{A-QUALITY-METRICS} immer nur genau ein Knotenpunkt für eine zu identifizierende Repräsentation gefunden werden darf.
 Da die allgemeineren Knotenpunkte, von denen die spezifischen Ausprägungen der Artefakt-Knoten erben, bei einem Artefakt welche den spezifischen Knoten selektieren immer auch mit den Selektoren des allgemeinen Knotens übereinstimmen werden, muss eine Ausschlusslogik implementiert werden.
 Da immer die spezifischste Identifikation für die Repräsentation gewählt werden soll, wird auf der Ergebnismenge der gefundenen Knoten die Hierarchie der Vererbung ausgewertet und alle entfernt, von denen geerbt wird.
 
