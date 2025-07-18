@@ -38,7 +38,7 @@ Die Anforderung \hyperref[subsec:req-type-specific-matching]{A-06} trifft hier e
 Die Erkennung von drei Metriken über ein einziges Artefakt-Attribut ist weder zuverlässig, noch ist es gut auf weitere Formate der \texttt{Id} erweiterbar.
 In dem neuen Format sollte die Identifikation von diesen zusammengesetzen Attributen durch programmatische Unterstützung in der Selektorlogik auf einzelne Attribute aufgetrennt werden.
 Mit der Änderung des Formats als Graphen (\hyperref[subsec:req-format-product-graph]{A-01}), in dem jede Repräsentation versions-agnostisch nur einmal als Knotenpunkt ausgeprägt ist (\hyperref[subsec:req-unique-product-representations]{A-05}) und mit der Anforderung, dass es ein ausgeprägtes Produkt-Konzept mit Produkt-Knotenpunkten gibt (\hyperref[subsec:req-product-concept]{A-04}), kann die Versionserkennung und Modifikation der Version in der \acrshort{cpe} in den einzelnen Knotenpunkten der Repräsentationen nicht mehr wie früher modelliert werden, sondern muss auf einen zentral die Repräsentationen verknüpenden Produkt-Knotenpunkt, der diese Mappings unter einem Namensraum an die Knotenpunkte zur Verfügung stellt.
-Zur Erkennung der Version sollte mindestens noch immer das Wildcard-System zur Verfügung gestellt werden (\hyperref[subsec:req-regex-support]{A-09}).
+Zur Erkennung der Version sollte mindestens das Wildcard-System zur Verfügung gestellt werden (\hyperref[subsec:req-regex-support]{A-09}).
 
 % FIXME-KKL: /zulu.*-(?:jre|jdk)-headless-11\.0\.10.*/i ist nicht korrekt: was wäre denn dann richtig? so steht es in den korrelationsdaten drin.
 \begin{lstlisting}[style=yaml,caption={Java-Runtime-Korrelation mit Versionstransformation},label={lst:reference-case-java-runtimes},basicstyle=\ttfamily\scriptsize]

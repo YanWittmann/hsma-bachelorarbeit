@@ -1,6 +1,6 @@
 \chapter{Evaluation}\label{ch:evaluation}
 
-Das in dieser Arbeit entwickelte Korrelationssystem soll in diesem Kapitel aufgrund von Qualitätsmetriken untersucht werden, die Ergebnisse dieser Analyse vorgestellt und diskutiert werden.
+Das in dieser Arbeit entwickelte Korrelationssystem soll in diesem Kapitel anhand von Qualitätsmetriken untersucht, die Ergebnisse dieser Analyse vorgestellt und diskutiert werden.
 
 
 \section{Prüfen der Qualitätsmetriken}
@@ -23,7 +23,8 @@ Dieser Fall muss ebenfalls durch das Testframework recht einfach ohne Datensatz 
 
 \paragraph{Keine losen Knoten im Graphen}
 Um sicherzustellen, dass mit jeder Identifikation einer Repräsentation im Graphen ein Informationsgewinn stattfindet, muss auch für jeden Knoten über mindestens eine Kante ein weiterer Knoten erreicht werden können.
-Diese Qualitätsmetrik lässt sich ebenso einfach überprüfen, jedoch stellt sie einige ungelöste Herausforderungen auf konzeptioneller Ebene.
+Diese Qualitätsmetrik lässt sich ebenfalls einfach überprüfen.
+jedoch stellt sie einige ungelöste Herausforderungen auf konzeptioneller Ebene.
 Wenn ein automatischer Contributor auf dem Graphen z.\ B.\ alle Knoten für die \acrshort{cpe}-Datenquelle mit ihren Metadaten erzeugt, dann kann nur basierend auf einer \acrshort{cpe} in den meisten Fällen nicht entschieden werden, welche weiteren Repräsentationen es dazu geben könnte, oder welchem abstrakten Produkt diese \acrshort{cpe} zugehört.
 Eine Limitation dieser Qualitätsmetrik ausschließlich auf Knoten, die vom manuellen Modifikationsformat berührt wurden, macht diese Anforderung in der Praxis anwendbar und nützlich, indem von den automatisch erzeugten, mit Metadaten gefüllten Knoten profitiert werden kann, und dennoch sichergestellt wird, dass bei der manuellen Modifikation keine Knoten vergessen werden und mindestens ein Produktknoten zu einer Repräsentation modelliert werden muss.
 Die Unterscheidung der Knoten kann über das \enquote{\texttt{contributors}}-Attribut geschehen, in dem alle auf einem Knoten beitragenden Schritte eingetragen werden.
@@ -47,7 +48,7 @@ Im Testframework muss ebenfalls auf diese geprüft werden, um sicherzustellen, d
 
 In einem weiteren Durchlauf mit einem künstlich erzeugten Datensatz derselben Größe wie in \autoref{subsec:req-correlation-format-performance} wurde dasselbe Testinventar mit unterschiedlichen Größen auf die Laufzeit untersucht.
 Bei der Betrachtung der Ergebnisse in \autoref{tab:new-correlation-performance} ist es wichtig zu betonen, dass auf der Implementierung des neuen Korrelationssystems neben dem Caching der Knotenpunkte noch keine weiteren Performance-Optimierungen angewendet wurden und dies die ersten Messungsergebnisse sind.
-Der Vergleich der beiden Laufzeiten ist in \autoref{fig:correlation-performance-comparison} als Diagramm zu vergleichen.
+Der Vergleich der beiden Laufzeiten ist in \autoref{fig:correlation-performance-comparison} als Diagramm dargestellt.
 
 Da der Graph im neuen Korrelationssystem aus der Datenbank nur bei Bedarf ausgelesen wird, ergibt es Sinn, dass es keine zusätzliche Startup-Zeit gibt, wenn keine Datenmengen angefordert werden.
 Wie auch bei dem alten Korrelationssystem ist ein linearer Zuwachs zu erkennen, da für jedes zusätzliche Artefakt ähnlich viele Berechnungen vorgenommen werden müssen.
@@ -94,7 +95,7 @@ Da die Referenzfälle so gewählt wurden, dass sie die grundlegenden Fälle und 
 
 Der Punkt, an dem eine der größten Verbesserungen gemessen werden konnte, ist die Neu-Konzipierung der Artefakt-Selektion.
 Die neuen Selektoren erlauben durch eine typbasierte Auswertung anstelle einer Kombination von Attributen eine wesentlich zuverlässigere Identifikation, die für zukünftige Anpassungen an der Erkennung offen ist.
-Die Einführung typ-spezifischer Attribute, die in den Selektoren als first-class-Attribute verfügbar gemacht werden und die Möglichkeit, in einem Selektor mehrere Werte für ein Attribut prüfen zu können unterstützt die Zuverlässigkeit und reduziert die Redundanz weiter.
+Die Einführung typspezifischer Attribute, die in den Selektoren als first-class-Attribute verfügbar gemacht werden und die Möglichkeit, in einem Selektor mehrere Werte für ein Attribut prüfen zu können unterstützt die Zuverlässigkeit und reduziert die Redundanz weiter.
 Durch die Verwendung von Vererbungsbeziehungen über die Selektoren mehrerer Knoten hinweg können gemeinsame Attribute wiederverwendet werden.
 
 Das neue Graphmodell führt eine explizite Trennung zwischen Repräsentationen und Produkten ein.
@@ -108,8 +109,8 @@ Bei der Architektur des Graphen und der Implementierung in Java wurde an das Tes
 
 \subsection{Welche Herausforderungen bestehen weiterhin?}\label{subsec:discussion-negative}
 
-Trotzdem bringt das neue Modell auch neue Herausforderungen mit sich, insbesondere im Hinblick auf die Komplexität des Konzepts eines Graphens.
-Auch wenn dadurch die Stabilität und Integrität des Modells deutlich besser gesichert werden kann, ist die Einarbeitung in die Konzepte für interne oder externe Beitragende ist deutlich höher als bei dem bisherigen flachen Modellierungsansatz.
+Das Einführen eines graphbasiertn Modells bietet zwar deutlich bessere Möglichkeiten zur Sicherung der Stabilität und Integrität, bringt jedoch auch eine deutlich höhere konzeptionelle Komplexität mit sich.
+Für interne, wie auch externe Beitragende bedeutet dies eine steilere Lernkurve im Vergleich zum bisherigen, flacheren Modellierungsansatz.
 Gerade Fälle wie bei den verschachtelten Konstellationen des Windows-Referenzfalls (\autoref{subsec:example-windows}) zeigen, dass die Nachvollziehbarkeit über die Abhängigkeit der Knoten untereinander erschwert wird.
 Auch wenn diese durch klare Regeln abgebildet werden und vom Konzept her gerade bei einer höheren Skalierung in der Modellierung einfacher zu handhaben sind, führt dies zu einem höheren Bedarf an Visualisierung und dokumentierter Herleitung.
 

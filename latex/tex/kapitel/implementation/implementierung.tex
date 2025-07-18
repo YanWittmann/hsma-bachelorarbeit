@@ -19,7 +19,7 @@ SQLite benötigt keinen separaten Datenbankserver, sondern speichert die gesamte
 
 Als relationale Datenbank muss von Anfang an ein einheitliches Schema für die Tabellen definiert werden.
 Die Kernattribute der Datenelemente werden als dedizierte Attribute in den Spalten der Tabellen abgelegt.
-Um aber für zukünftige Formatänderungen vorzusorgen, und um die stark typabhängigen zusätzlichen Attribute in den Spalten vernünftig zur serialisierung und deserialisierung abspeichern zu können, wird einfach das gesamte Datenobjekt als \acrfullr{json}-Objekt in einer zusätzlichen Spalte abgelegt und bei Bedarf ausgelesen.
+Um aber für zukünftige Formatänderungen vorzusorgen, und um die stark typabhängigen zusätzlichen Attribute in den Spalten vernünftig zur Serialisierung und Deserialisierung abspeichern zu können, wird einfach das gesamte Datenobjekt als \acrfullr{json}-Objekt in einer zusätzlichen Spalte abgelegt und bei Bedarf ausgelesen.
 Das ermöglicht eine flexible Erweiterung der Attribute ohne Schemaänderungen und dank Funktionen wie \texttt{json\_extract}\footnote{\url{https://sqlite.org/json1.html}} von SQLite kann dennoch bei Bedarf auf Attribute in den Objekten über \acrfullr{sql} zugegriffen.
 
 Alternativen, die in Betracht gezogen wurden, sind:
@@ -54,7 +54,7 @@ Um Namenskonflikte zwischen anderen Modulen zu vermeiden und um ein einheitliche
 
 \subsubsection{Kernkomponenten}
 
-Die in dieser Sektion beschriebenen Klassen können in einem Klassendiagramm in \autoref{fig:impl-class-diagram-core-model} gefunden werden.
+Die in dieser Sektion beschriebenen Klassen sind in dem Klassendiagramm in \autoref{fig:impl-class-diagram-core-model} dargestellt.
 
 \begin{figure}[htbp]
     \centering
@@ -112,7 +112,7 @@ Die zuständigen Klassen sind im Klassendiagramm in \autoref{fig:impl-class-diag
 \end{figure}
 
 Die Klasse \texttt{RepGraphModifierEntry} ist die Basisklasse für Modifikationsanweisungen und ist dafür verantwortlich, sie auf den Graphen anzuwenden.
-Wie in \autoref{subsec:model-graph-modification} beschrieben unterstützt sie mit den verschiedenen Modi die Erwartungshaltung an den Graphen auszudrücken und arbeitet allgemein inkrementell auf den Daten.
+Wie in \autoref{subsec:model-graph-modification} beschrieben, unterstützt sie mit den verschiedenen Modi die Erwartungshaltung an den Graphen auszudrücken und arbeitet allgemein inkrementell auf den Daten.
 Um eine Menge an Modifikationseinträgen auf den Graphen anzuwenden wird das System in zwei Phasen aufgeteilt und wird anhand vom Pseudocode in \autoref{lst:modifikation-pseudocode} erklärt.
 
 In der ersten Phase wird für jeden Eintrag der Graph nach dem Knoten mit dem eindeutigen Typ und Id-Paar durchsucht, um je nach \texttt{ModificationType} das Prüfen der Knotenexistenz durchzuführen und den Knoten optional anzulegen.
@@ -244,7 +244,7 @@ Um die typspezifischen Attribute der Knoten prüfen zu können, stellt das \text
 
 Um die Traversierung des Graphen möglichst einfach zu gestalten, wird in der \texttt{TraversalQuery}-Klasse eine fluent \acrshort{api} für die Definition von Durchquerungsregeln bereitgestellt.
 Mit Methoden wie \texttt{outgoing()}, \texttt{incoming()} und \texttt{undirected()} kann die Richtung der Traversierung gesteuert werden.
-Zusätzlich können Filter für Knotentypen (\texttt{targetNodeType(type)}), Beziehungstypen (\texttt{relationshipType(type)}) und benutzerdefinierte Prädikate für Knoten und Kanten definiert werden.
+Zusätzlich können Filter für Knotentypen (\texttt{targetNodeType(type)}), Beziehungstypen (\texttt{relationshipType(type)}) und benutzerdefinierte Prädikate für Knoten und Kanten genutzt werden.
 Die Abfragen können wiederverwendet werden und die am häufigsten eingesetzten werden als statische Konstanten definiert.
 
 Um die Abfragen direkt an einen Knotenpunkt stellen zu können, enthält jeder Knoten eine Referenz auf das \texttt{RepGraph}-Objekt in dem er liegt.

@@ -47,7 +47,7 @@ Das neue Modell in \autoref{lst:new-correlation-java-runtimes} adressiert diese 
 \begin{itemize}
     \itemsep0em
     \item Nur ein einziger Knoten für jede \acrshort{cpe}-Repräsentation und das Artefakt
-    \item Versionstransformation im zentralen Produktknoten mit Artefakt-Versionsmustern wie \verb|/1\.1\.6[^0-9].*9/| für die Konvertierung nach zu \acrshort{cpe}-Versionen wie \texttt{1.1.6\_009}
+    \item Versionstransformation im zentralen Produktknoten mit Artefakt-Versionsmustern wie \verb|/1\\.1\\.6[^0-9](.*[^0-9])?0*9([^0-9].*)?/i| für die Konvertierung nach zu \acrshort{cpe}-Versionen wie \texttt{1.1.6\_009}
     \item Ein Namespace \enquote{corretto (artifact to cpe)} kapselt diese Transformationsregeln, sodass sie optional verwendet werden können
     \item Statt drei Eigenschaften mit regex-basierter Erkennung aus der \texttt{Id} auszulesen, wird über eine explizite Typisierung (\texttt{type: java-runtime}) das \texttt{supplier}-Attribut programmatisch bereitgestellt und die Version wird explizit später geprüft
 \end{itemize}
@@ -142,7 +142,7 @@ Der sich daraus ergebende Graph in \autoref{fig:example-graph-redis} zeigt die k
 
 \begin{figure}[htbp]
     \centering
-    \makebox[\textwidth]{\includesvg[width=0.8\textwidth, inkscapelatex=false]{bilder/example-graph-redis}}
+    \makebox[\textwidth]{\includesvg[width=0.9\textwidth, inkscapelatex=false]{bilder/example-graph-redis}}
     \caption{Generierter Graph zu Redis}
     \label{fig:example-graph-redis}
 \end{figure}
@@ -157,7 +157,7 @@ Die Basisdefinition von Windows 10 wird mit den relevanten Attributen als eigens
 Versions- und architekturabhängige Merkmale wie \texttt{21H2}, \texttt{amd64} oder \texttt{x86} werden als eigene Knoten mit einer Vererbungskante zu der jeweils darunter liegenden Identifikation geführt.
 Jede Artefakt-Identifikation besitzt einen zugehörigen Produktknoten, der diese Ausprägung der Attributkombinationen darstellt.
 Über diese Produkte sind die weiteren Repräsentationen erreichbar.
-Die negatividentifikation von Komponenten wie der Media Player kann durch \texttt{is not}-Relationen ausgeschlossen werden.
+Die Negatividentifikation von Komponenten wie der Media Player kann durch \texttt{is not}-Relationen ausgeschlossen werden.
 
 Ein wichtiger Fall ist die Kante von \enquote{Windows 10 21H2} zu \enquote{o:microsoft:windows\_10\_21h2}, bei der eine Transformation des Versionsattributs angewendet wird.
 Da in dem Algorithmus zum Auflösen der erreichbaren Knoten von einem Knoten aus bei mehreren Wegen zu einem Knoten immer die spezifischste (in der Vererbungshierarchie oben liegende) Kante gewählt wird, wird bei einem Match des Knotens \enquote{Windows 10 21H2} trotz der Erreichbarkeit des \acrshort{cpe}-Knotens über das Basisprodukt \enquote{Windows 10} nicht die Basiskante unten gewählt, sondern die spezifische oben mit der Transformation.

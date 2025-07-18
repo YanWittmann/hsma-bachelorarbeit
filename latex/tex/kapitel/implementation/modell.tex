@@ -9,7 +9,7 @@ Wie in \hyperref[subsec:req-format-product-graph]{A-01} und \hyperref[subsec:req
 \subsubsection{Knotenpunkte}\label{subsubsec:model-graph-knoten}
 
 Betrachtet werden zunächst die Knotenpunkte der Repräsentationen von Produkten.
-Für jedes Produktidentifikationsstandard-Ökosystem wird ein Typ für einen Knotenpunkt angelegt, der dem Knoten typspezifische Attribute und Eigenschaften zuweisen kann.
+Für jedes Produktidentifikationsökosystem wird ein Typ für einen Knotenpunkt angelegt, der dem Knoten typspezifische Attribute und Eigenschaften zuweisen kann.
 Diese definieren, wie sich ein Knoten selbst identifiziert und kann zum Abgleich von zugehörigen Repräsentationen mit sich selbst verwendet werden, um herauszufinden, ob eine reale Repräsentation einem Knotenpunkt entspricht.
 Zudem kann diese Knoteninformation in Kombination mit dem Typen einer eingehenden Kante interpretiert werden, um eine Transformation an dem Ursprungsknotenpunkt anzuwenden.
 
@@ -32,14 +32,14 @@ Um von Anfang an ein einheitliches Format für die Ids unterschiedlicher Typen z
     Die Id eines \acrshort{cpe}-Knotens leitet sich aus der Menge an Doppelpunkt-getrennten Parts ab, die in der \acrshort{cpe} gesetzt sind, wobei Lücken zwischen gesetzten Parts immer mit \enquote{*} aufgefüllt werden müssen.
     Zu der redis-\acrshort{cpe} wäre die Id entsprechend: \texttt{a:redis:redis}.
     \item \textit{\acrshort{purl}}: verhält sich ähnlich wie ein \acrshort{cpe}-Knoten, es werden beliebige Attribute einer \acrshort{purl} abgelegt, auf die ein Artefakt geprüft werden kann.
-    Bei \acrshortpl{purl} wird die Knoten-Id wie die \acrshort{purl} selbst, nur ohne den \texttt{pkg:}-Präfix geschrieben.
+    Bei \acrshortpl{purl} wird für die Knoten-Id die Attributmenge der \acrshort{purl} selbst in kanonischer Reihenfolge ohne den \texttt{pkg:}-Präfix verwendet.
     \item \textit{MS Product ID}: stellen eine numerische Produkt-Id dar, und können optional anzuwendende KB-Nummern (Security-Patch Ids) enthalten.
     Ähnlich wie bei dem \acrshort{cpe}-Knoten werden Artefakten bei positiver oder negativer Übereinstimmung die Ids in dem Attribut \texttt{MS Product Id} hinzugefügt oder entfernt.
     Die Knoten-Id ist identisch mit der Produkt-Id.
     \item \textit{\acrshort{eol}-Id}: enthält genau eine Produkt-Id aus dem endoflife.date-Ökosystem und optional eine Referenz auf einen Zyklus innerhalb dieses Produkts.
     Die Knoten-Id ist identisch mit der Produkt-Id.
     \item \textit{Artefakt}: repräsentieren tatsächliche Software-Artefakte, die in einem Inventar aus einem Software-Scan oder einer \acrshort{sbom} gefunden werden können.
-    In dem Nutzungskontext der Korrelationsdaten dienen sie als Ausgangspunkt für den Selektionsprozess und die anschließende Graphen-Durchquerung um Effekte auf ein Artefakt zu bestimmen.
+    In dem Nutzungskontext der Korrelationsdaten dienen sie als Ausgangspunkt für den Selektionsprozess und die anschließende Graphen-Traversierung um Effekte auf ein Artefakt zu bestimmen.
     Ein Artefakt-Knoten besitzt einen Selektionsblock, der die Kriterien für die Artefakt-Selektion enthält.
     Die Selektionslogik wird in \autoref{subsubsec:model-matching} genauer ausgeführt.
 \end{itemize}
@@ -167,7 +167,7 @@ Um die Identifikation eines Knotens so kurz und einfach wie möglich zu gestalte
 Dies aggregiert zwei Attribute in eines und spart damit Zeilen und kann dennoch problemlos erkannt werden, da alle Knotentyp-Bezeichner bekannt sind.
 Zudem wird dieses Muster (\enquote{type: id}) immer wieder im Format verwendet und schafft damit eine einheitliche Weise, wie Knoten selektiert werden.
 Da im Moment keine der geplanten Knotentypen, neben Produkt- und Artefakt-Knoten, weitere komplexen identifizierenden Attribute besitzen, wurde diese Adressierungslogik noch weiter vereinfacht, sodass direkt eine Repräsentation des gegebenen Typs angegeben werden kann und daraus nach den Regeln aus \autoref{subsubsec:model-graph-knoten} eine Id erzeugt wird.
-Beispielsweise wird ein \texttt{artefact}-Knoten durch \texttt{artifact: "npm @material / banner"} adressiert, oder ein Knoten vom Typ \texttt{cpe} durch \texttt{cpe: "cpe:/a:redis:redis"} angegeben, woraus automatisch die Id \texttt{a:redis:redis} abgeleitet wird.
+Beispielsweise wird ein \texttt{artefact}-Knoten durch \texttt{artifact: "npm @material / banner"} adressiert, oder ein Knoten vom Typ \texttt{cpe} durch \texttt{cpe: "cpe:/a:redis:redis"} angegeben, woraus implizit die Id \texttt{a:redis:redis} abgeleitet wird.
 
 An Knoten können mit \texttt{metadata} diverse Metadaten angefügt werden (\hyperref[subsec:req-reason-format]{A-12}).
 Das \texttt{metadata}-Feld ermöglicht es Beschreibungen (\texttt{description}) und externe Referenzen (\texttt{references}) unter beliebigen Keywords wie \texttt{homepage} abzulegen.
@@ -191,7 +191,7 @@ In den Objekt-Werten sind über das \texttt{source}-Attribut weitere Filter auf 
 
 Die Begründungsfelder sind genau wie in \autoref{subsec:model-rationale} erklärt auf den Knoten und Kanten als Objekte und Listen verfügbar.
 
-Ein einfaches Beispiel für die Definition von drei Knoten und zwei Kanten kann in \autoref{lst:modell-graph-modification-yaml-demo} im \acrshort{yaml}-Format gefunden werden, wie sich die Auswertung davon im Graphen darstellt ist in \autoref{fig:modell-graph-modification-yaml-demo-rendered} abgebildet.
+Ein einfaches Beispiel für die Definition von drei Knoten und zwei Kanten kann in \autoref{lst:modell-graph-modification-yaml-demo} im \acrshort{yaml}-Format eingesehen werden, wie sich die Auswertung davon im Graphen darstellt ist in \autoref{fig:modell-graph-modification-yaml-demo-rendered} abgebildet.
 Um die Fähigkeiten des Formats als \textit{Modifikations}format zu demonstrieren wird auf dem vorherigen Graphen mit einer weiteren Modifikation in \autoref{lst:modell-graph-modification-yaml-demo-append} aufgebaut, woraus sich der Graph in \autoref{fig:modell-graph-modification-yaml-demo-append-rendered} ergibt.
 Weitere Beispiele und die Referenzfälle können in \autoref{sec:beispiele-fertige-implementierung} gefunden werden.
 
@@ -235,7 +235,7 @@ Weitere Beispiele und die Referenzfälle können in \autoref{sec:beispiele-ferti
     - cpe: "a:blogstand_banner_plugin_project:blogstand-smart-banner"
       why: "Not a Material Design component, is an abandoned WordPress plugin"
       because:
-        - "affects CVE-2014-4848"
+        - "affected by CVE-2014-4848"
         - "http://packetstormsecurity.com/files/127290/WordPress-Blogstand-Smart-Banner-1.0-Cross-Site-Scripting.html"
         - "http://wordpress.org/plugins/blogstand-smart-banner"
         - "This plugin has been closed"
@@ -271,7 +271,7 @@ Diese Schritte werden in den folgenden Unterkapiteln detailliert.
 
 Eine der Qualitätsanforderungen an den Graphen (\hyperref[subsec:req-graph-inner-consistency]{A-19}) ist, dass genaue eine Repräsentation im Graphen mit einer Eingabe übereinstimmt.
 Das bedeutet auch, dass bei der Abfrage eines Artefakts nur ein einiger Knoten gefunden werden darf, der diesem entspricht.
-Es werden dafür in Folgenden zwar Mechanismen bereitgestellt, die dieses Verhalten möglichst einfach für einen Anwender ermöglichen, jedoch kann die explizite manuelle Modellierung eines solchen Falles nicht von der Konzeption her ausgeschlossen werden.
+Es werden dafür im Folgenden zwar Mechanismen bereitgestellt, die dieses Verhalten möglichst einfach für einen Anwender nutzbar machen, jedoch kann die explizite manuelle Modellierung eines solchen Falles nicht von der Konzeption her ausgeschlossen werden.
 Daher ist es so wichtig, einen sich selbst pflegenden Testdatensatz zu führen, der die Identifikationen regelmäßig automatisch prüft.
 
 In den nächsten Kapiteln wird wird zunächst die Artefakt-Selektion auf einzelnen Knoten eingeführt, dann werden mehrere Knoten über Vererbungsregeln kombiniert und deren Regeln erläutert.
@@ -284,7 +284,7 @@ Diese programmatisch ermittelten Attribute sichern, dass Attributwertprüfungen 
 \paragraph{Artefakt-Selektor}
 
 Jeder Artefakt-Knoten enthält eine Liste an Selektoren, die durch ein logisches ODER verbunden werden, damit nur ein Selektor zutreffen muss, um ein Artefakt zu identifizieren.
-Das ermöglicht es, mehrere alternativen aufzuführen, wie sich ein reales Artefakt in seiner Attributmenge ausprägen kann und verhindert die Notwendigkeit, einen zweiten Knoten für dasselbe Artefakt anlegen zu müssen.
+Das ermöglicht es, mehrere Alternativen aufzuführen, wie sich ein reales Artefakt in seiner Attributmenge ausprägen kann und verhindert die Notwendigkeit, einen zweiten Knoten für dasselbe Artefakt anlegen zu müssen.
 
 Jeder Selektor besteht aus einer Menge an Attributen, von denen alle für ein Artefakt mit einem logischen UND übereinstimmen müssen, um den Eintrag zu aktivieren.
 Um \hyperref[subsec:req-multiple-attribute-values]{A-08} zu erfüllen, sind die Werte der abzugleichenden Attribute als Listen an möglichen Werten abgelegt, die mit einem weiteren logischen ODER verbunden sind, also von denen nur ein Wert zutreffen muss.
@@ -296,15 +296,15 @@ Im alten System war diese Menge die einzige, die abgefragt werden konnte.
 Häufig verwendete Attribute sind \texttt{Id}, \texttt{Type} und Ökosystemspezifische wie \texttt{Group Id}.
 Da diese Art von Abfrage in dem neuen Format aufgrund ihrer Instabilität, der Unschärfe wegen der Kombination von mehreren Werten in einem Attribut und der anderen Herausforderungen auf Artefakt-Attributen in den Hintergrund treten soll, werden diese Abfragen explizit als solche gekennzeichnet werden müssen.
 
-Die neuen typspezifischen Attribute werden von den in \autoref{subsubsec:model-graph-knoten} aufgelisteten Extraktoren aufbereitet und in den Selektoren als First-Class Attribute zur Verfügung gestellt.
+Die neuen typspezifischen Attribute werden von den in \autoref{subsubsec:model-graph-knoten} aufgelisteten Extraktoren aufbereitet und in den Selektoren als primäre, auf der obersten Ebene bereitgestellten Attribute zur Verfügung gestellt.
 Die Standard-Attribute sind \texttt{type} zur Auswahl eines erkannten Artefakttyps, \texttt{name} für einen ökosystemspezifischen Paketnamen und \texttt{version} für die Version.
 Basierend auf dem \texttt{type}-Wert wird in dem Objekt die Präsenz weiterer Attribute der typisierten Artefakte zugesichert und für Abgleiche exponiert.
 
 \paragraph{Vererbung von Selektoren}
 
-Wie in \autoref{subsubsec:model-edges-relations} angerissen haben Artefakt-Knoten die Möglichkeit, sich mit einer Vererbungskante auf weitere Artefakt-Knoten zu beziehen.
+Wie in \autoref{subsubsec:model-edges-relations} erwähnt haben Artefakt-Knoten die Möglichkeit, sich mit einer Vererbungskante auf weitere Artefakt-Knoten zu beziehen.
 Eine solche Beziehung bedeutet, dass der Knoten, von dem geerbt wird, ebenfalls mit seinen Selektoren auf das aktuell zu prüfende Artefakt erfolgreich übereinstimmen muss.
-Diese Beziehung kann verkettet werden, indem von dem geerbten Knoten eine weitere Vererbungskante losgeht.
+Diese Beziehung kann verkettet werden, indem von dem geerbten Knoten eine weitere Vererbungskante startet.
 Auf diese Weise können beliebig viele Identifikationen aufeinander folgen.
 
 Dies führt zu einer weiteren Herausforderung in der Identifikationslogik, da nach \hyperref[subsec:req-graph-inner-consistency]{A-19} immer nur genau ein Knotenpunkt für eine zu identifizierende Repräsentation gefunden werden darf.
@@ -335,11 +335,11 @@ Die konkrete Anwendbarkeit basierend auf Quell- und Zielknoteneigenschaften wird
 Der zweite Pfad wertet Vererbungshierarchien zwischen Knoten aus.
 Vererbungshierarchien bei Artefakt-Knoten werden ausschließlich zum Teilen der Selektoren in dem initialen Identifikationsprozess verwendet.
 Daher werden hier ausschließlich die Vererbungskanten zwischen Produkt-Knoten ausgewertet.
-Allgemein funktioniert das folgen der Vererbungskanten identisch wie die regulären Repräsentationsbeziehungen, mit dem Unterschied, dass nur die spezifischsten Kanten auf einen zwischen Vererbungsebenen geteilten Knoten behalten werden.
+Allgemein funktioniert das Folgen der Vererbungskanten identisch, wie die regulären Repräsentationsbeziehungen, mit dem Unterschied, dass nur die spezifischsten Kanten auf einen zwischen Vererbungsebenen geteilten Knoten behalten werden.
 Dies wird dadurch ermöglicht, indem zunächst über die Auswertung der allgemeinen Knoten die allgemeineren Kanten zum Erreichen eines Knotens gespeichert werden und die spezialisierten Knoten später diese Kanten mit ihren eigenen überschreiben werden.
 
 Während der rekursiven Durchquerung sollte das System einen Kontextzustand mit Informationen über den aktuellen Pfad durch den Graphen verwalten.
-Die Informationen, die er verwaltet, sind der aktuellen Knoten, die Beziehung die zum Erreichen dieses verwendet wurde, der gesamte bisherige Pfad zur Vermeidung von Schleifen, und die gesammelten Transformationsanweisungen.
+Die Informationen, die der Pfad verwaltet, sind der aktuellen Knoten, die Beziehung die zum Erreichen dieses verwendet wurde, der gesamte bisherige Pfad zur Vermeidung von Schleifen, und die gesammelten Transformationsanweisungen.
 
 Die Gesamtheit der gesammelten Kontextzustände ist das Ergebnis dieser Phase und die Eingabe für die finale Anwendung der Zielknoten.
 Jeder Kontext stellt dabei einen Zielknoten dar, mit dem vollständigen Pfad der Entscheidungsfindung und den Transformationen.

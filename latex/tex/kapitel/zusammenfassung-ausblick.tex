@@ -2,12 +2,13 @@
 
 \section{Zusammenfassung der Arbeit}\label{sec:schluss-zusammenfassung}
 
-Von der Beobachtung ausgehend, dass aktuelle Schwachstellenmanagementsysteme Schwierigkeiten bei der eindeutigen Zuordnung von Softwarekomponenten zu standardisierten Produktidentifikatoren wie \acrshortpl{cpe} haben.
-Diese Herausforderungen bei der Zuordnung führten bei der \metaeffektsp dazu, ein manuell gepflegtes \acrshort{yaml}-basiertes Korrekturformat zu entwickeln, das \enquote{Korrelationsformat}, mit welchem die vom System automatisch abgeleitete Entscheidung angepasst werden konnte.
-Ziel dieser Arbeit war die Entwicklung eines neuen Korrelationssystems, das die Herausforderungen des bisherigen Formats adressiert.
+Ein maßgebendes Problem im Schwachstellenmanagement besteht in der zuverlässigen Zuordnung von Softwarekomponenten zu standardisierten Produktidentifikatoren wie \acrshort{cpe}.
+Diese Zuordnung stellt sich in der Praxis jedoch häufig als herausfordernd dar, da die unterschiedliche Granularität, Abstraktionslevel, Versionskonzepte und Produktstrukturen die automatische Erkennung erschweren.
+Um diese Lücke zu schließen, entwickelte die \metaeffektsp in der Vergangenheit ein manuell gepflegtes, \acrshort{yaml}-basiertes Format zur Korrektur von automatisierten Entscheidungen, das sogenannte Korrelationsformat.
 
-Im Kern des entwickelten Systems steht ein graphenbasiertes Modell, in dem Produkte und deren Repräsentationen in verschiedenen Identifikationsökosystemen wie \acrshort{cpe}, \acrshort{purl} oder Microsoft-Produktidentifikatoren als typisierte Knoten abgebildet sind.
-Beziehungen zwischen den Produkten und deren Repräsentationen werden durch Kanten dargestellt, die über einen Kantentyp semantische Beziehungseigenschaften wie Gleichheit, Ausschluss und Vererbung ausdrücken.
+Ziel dieser Arbeit war es, dieses bisherige Korrekturformat konzeptionell und technisch weiterzuentwickeln, um den gestiegenen Anforderungen an Skalierbarkeit und Nachvollziehbarkeit besser gerecht zu werden.
+Im Zentrum steht ein graphenbasiertes Modell, das Produkte und deren Repräsentationen als typisierte Knoten, sowie deren Beziehungen als semantische Kanten abbildet.
+
 Die Implementierung des entwickelten Modells erfolgte zur Demonstration der Umsetzbarkeit in Java unter Verwendung von SQLite zur Speicherung.
 Dabei bedacht wurde eine verbesserte und typspezifische Selektion von Artefakten, die Wiederverwendung von Attributen durch Vererbung, die maschinenlesbare Dokumentation von Entscheidungen, die automatisierte Integration externer Datenquellen sowie die iterative Pflege über ein \acrshort{yaml}-basiertes Modifikationsformat.
 
@@ -20,7 +21,7 @@ Diese beziehen sich sowohl auf noch nicht implementierte Eigenschaften des Syste
 
 \begin{itemize}
     \itemsep0em
-    \item Implementierung eines Testframeworks zur automatischen Validierung der Graphkonsistenzregeln und von vergangenen Erwartungshaltungen.
+    \item Implementierung eines Testframeworks zur automatischen Validierung der Graphkonsistenzregeln.
     \item Laufzeitoptimierungen durch Parallelisierung der Artefaktverarbeitung, sowie durch Optimierungen der Implementierung durch eine Analyse der Laufzeit durch Profiling.
     \item Langfristig ist die vollständige Migration der historischen Korrelationsdaten auf das neue Korrelationssystem erforderlich.
     \item Um die Nutzbarkeit und Akzeptanz des Systems sicherzustellen und die zusätzliche Komplexität durch das Einführen neuer Konzepte, muss eine ausführliche Dokumentation für den Umgang damit auf unterschiedlichen technischen Niveaus angefertigt werden.

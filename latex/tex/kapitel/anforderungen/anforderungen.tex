@@ -26,7 +26,7 @@ Jeder Knotenpunkt besitzt einen textuellen Identifikator, der in Kombination mit
 
 \textbf{Begründung:}
 Dies ermöglicht eine programmatische Erfassung eines Knotens ausschließlich über die Typ-Id-Kombination.
-Einen Eintrag im alten Korrelationssystem in den Eingabedaten zu identifizieren war eine nicht vollständig lösbare Herausforderung, durch dieses Format lässt sich ein Knoten im neuen Modell in jeder Form identifizieren (\hyperref[subsec:c-11-finding-yaml-entries]{C-11}).
+Einen Eintrag im alten Korrelationssystem in den Eingabedaten zu identifizieren, war eine nicht vollständig lösbare Herausforderung, durch dieses Format lässt sich ein Knoten im neuen Modell in jeder Form identifizieren (\hyperref[subsec:c-11-finding-yaml-entries]{C-11}).
 
 \textbf{Fit-Kriterium:}
 Jeder Knoten besitzt eine Typ-Id-Kombination, die im Graph eindeutig ist und den Zugriff sowie die Manipulation des Knotens erlaubt.
@@ -49,7 +49,7 @@ Die Unterscheidung zwischen einem \enquote{Produkt} und der \enquote{Repräsenta
 Im Graphen werden beide als Knotenpunkte dargestellt, jedoch muss zwischen ihren Typen bei der Auswertung und Modellierung unterschieden werden.
 
 Produktknoten sind als Zentrale Knotenpunkte zwischen Repräsentationen in der Lage, Metainformationen über das umliegende Produkt-Ökosystem abzulegen.
-Dazu gehören vor allem Informationen über die Versionsräume und wie zwischen diesen umgewandelt werden kann (\hyperref[C-13]{subsec:c-13-attribut-abbildung-unzureichend}).
+Dazu gehören vor allem Informationen über die Versionsräume und wie zwischen diesen umgewandelt werden kann (\hyperref[subsec:c-13-attribut-abbildung-unzureichend]{C-13}).
 Produkte können mit einer \enquote{is not}-Kante verbunden sein.
 In diesem Fall müssen alle von dem Produkt betroffenen Knoten ebenfalls als eine negative Zugehörigkeit behandelt werden.
 
@@ -80,7 +80,7 @@ Im Graph existiert pro Repräsentation exakt ein Knoten, der über Kanten mit an
 
 \textbf{Ziel:}
 Im Bezug auf Artefakte als Datenmodell muss eine Typinferenz-Logik existieren, die Artefakttypen konsistent aus der Kombination von mehreren Attributen identifiziert und auf normalisierte Ökosystembezeichner (z.B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}) abbildet.
-Je nach erkannten Typ müssen weitere, typspezifische Extraktoren bereitgestellt werden, die relevante Attribute (wie Maven-Koordinaten für Java oder Paketnamen für NPM) als First-Class Matching-Kriterien in den Artefakt-Selektoren exponieren.
+Je nach erkannten Typ müssen weitere, typspezifische Extraktoren bereitgestellt werden, die relevante Attribute (wie Maven-Koordinaten für Java oder Paketnamen für NPM) als primäre Matching-Kriterien in den Artefakt-Selektoren exponieren.
 Für nicht erkennbare Typen muss auf Basisattribute zurückgefallen werden.
 
 \textbf{Begründung:}
@@ -175,7 +175,7 @@ Diese Daten müssen über standardisierte Schnittstellen abfragbar sein.
 Trotz der Maschinenlesbarkeit der Attribute dürfen diese nicht zu restriktiv in ihrem Format sein, denn eine Möglichkeit, Dokumentation anzulegen wird nur dann von einer Person effektiv regelmäßig durchgeführt, wenn diese einfach zugänglich ist.
 
 \textbf{Begründung:}
-Hiermit soll die mangelhafte Dokumentation im bestehenden System (\hyperref[subsec:c-05-reason-not-good-enough]{C-05}) erweitert werden und eine bessere Verarbeitung dieser Daten im System und Darstellung auf Benutzeroberflächen ermöglichen.
+Hiermit soll die unzureichende Dokumentation im bestehenden System (\hyperref[subsec:c-05-reason-not-good-enough]{C-05}) erweitert werden und eine bessere Verarbeitung dieser Daten im System und Darstellung auf Benutzeroberflächen ermöglichen.
 
 \textbf{Fit-Kriterium:}
 Alle angesprochenen Metadaten sind in strukturierter Form gespeichert.
@@ -237,9 +237,7 @@ Die Zeiten werden in \autoref{tab:old-correlation-performance} angegeben.
 
 Aus diesen Messwerten sind zwei Phasen erkennbar.
 Zunächst läuft eine konstante Startzeit (bei dem getesteten Datensatz etwa 0,8-0,9 Sekunden), die unabhängig von der Anzahl der Artefakte im Inventar auftritt, in welcher die Korrelationseinträge aus dem \acrshort{yaml} ausgelesen werden.
-Danach steigt die Laufzeit annähernd linear mit der Anzahl der Artefakte an, der Zeitbedarf pro zusätzlichem Artefakt ist also relativ konstant.
-
-Da der Korrelationsschritt bisher bei weitem nicht der zeitintensivste Schritt in der Schwachstellenanalyse ist, ist die Optimierung nie eine kritische Anforderung gewesen.
+Danach steigt die Laufzeit annähernd linear mit der Anzahl der Artefakte an, der Zeitbedarf pro zusätzlichem Artefakt ist also relativ konstant (etwa 0,213 Sekunden pro 100 Artefakte).
 
 \begin{table}[h!]
     \centering
