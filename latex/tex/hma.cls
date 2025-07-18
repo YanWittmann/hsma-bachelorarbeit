@@ -705,3 +705,5 @@ intoc=true]%
 	keywordstyle=\color{orange!80!black},
 	rulecolor=\color{black}
 }
+
+\setlist[itemize]{noitemsep}
