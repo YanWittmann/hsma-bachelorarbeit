@@ -6,14 +6,22 @@
 
 % Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Deutsch
 \newcommand{\hsmaabstractde}{
-    Um die Zuordnung von Softwareartefakten zu verschiedenen Produktrepräsentationen (wie CPE, PURL, MS Product IDs) zu ermöglichen hat diese Arbeit das Ziel, ein neues Korrelationssystem für den Schwachstellenscanner der \metaeffektsp GmbH zu entwicklen.
-    Basierend auf einer Analyse der Schwächen des bestehenden YAML-basierten Korrelationsformats, darunter Übergeneralisierung von Selektoren, inkonsistente Typinformationen und unstrukturierte Entscheidungsdokumentation, wird ein graphenbasiertes Modell entworfen.
-    Dieses Modell ermöglicht eine eindeutige Identifikation von heterogenen Produktrepräsentationen und die Abbildungen zwischen diesen durch explizite Knoten und Kanten (\enquote{is}, \enquote{is not}, Vererbung).
-    Die Implementierung in Java nutzt SQLite zur Persistenz, ermöglicht durch eine typspezifische Attributextraktion und weitere Verbesserungen an den Artefakt-Selektoren ein präziseres Matching und bietet weiterhin ein YAML-Modifikationsformat für manuelle Anpassungen.
-    Zudem wird die automatische Generierung öffentlicher Datenanteile und innere Konsistenzprüfung adressiert.
+    Um Softwareartefakte verschiedenen Produktrepräsentationen wie CPE, PURL oder Microsoft-Produktkennungen zuordnen zu können, wurde in dieser Arbeit ein neues System für die Modellierung von Beziehungen zwischen Produkten für das Schwachstellenmanagement-System der \metaeffektsp GmbH entwickelt.
+    Ausgangspunkt ist eine Analyse der Schwächen des bisherigen YAML-basierten Formats, darunter die Übergeneralisierung von Regeln zur Auswahl von Artefakten, uneinheitliche Typangaben und schwer nachvollziehbare Entscheidungen.
+    Als Lösung wurde ein graphenbasiertes Modell entworfen, in dem Produkte und ihre verschiedenen Darstellungen als Knoten erfasst und ihre Beziehungen durch Kanten beschrieben werden.
+    Dieses Modell wurde in Java zur Demonstration der Funktionsfähigkeit umgesetzt und nutzt SQLite zur Speicherung der Daten.
+    Durch eine Analyse der möglichen Datenquellen werden im neuen System typische Merkmale der Daten genutzt, um typspezifische Attribute für genauere und bewusstere Zuordnungen explizit bereitzustellen.
+    Manuelle Anpassungen bleiben weiterhin über ein manuelles Modifikationsformat möglich.
+    Zudem wird die automatische Generierung öffentlicher Datenanteile und innere Konsistenzprüfung behandelt.
 }
 
 % Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Englisch
 \newcommand{\hsmaabstracten}{
-    To be written.
+    In order to reilably assign software artefacts to various product representations such as CPEs, PURLs, or Microsoft product identifiers, this thesis presents the development of a new system for modeling relationships between products for the vulnerability management system of \metaeffektsp GmbH.
+    The work begins with an analysis of the limitations of the existing YAML-based correlation solution, which include overly broad selection rules, inconsistent type matching, and limited traceability of decision logic.
+    As a solution, a graph-based model was designed, in which products and their representations are expressed as nodes, and their relationships are described through typed edges.
+    This model was implemented in Java to demonstrate its feasibility and uses SQLite for data storage.
+    Based on an analysis of common input sources, the new system identifies characteristic patterns to extract type-specific attributes, enabling more accurate and deliberate correlations.
+    Manual adjustments remain possible through a dedicated modification format.
+    The system also addresses the automated generation of graph contents and ensures internal consistency through validation mechanisms.
 }
