@@ -136,7 +136,7 @@
 		]{texgyretermes}
 
 		\setsansfont[
-			Scale=MatchLowercase,% or MatchUppercase
+			Scale=0.95,
 			Extension=.otf,
 			UprightFont=*-regular,
 			ItalicFont=*-italic,

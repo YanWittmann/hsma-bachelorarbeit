@@ -93,8 +93,8 @@ Dies erlaubt es einfach eine komplizierte semantische Aussage über die Beziehun
 
 Ein Beispiel für diese Art der Kantenverwendung ist in \autoref{fig:example-graph-cloudfoundry} zu sehen.
 Darin wird einem Produkt-Knoten \enquote{Cloudfoundry CLI} die zugehörigen Repräsentationen mit einer \acrshort{cpe} und einem Artefakt zugeordnet.
-Daneben wird ein weiterer Produkt-Knoten \enquote{CF Cloud Controller}, ebenfalls mit einer \acrshort{cpe} und einem Artefakt angelegt.
-Gleichzeitig wird im Produkt-Knoten \enquote{CF Cloud Controller} eine \enquote{is not}-Relation zu \enquote{Cloudfoundry CLI} angegeben.
+Daneben wird ein weiterer Produkt-Knoten \enquote{CF Cloud Controller}, ebenfalls mit einer \acrshort{cpe} und einem Artefakt, angelegt.
+Gleichzeitig wird im Produkt-Knoten \enquote{CF Cloud Controller} über eine \enquote{is not}-Relation zu \enquote{Cloudfoundry CLI} ein expliziter Ausschluss aller darüber erreichbaren Repräsentationen angegeben.
 Dies bewirkt, dass bei der Identifikation des Cloud-Controller-Artefakts über die Traversierung über beide Produkt-Knoten die CLI-\acrshort{cpe} als unzutreffend markiert wird, und nur die \acrshort{cpe} des Cloud Controllers bleibt weiterhin gültig und wird durch die direkte \enquote{is}-Relation eingebracht.
 
 Ein weiterer praktischer Nutzen zeigt sich im Vergleich mit dem Redis-Referenzfall (\autoref{par:reference-case-redis}), bei dem im alten Format durch den Aufbau einer impliziten Beziehung von Einträgen der manuelle Ausschlüss über eine Dreifachnennung einer \acrshort{cpe} notwendig war.
