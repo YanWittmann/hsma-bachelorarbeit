@@ -1,44 +1,48 @@
 \section{Referenzfälle}\label{sec:reference-case-chapter}
 
-Aus einer Auswertung aus dem bereits vorhandenen Korrelationsdatensatz wurden vier grundlegende Fälle identifiziert, die in ihrer Kombination den Großteil der Komplexität in den bisherigen Daten abdecken.
-Sie wurden nicht aufgrund von ihren Inhalten oder betreffenden Produkten gewählt, sondern wegen ihrer Struktur und verwendeten impliziten oder expliziten Mechanismen.
-Das neue Modell muss also mindestens diese Fälle abdecken können und daher werden sie als Referenzfälle verwendet.
+Aus einer Analyse des bestehenden Korrelationsdatensatzes wurden vier Referenzfälle ausgewählt, welche die identifizierten Herausforderungen der bisherigen Modellierung abdecken.
+Deren Abbildung auf das neue System mit einer Verbesserung der Modellierung wird als Mindestanspruch vorausgesetzt.
+Die Auswahl erfolgte auf Basis der strukturellen Merkmale und einer Abdeckung von möglichst allen Mechanismen, nicht aufgrund der betreffenden Produkte.
 
-Neben dem konzeptionellen Unterschied zum neuen Korrelationsformat der Modellierung als Graphen haben diese Beispiele im alten Format zudem die Eigenschaft, dass sie mit dem Ziel erstellt werden, ein Inventar-Artefakt zu modifizieren.
-Es wird also immer ausschließlich von einem Artefakt ausgegangen, und dessen Ziel-Attribut-Werte definiert.
-Im neuen Format wird dieser Gedanke in den Hintergrund treten, und sich implizit durch den Aufbau des Graphen ergeben.
+Ein größer konzeptioneller Unterschied zum neuen Korrelationsformat ist, dass die bisherigen Korrelationsdaten mit dem Ziel erstellt werden, ein Inventar an Software-Artefakten zu modifizieren.
+Es wird also immer ausschließlich von einem Artefakt ausgegangen, und explizit die Attribute definiert, die auf diesem gesetzt werden sollen.
+Das neue Graphenformat verschiebt diesen Fokus zugunsten einer semantischen Modellierung, in der Bezüge zwischen Repräsentationen durch Kanten modelliert werden und die Effekte auf eine Quell-Repräsentation sich durch die Gefüge im Graphen ergeben.
 
-Es werden zunächst immer die Einträge vorgestellt, dann die Herausforderungen und relevanten Anforderungen identifiziert.
-Diese Referenzfälle werden in \autoref{sec:beispiele-fertige-implementierung} jeweils auf das neue Korrelationssystem übersetzt, um einen Vergleich der Formate zu ermöglichen.
+Jeder Referenzfall stellt seine Einträge vor, aus denen die Herausforderungen und relevante Anforderungen erkannt werden.
+Die Umsetzung dieser im neuen Modell zu Vergleichszwecken erfolgt in \autoref{sec:beispiele-fertige-implementierung}.
 
 % FIXME-KKL: Zusammenhalten: Ich glaube der Kommentar hier bezieht sich darauf, dass im PDF zwischen dem Titel und der Klammer ein Abstand ist. Den habe ich schon versucht wegzubekommen, aber LaTex will das unbedingt so aufteilen.
+
 \paragraph{JavaScript-Paket mit multiplen Namensvarianten}\label{par:reference-case-walletconnect} (s. \autoref{lst:correlation-generated-walletconnect-example})
 
-Bei dem Paket \texttt{@web3-react/walletconnect} handelt sich in der NPM-Registry zwar um ein eindeutiges Paket, allerdings kann sich der Bezeichner in den gescannten Software-Inventaren in unterschiedlichen Varianten ausprägen, auf die alle geprüft werden muss.
-In diesem Fall handelt es sich um eine Positividentifikation auf einer \acrshort{cpe} \texttt{cpe:/a:uniswap:web3-react\_walletconnect}, die als \texttt{Additional CPE URIs} zum Artefakt hinzugefügt wird.
-Um die drei alternative Namensformen in dem Selektor in der \texttt{affects}-Sektion erfassen zu können, müssen diese alle separat mit Wiederholung der restlichen Attribute in alternativen Selektoren geführt werden.
-Über dem Eintrag ist ein \texttt{reason}-Kommentar, der eine Referenz auf das Paket auf NPM und auf die Homepage des Herstellers enthält.
+Im Fall des Pakets \texttt{@web3-react/walletconnect}\footnote{\url{https://www.npmjs.com/package/@web3-react/walletconnect}} prägen sich trotz einer eindeutigen NPM-Paketidentität mehrere abweichende Bezeichner in realen Softwareinventaren aus.
+Um all diese Varianten erfassen zu können, werden im alten Format mehrere nahezu identische Selektoren erstellt, was eine hohe Redundanz erzeugt.
+Über diese Identifikation wird eine Zuordnung von \texttt{Additional CPE URIs} mit \texttt{cpe:/a:uniswap:web3-react\_walletconnect} vorgenommen.
+Die Gründe für den Eintrag werden in dem Kommentarblock über diesem in einem \texttt{reason}-Feld dokumentiert, das auf NPM und die Herstellerseite verweist.
 
-Dieser Fall, wie auch die folgenden, demonstriert die Notwendigkeit, ökosystemspezifisch-normalisierte Bezeichner zu extrahieren (\hyperref[subsec:req-type-specific-matching]{A-06}).
-Die \enquote{-*}-Suffixe können zu einer Übergeneralisierung der Einträge führen, aber auch der häufig wiederholte reguläre Ausdruck \texttt{/(web|nodejs|npm)-module/} für die Erkennung des Artefakt-Typen kann zu Fehlern führen und stellt die üblichen Probleme von Redundanz dar.
-
-\hyperref[subsec:req-multiple-attribute-values]{A-08} ist aus der Notwendigkeit entstanden, innerhalb eines Eintrages die Wiederholung nah identischer Selektoren zu vermeiden.
-In diesem Fall war es nötig, für jede Namensform einen neuen Selektor zu erstellen, und alle weiteren Attribute zu wiederholen.
+\textbf{Analyse:}
+Die bisher genutzte Regex-Konstruktion \texttt{/(web|nodejs|npm)-module/} zur Typzuordnung ist fehleranfällig und nicht robust gegenüber neuen Typdefinitionen.
+\hyperref[subsec:req-type-specific-matching]{A-06} verlangt, dass diese Erkennung zuverlässiger durchgeführt werden kann.
+Ebenso demonstriert dieser Fall mit den \enquote{-*}-Suffixen die mögliche Übergeneralisierung der Einträge und zeigt die Notwendigkeit der Extraktion ökosystemspezifischer Attribute wie NPM-Namen oder Modulpfade.
+Um die Mehrfachdefinition des Eintrags zu vereinheitlichen soll über \hyperref[subsec:req-multiple-attribute-values]{A-08} die Möglichkeit gegeben werden, in Attributselektoren Mehrfachwerte zu unterstützen.
+Dies erlaubt eine kompaktere und konsistente Abbildung gleicher semantischer Bedeutung bei unterschiedlicher Schreibweise.
 
 \paragraph{Java-Runtimes: Komplexe Versionstransformation}\label{par:reference-case-java-runtimes} (s. \autoref{lst:reference-case-java-runtimes})
 
-Wie in \autoref{subsec:old-generated-correlation-data} bereits gezeigt, wird ein wesentlicher Teil des alten Korrelationsdatensatzes regelmäßig automatisch in einem dedizierten Prozess generiert.
-Das Listing zeigt einen Auszug der generierten Einträge für die Java-Runtime \enquote{Amazon Corretto} und \enquote{Azul Zulu}.
-Diese wurden einmal aus der Notwendigkeit eingeführt, da die \acrshortpl{cpe} der Java Runtimes einige der wenigen sind, bei denen häufig der Update-Part tatsächlich verwendet wird und andererseits die Versionen der \acrshortpl{cpe} selbst innerhalb eines Vendor-Product-Namensraums sehr uneinheitlich strukturiert sein können.
-Einige häufige Beispiele für das Format der Version- und Update Parts sind: \texttt{21.0.6:*}, \texttt{23:*}, \texttt{*:update32}, \texttt{*:update\_32}, \texttt{1.6.0:update32\_b31}, \texttt{1.6.0:update32\_b32}.
-Für jede dieser Versionen ist ein neuer Eintrag in den \acrshort{yaml}-Dateien nötig, da jeder Eintrag nur eine versionierte \acrshort{cpe} adressieren kann.
+Die generierten Korrelationseinträge für Java-Runtimes wie \enquote{Amazon Corretto} oder \enquote{Azul Zulu} basieren auf einem automatisierten Prozess, wie in \autoref{subsec:old-generated-correlation-data} beschrieben.
+Sie wurden angelegt, um die uneinheitliche Strukturierung der \acrshort{cpe}-Versionen unter Kontrolle zu bringen, insbesondere den häufig genutzten \texttt{update}-Teil, der sonst in den meisten anderen \acrshort{cpe} oft ignoriert wird.
+Einige Beispiele des Formats in den Versions- und Update-Attributen sind \texttt{21.0.6:*}, \texttt{23:*}, \texttt{*:update32}, \texttt{*:update\_32}, \texttt{1.6.0:update32\_b31} oder \texttt{1.6.0:update32\_b32}.
+Im alten Format muss jede Kombination als separater Eintrag mit einem eigenständigen Selektor generiert werden, da pro Eintrag jeweils nur eine spezifische \acrshort{cpe}-Version möglich ist.
 
-Die zugehörige Anforderung für die automatische Befüllung des Graphen ist \hyperref[subsec:req-generated-data]{A-13}.
-Die Anforderung \hyperref[subsec:req-type-specific-matching]{A-06} trifft hier ebenfalls zu, denn die Erkennung des Artefakts als Java Runtime, des Anbieters und die Versionserkennung muss implizit an derselben Stelle in der \texttt{Id} passieren.
-Die Erkennung von drei Metriken über ein einziges Artefakt-Attribut ist weder zuverlässig, noch ist es gut auf weitere Formate der \texttt{Id} erweiterbar.
-In dem neuen Format sollte die Identifikation von diesen zusammengesetzen Attributen durch programmatische Unterstützung in der Selektorlogik auf einzelne Attribute aufgetrennt werden.
-Mit der Änderung des Formats als Graphen (\hyperref[subsec:req-format-product-graph]{A-01}), in dem jede Repräsentation versions-agnostisch nur einmal als Knotenpunkt ausgeprägt ist (\hyperref[subsec:req-unique-product-representations]{A-05}) und mit der Anforderung, dass es ein ausgeprägtes Produkt-Konzept mit Produkt-Knotenpunkten gibt (\hyperref[subsec:req-product-concept]{A-04}), kann die Versionserkennung und Modifikation der Version in der \acrshort{cpe} in den einzelnen Knotenpunkten der Repräsentationen nicht mehr wie früher modelliert werden, sondern muss auf einen zentral die Repräsentationen verknüpenden Produkt-Knotenpunkt, der diese Mappings unter einem Namensraum an die Knotenpunkte zur Verfügung stellt.
-Zur Erkennung der Version sollte mindestens das Wildcard-System zur Verfügung gestellt werden (\hyperref[subsec:req-regex-support]{A-09}).
+\textbf{Analyse:}
+Vor allem mit der geplanten Erweiterung des generierten Datenanteils, macht die automatische Generierung solcher Daten eine systematische Strukturierung dieser Prozesse nötig (\hyperref[subsec:req-generated-data]{A-13}).
+Die hier gezeigten Daten machen die Problematik mit der Erkennung von mehreren Eigenschaften über ein einziges Feld besonders gut sichtbar.
+Es wird die Erkennung des Artefakts als Java Runtime, des Anbieters und der Version über ein einziges Feld \texttt{Id} mit einem regulären Ausdruck durchgeführt, was weder zuverlässig noch gut erweiterbar ist.
+Zur Entkopplung dieser unterschiedlichen Fragestellungen ist die Anforderung \hyperref[subsec:req-type-specific-matching]{A-06} relevant, mit der eine Aufspaltung und typbasierte Verarbeitung von Attributen vorgesehen ist.
+
+Im neuen Graphmodell wird in \hyperref[subsec:req-unique-product-representations]{A-05} verlangt, dass jede Repräsentation versionsunabhängig als genau \textit{ein} eindeutiger Knoten modelliert wird, der über einen Produkt-Knoten mit zentral gepflegten Attributen verbunden ist (\hyperref[subsec:req-product-concept]{A-04}).
+Versionen und deren Transformationen sollen also auf dem Produkt-Knoten über Namensräume und Mappingregeln gepflegt werden, während die Erkennung eines Artefakts als Java Runtime mit einem konkreten Anbieter in einem Selektor auf einem Artefakt-Knoten vorgenommen wird.
+Für die Erkennung der Versionen ist noch immer das Wildcard-System nötig (\hyperref[subsec:req-regex-support]{A-09}).
 
 % FIXME-KKL: /zulu.*-(?:jre|jdk)-headless-11\.0\.10.*/i ist nicht korrekt: was wäre denn dann richtig? so steht es in den korrelationsdaten drin.
 \begin{lstlisting}[style=yaml,caption={Java-Runtime-Korrelation mit Versionstransformation},label={lst:reference-case-java-runtimes},basicstyle=\ttfamily\scriptsize]
@@ -73,25 +77,30 @@ Zur Erkennung der Version sollte mindestens das Wildcard-System zur Verfügung g
 
 \paragraph{Redis: Kontextabhängige Produktdifferenzierung}\label{par:reference-case-redis} (s. \autoref{lst:correlation-order-depdendency-example})
 
-Der Redis-Fall zeigt die Herausforderung von ökosystemabhängigen überladenen Artefaktbezeichnern.
-Der gleiche Basisname \texttt{redis-*} repräsentiert in den Referenzeinträgen aus den Software-Inventaren mindestens zwei unterschiedliche Entitäten: die Datenbankserver-Software und die Client-Bibliothek als Python-Modul.
-Im alten Format erfordert dies entweder eine Wiederholung des Artefakt-Selektors in dem spezifischeren Eintrag als \texttt{ignores}, oder eine \texttt{remove}-Ausschlussregel mit der die generelle Modifikation wieder rückgängig gemacht wird.
-Dies ist durch die bedingte Reihenfolge fehleranfällig und die Entscheidungslogik kann nicht zureichend dokumentiert werden.
+Die Interpretation des Bezeichners \enquote{redis} innerhalb realer Softwareinventare ist ohne zusätzliche Attribute nicht eindeutig möglich.
+Standardmäßig wird er also dem gleichnamigen Datenbankserver zugeordnet; liegt jedoch weiteres Attributwissen vor, kann auch das zugehörige Python-Clientmodul gemeint sein.
+Da das alte Format keine explizite Modellierung der Beziehung zwischen Produkt und Repräsentation kennt, müssen zwei getrennte Einträge erzeugt werden, die miteinander interagieren.
+Der generische Eintrag geht zunächst von der Server-Variante aus, während im spezifischeren Eintrag die generische Interpretation über \texttt{remove}- (und manchmal \texttt{ignores})-Felder explizit ausgeschlossen wird.
+Dieses Verfahren ist fehleranfällig, insbesondere durch die Reihenfolgeabhängigkeit und Übersichtlichkeit bei wachsender Komplexität.
 
-Die klare Trennung zwischen Produkten und Repräsentationen (\hyperref[subsec:req-product-concept]{A-04}) im Graphenmodell soll eine bessere Ausprägung der Repräsentationen ermöglichen.
-Durch die \enquote{is}/\enquote{is not}-Relationen soll der spezifischste Knotenpunkt explizit angeben können, wie mit einer referenzierten Repräsentation umgegangen werden soll (\hyperref[subsec:req-format-product-graph]{A-01}), und strukturierte Metadaten (\hyperref[subsec:req-reason-format]{A-12}) sollen die Dokumentation maschinenlesbar machen.
+\textbf{Analyse:}
+Das neue Modell führt in dem Graphen eine explizite Unterscheidung zwischen Produkt und Repräsentation ein (\hyperref[subsec:req-product-concept]{A-04}) und erlaubt damit eine getrennte Modellierung der beiden Repräsentationen durch individuelle Knotenpunkte.
+Zwischen den Produkt-Knotenpunkten der Repräsentationen kann dann über das semantische Klassifikationssystem mit \enquote{is}/\enquote{is not}-Relationen spezifiziert werden, dass eine weitere angrenzende Repräsentation explizit oder explizit nicht zugeordnet werden soll (\hyperref[subsec:req-format-product-graph]{A-01}).
+Mehrdeutigkeiten werden so nicht mehr über Auswertungsreihenfolgen und implizite Ausschlussmechanismen die das dreifache Aufführen einer \acrshort{cpe} verlangen, sondern nachvollziehbar (\hyperref[subsec:req-reason-format]{A-12}) durch explizite Kanten im Produktgraphen aufgelöst.
 
 \paragraph{Windows 10: Betriebssystem mit mehreren Identifikatoren}\label{par:reference-case-windows} (s. \autoref{lst:reference-case-windows})
 
-Die Modellierung von Windows 10 in den alten Korrelationsdaten stellt einige größere Herausforderungen dar.
-Da Windows als Microsoft-Produkt sich nicht nur als \acrshort{cpe} repräsentiert, sondern auch durch Microsoft Produkt-Ids und zusätzlich noch EOL Ids an die Artefakte angehängt werden sollen, müssen für unterschiedliche Versionen des Betriebssystems auch immer unterschiedliche Repräsentationen verknüpft werden.
-Dies ist problematisch, da die Basisinformationen auf allen Windows-Artefakten dieselbe ist, und diese dann für jede zusätzliche zu unterstützende Version in den Artefakt-Selektoren wiederholt werden muss.
-Selbst innerhalb eines Eintrages müssen die Selektoren wiederholt werden, um die unterschiedlichen Ausprägungen der \texttt{Id} zu unterstützen.
-Dies führt zu einer großen Menge an Redundanzen.
-Zudem ist die Hierarchie der Einträge (Windows 10, 21H2, Architektur) nur impliziert modelliert und muss von einem Leser erst als solche erkannt werden.
+Die Modellierung von Windows 10 in den alten Korrelationsdaten stellt eine besondere Herausforderung durch die extreme Aufteilung der bekannten Repräsentationen des Betriebssystems nach Version, Architektur und weiteren Metriken dar.
+So muss das Betriebssystem nicht nur je nach Ausprägung durch unterschiedliche \acrshortpl{cpe} repräsentiert werden, sondern auch zusätzliche Microsoft-Produkt-IDs und \acrshort{eol}-Ids.
+Die bisherige Lösung erfordert die Wiederholung von Attributkombinationen zwischen unterschiedlichen Einträgen, als auch innerhalb einzelner Einträge für verschiedene \texttt{Id}-Ausprägungen wie sie in den Quelldaten auftreten können.
+Diese Redundanz ist bei den meisten Fällen durch die geringe Anzahl an Wiederholungen ertragbar, jedoch wird besonders bei der Abbildung der großen Menge an hierarchisch angeordneten Windows-Versionen (Windows 10 → 21H2 → Architektur) die Beziehungen, die nur implizit angelegt und erkannt werden können, problematisch.
 
-Die relevanten Anforderungen sind die Vererbung von Artefakt-Selektoren (\hyperref[subsec:req-selektor-inheritance]{A-07}), die die Wiederholung über Einträge hinweg vermeidet, und die Auflistung mehrerer Werte pro Attribut (\hyperref[subsec:req-multiple-attribute-values]{A-08}).
-Zudem ist hier besonders die Dokumentation der unterschiedlichen Knotenpunkte und Kanten relevant (\hyperref[subsec:req-reason-format]{A-12}).
+\textbf{Analyse:}
+Die Unfähigkeit zur kompakten Darstellung mehrerer Attributwerte innerhalb eines Eintrags wird durch \hyperref[subsec:req-multiple-attribute-values]{A-08} angesprochen.
+Die Kernproblematik liegt jedoch in einem fehlenden Mechanismus zum Teilen von Attributen zwischen Artefakt-Selektoren getrennter Einträge, welche in \hyperref[subsec:req-selektor-inheritance]{A-07} durch Vererbungsregeln adressiert wird.
+Durch die hierarchischen Knotenstrukturen im neuen Modell soll ein allgemeiner Windows-10-Produktknoten generische Eigenschaften definieren, von dem spezifische Versionen (z.\ B. 21H2) erben, welche wiederum architekturspezifische Knoten (x64/x86) als Kinder enthalten können.
+An jeden Artefakt-Knoten in der Hierarchie wird ein Produkt-Knoten angehängt, über den weitere versionsabhängige Repräsentationen (\acrshort{cpe}, Microsoft-Produkt-ID, \acrshort{eol}-Id) angehängt werden.
+Redundanzen entfallen durch die Vererbung gemeinsamer Attribute entlang der Knotenhierarchie und das Aufführen mehrerer alternativer Werte in einem Selektor-Attribut.
 
 \begin{lstlisting}[style=yaml,caption={Windows-Korrelation mit mehreren Identifikatoren},label={lst:reference-case-windows},basicstyle=\ttfamily\scriptsize]
 - affects:

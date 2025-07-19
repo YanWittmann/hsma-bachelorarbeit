@@ -1,5 +1,10 @@
 \chapter{Grundlagen}\label{ch:grundlagen}
 
+Dieses Kapitel stellt die konzeptionellen und technischen Grundlagen für die Entwicklung des neuen Korrelationssystem vor.
+Zunächst werden relevante Begriffe des Schwachstellenmanagements erklärt, gefolgt von einer Untersuchung moderner Software-Inventarformate.
+Daraufhin wird der Schwachstellenmanagement-Prozess als zentraler Anwendungskontext dieser Arbeit besprochen.
+Ein besonderes Augenmerk wird in \autoref{sec:produktidentifikationsstandards-herausforderungen} auf existierende relevante Produktidentifikationsstandards (wie \acrshort{cpe}) gelegt und deren Eigenschaften, Beziehungen untereinander und Herausforderungen für die Korrelationsaufgabe herausarbeitet.
+Die Darstellung verbindet aktuelle Forschungsstände, Spezifikationen und praktischen Erkenntnisse.
 
 \section{Schwächen und Schwachstellen}\label{sec:def-weakness-vulnerability}
 
@@ -82,7 +87,7 @@ Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellen
 
 \section{\acrlongpl{vms}}\label{sec:grundlagen-vms}
 
-Vulnerability Management (Schwachstellenmanagement) beschreibt einen zyklischen Prozess zur Identifikation, Bewertung, Behebung und Kommunikation von Schwachstellen in IT-Systemen.
+Schwachstellenmanagement (Vulnerability Management) beschreibt einen zyklischen Prozess zur Identifikation, Bewertung, Behebung und Kommunikation von Schwachstellen in IT-Systemen.
 Ziel ist es, Sicherheitslücken möglichst frühzeitig, idealerweise vor Auslieferung, zu erkennen, nach Risiko einzuordnen und durch geeignete Maßnahmen wie Patches oder Konfigurationsanpassungen zu mitigieren.
 Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Scanning, (2) Schwachstellenerkennung, (3) Analyse und (4) Reporting \autocite{foreman2019vulnerabilityManagement}.
 
@@ -105,6 +110,10 @@ Daher ist meist ein manueller Eingriff oder eine Ergänzung automatisierter Erge
 
 
 \section{Produktidentifikationsstandards, Formate und ihre Herausforderungen}\label{sec:produktidentifikationsstandards-herausforderungen}
+
+Dieses Kapitel startet mit der Differenzierung von logischen Produkten und ihren Repräsentationen als Ausprägungen in unterschiedlichen Systemen, da diese für den Kontext dieser Arbeit nötig ist.
+Anschließend werden die für das zu entwickelnde Korrelationssystem relevanten Produktidentifikationsstandards mit ihren Herausforderungen untersucht.
+Diese Herausforderungen bilden zudem einen Teil der Motivation für das Korrelationssystem, da sie die Grenzen aktueller Ansätze im Schwachstellenmanagement aufzeigen.
 
 \subsection{Produkte und ihre Repräsentation}\label{subsec:produkte-vs-reprasentation}
 

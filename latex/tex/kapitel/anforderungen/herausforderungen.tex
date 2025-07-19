@@ -3,7 +3,9 @@
 % https://metaeffekt.atlassian.net/wiki/spaces/KM/pages/3037888514/TBD+New+Correlation+System
 
 Das aktuelle Korrelationsformat hat die letzten Jahre genügend gut funktioniert, um weiterhin verwendbar zu bleiben.
-Trotz der hohen Anzahl von über 6400 Korrelationseinträgen von denen die meisten reguläre Ausdrücke auf mehreren Artefaktfeldern prüfen können auch große Software-Inventare in wenigen Sekunden durch alle Einträge geprüft werden (300 Artefakte durchgearbeitet in 3 Sekunden, inklusive Auslesen der Dateien aus dem Dateisystem und Parsen der Einträge).
+Trotz der hohen Anzahl von über 6400 Korrelationseinträgen können auch große Software-Inventare in wenigen Sekunden durch alle Einträge geprüft werden (Analyse in \autoref{subsec:req-correlation-format-performance}).
+Dennoch wurden im Team und von externen Beitragenden über die Einsatzzeit einige Herausforderungen und Verbesserungsmöglichkeiten festgestellt, die bisher aufgrund von zeitlichen Gründen nicht umgesetzt werden konnten.
+Diese bilden die Grundlage für die Anforderungen, die für das neue Korrelationssystem abgeleitet werden sollen.
 
 \subsection{C-01: Übergeneralisierung in Artefakt-Selektoren}\label{subsec:c-01-unspezifische-identifikation-von-artefakten}
 

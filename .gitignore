@@ -309,3 +309,5 @@ TSWLatexianTemp*
 #*Notes.bib
 
 .last_engine
+
+latex/stopwords-de.txt

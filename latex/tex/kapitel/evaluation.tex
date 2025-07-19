@@ -42,9 +42,7 @@ Da dieses nicht Teil der bisherigen Implementierung ist, kann hier keine weitere
 Im Testframework muss ebenfalls auf diese geprüft werden, um sicherzustellen, dass diese Situation nicht passieren kann.
 
 
-\section{Weitere Evaluation}
-
-\subsection{Performanceanalyse}\label{subsec:evaluation-performanceanalyse}
+\section{Performanceanalyse}\label{sec:evaluation-performanceanalyse}
 
 In einem weiteren Durchlauf mit einem künstlich erzeugten Datensatz derselben Größe wie in \autoref{subsec:req-correlation-format-performance} wurde dasselbe Testinventar mit unterschiedlichen Größen auf die Laufzeit untersucht.
 Bei der Betrachtung der Ergebnisse in \autoref{tab:new-correlation-performance} ist es wichtig zu betonen, dass auf der Implementierung des neuen Korrelationssystems neben dem Caching der Knotenpunkte noch keine weiteren Performance-Optimierungen angewendet wurden und dies die ersten Messungsergebnisse sind.
@@ -81,6 +79,7 @@ Auf eine realistische Anzahl an Artefakten betrachtet ist das neue System also b
     \caption{Vergleich der Laufzeiten: Altes vs. neues Korrelationssystem}
     \label{fig:correlation-performance-comparison}
 \end{figure}
+
 
 \section{Diskussion}
 
@@ -130,5 +129,5 @@ Dieses soll den Graphen bei Modellierungs- und Aktualisierungsschritt auf innere
 Ein weiteres fehlendes Element ist ein JSON-Schema\footnote{\url{https://json-schema.org}} zur Validierung der manuellen Bearbeitung von \acrshort{yaml}-Modellierungsdateien.
 Ein solches Schema ist im alten Korrelationssystem eine der einzigen Assistenzen, die Arbeitende mit den \acrshort{yaml}-Dateien erhalten und wird als sehr nützlich eingeschätzt.
 
-Wie in \autoref{subsec:evaluation-performanceanalyse} aufgeführt, ist das neue Korrelationssystem im Vergleich zum alten langsamer in der Laufzeit.
+Wie in \autoref{sec:evaluation-performanceanalyse} aufgeführt, ist das neue Korrelationssystem im Vergleich zum alten langsamer in der Laufzeit.
 Da das System noch unoptimiert ist, sollte mit einem Profiler noch einige recht einfach zu findende Optimierungspotentiale offen sein.

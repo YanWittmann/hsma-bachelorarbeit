@@ -1,5 +1,9 @@
 \chapter{Schluss}\label{ch:abschluss}
 
+Die erreichten Ergebnisse und Erkenntnisse dieser Arbeit werden im folgenden Kapitel vorgestellt.
+Die Arbeit schließt mit einem Ausblick auf Entwicklungsperspektiven für die Weiterentwicklung des Systems.
+
+
 \section{Zusammenfassung der Arbeit}\label{sec:schluss-zusammenfassung}
 
 Ein maßgebendes Problem im Schwachstellenmanagement besteht in der zuverlässigen Zuordnung von Softwarekomponenten zu standardisierten Produktidentifikatoren wie \acrshort{cpe}.
@@ -7,28 +11,59 @@ Diese Zuordnung stellt sich in der Praxis jedoch häufig als herausfordernd dar,
 Um diese Lücke zu schließen, entwickelte die \metaeffektsp in der Vergangenheit ein manuell gepflegtes, \acrshort{yaml}-basiertes Format zur Korrektur von automatisierten Entscheidungen, das sogenannte Korrelationsformat.
 
 Ziel dieser Arbeit war es, dieses bisherige Korrekturformat konzeptionell und technisch weiterzuentwickeln, um den gestiegenen Anforderungen an Skalierbarkeit und Nachvollziehbarkeit besser gerecht zu werden.
-Im Zentrum steht ein graphenbasiertes Modell, das Produkte und deren Repräsentationen als typisierte Knoten, sowie deren Beziehungen als semantische Kanten abbildet.
+Im Zentrum steht ein graphenbasiertes Modell, das Produkte und deren Repräsentationen als typisierte Knoten sowie deren Beziehungen als semantische Kanten abbildet, mit dem Ziel einer erhöhten Konsistenz bei der Abbildung heterogener Produktrepräsentationen.
+Wesentlich ist das Konzept einer einheitlichen Produktmodellierung als zentrale logische Einheit, die eine konsistente Verwaltung von Metadaten erlaubt.
 
 Die Implementierung des entwickelten Modells erfolgte zur Demonstration der Umsetzbarkeit in Java unter Verwendung von SQLite zur Speicherung.
 Dabei bedacht wurde eine verbesserte und typspezifische Selektion von Artefakten, die Wiederverwendung von Attributen durch Vererbung, die maschinenlesbare Dokumentation von Entscheidungen, die automatisierte Integration externer Datenquellen sowie die iterative Pflege über ein \acrshort{yaml}-basiertes Modifikationsformat.
 
-Alle definierten Referenzfälle konnten im neuen Korrelationssystem vollständig abgebildet werden.
+Alle definierten Referenzfälle, die sowohl grundlegende als auch komplexe Szenarien abdecken, konnten im neuen Korrelationssystem vollständig abgebildet werden.
 
 \section{Ausblick}\label{sec:schluss-ausblick}
 
-Aus den erarbeiteten Ergebnissen lassen verschiedene Richtungen für die Weiterentwicklung des Systems ableiten.
+Aus den erarbeiteten Ergebnissen lassen sich verschiedene Richtungen für die Weiterentwicklung des Systems ableiten.
 Diese beziehen sich sowohl auf noch nicht implementierte Eigenschaften des Systems, die Integration in Tools, als auch auf konzeptionelle Erweiterungen.
+
+\paragraph{Technische Systemverbesserungen}
+
+Auch wenn die Laufzeit des Systems keine kritische Anforderung war, stehen dennoch einige einfachen Optimierungen bereit, die zu bedeutenden Verbesserungen führen können.
+Zudem steht das Testframework aus.
 
 \begin{itemize}
     \itemsep0em
     \item Implementierung eines Testframeworks zur automatischen Validierung der Graphkonsistenzregeln.
-    \item Laufzeitoptimierungen durch Parallelisierung der Artefaktverarbeitung, sowie durch Optimierungen der Implementierung durch eine Analyse der Laufzeit durch Profiling.
-    \item Langfristig ist die vollständige Migration der historischen Korrelationsdaten auf das neue Korrelationssystem erforderlich.
-    \item Um die Nutzbarkeit und Akzeptanz des Systems sicherzustellen und die zusätzliche Komplexität durch das Einführen neuer Konzepte, muss eine ausführliche Dokumentation für den Umgang damit auf unterschiedlichen technischen Niveaus angefertigt werden.
-    \item Ein \acrshort{json}-Schema zur Validierung der manuellen \acrshort{yaml}-Modifikationsdateien wird benötigt, um durch eine integrierte Entwicklungsumgebung mit Autovervollständigungen assistiert zu werden, und um Bearbeitungsfehler frühzeitig zu erkennen.
-    \item Eine Integration in die Correlation Utilities als Hauptwerkzeug des Teams, welches die Korrelationsdaten pflegt, ist unerlässlich.
-    Etwa könnte eine interaktive Exploration von Knoteninseln oder Pfaden bei Artefaktidentifikation nützlich sein, oder gar ein vollständiger Ersatz der manuellen \acrshort{yaml}-Dateien durch eine Nutzeroberfläche.
-    \item Die konkrete Implementierung der unterschiedlichen automatisierten \enquote{Contributors}, die den Graphen automatisch mit Daten befüllen.
-    Zwei dieser sind bereits prototypisch implementiert (purl2cpe, NPM-\acrshort{cpe}-Mappings), jedoch müssen diese noch angepasst und die verbleibenden ebenfalls entweder zunächst noch identifiziert oder ebenfalls implementiert werden.
-    % Community-Freigabe generierter Datenanteile analog zum „Metaeffekt-Kosmos“-Projekt
+    \item Optimierung der Laufzeit der Implementierung durch eine systematische Laufzeitanalyse mittels Profiling.
+    \item Weitere Laufzeitoptimierungen durch Parallelisierung der Artefaktverarbeitung.
 \end{itemize}
+
+\paragraph{Dokumentation und Benutzerunterstützung}
+
+Die zusätzliche Komplexität durch das Einführen der neuen Konzepte wie einem Graphenmodell muss für Nutzer des Systems so aufbereitet werden, dass es eine hohe Akzeptanz findet.
+
+\begin{itemize}
+    \itemsep0em
+    \item Erstellung einer ausführlichen Dokumentation für unterschiedliche technische Niveaus.
+    \item Entwicklung eines \acrshort{json}-Schemas zur Validierung der manuellen \acrshort{yaml}-Modifikationsdateien, um von integrierten Entwicklungsumgebungen unterstützt werden zu können und die Daten beim Einlesen validieren zu können.
+    \item Vollständige Integration in die Correlation Utilities als Werkzeug des Teams um Korrelationsdaten zu pflegen.
+    Etwa könnte eine interaktive Exploration von Knoteninseln oder Pfaden bei Artefaktidentifikation nützlich sein, oder gar ein vollständiger Ersatz der manuellen \acrshort{yaml}-Dateien durch eine Nutzeroberfläche.
+\end{itemize}
+
+\paragraph{Datenintegration und -pflege}
+
+Für die langfristige Datenpflege des Systems sind folgende Schritte geplant.
+
+\begin{itemize}
+    \itemsep0em
+    \item Langfristige vollständige Migration aller historischen Korrelationsdaten in das neue Korrelationssystem.
+    \item Fertigstellung der prototypisch implementierten automatischen \enquote{Contributors}, die den Graphen automatisch mit Daten befüllen.
+    Zwei dieser sind bereits prototypisch implementiert (purl2cpe, NPM-\acrshort{cpe}-Mappings), jedoch müssen diese noch finalisiert werden.
+    \item Identifikation und Entwicklung zusätzlicher Datenquellen als Contributors zum Graphen.
+    \item Organisation der Community-Freigabe generierter Datenanteile analog zum \enquote{\metaeffekt-Kosmos}-Projekt.
+\end{itemize}
+
+
+\section{Fazit}
+
+Die vorliegende Arbeit hat ein graphenbasiertes Korrelationssystem entwickelt und implementiert, das die fundamentalen Herausforderungen der zuverlässigen Zuordnung von heterogenen Produktrepräsentationen zu Software-Artefakten im Schwachstellenmanagement adressiert.
+Durch die Einführung einer einheitlichen logischen Produktmodellierung und semantischer Beziehungen zwischen typisierten Knoten wurde eine Lösung geschaffen, die auf dem existierenden Korrelationssystem aufbaut, dessen Herausforderungen adressiert und damit die Skalierbarkeit, Konsistenz und Nachvollziehbarkeit verbessert.
+Das entwickelte Korrelationssystem stellt einen weiteren Schritt zu einer Automatisierung mit hoher Präzision im Umgang mit Schwachstelleninformationen dar und dient als Grundlage für zukünftige Erweiterungen im diesem Bereich.
