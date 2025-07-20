@@ -1,13 +1,11 @@
 @inproceedings{Tovarňák_Sadlek_Čeleda_2021,
     title = {Graph-Based CPE Matching for Identification of Vulnerable Asset Configurations},
-    ISSN = {1573-0077},
+    issn = {1573-0077},
     url = {https://ieeexplore.ieee.org/document/9463994},
-    abstractNote = {In this manuscript, we propose a graph-based approach for identification of vulnerable asset configurations via Common Platform Enumeration matching. The approach consists of a graph model and insertion procedure that is able to represent and store information about CVE vulnerabilities and different configurations of CPE-classified asset components. These building blocks are accompanied with a search query in Gremlin graph traversal language that is able to find all vulnerable pairs of CVEs and asset configurations in a single traversal, as opposed to a conventional brute-force approach.},
     booktitle = {2021 IFIP/IEEE International Symposium on Integrated Network Management (IM)},
     author = {Tovarňák, Daniel and Sadlek, Lukáš and Čeleda, Pavel},
     year = {2021},
     month = may,
-    pages = {986–991}
 }
 
 @techreport{CISA2023,
@@ -18,9 +16,10 @@
     url = {https://www.cisa.gov/sites/default/files/2023-10/Software-Identification-Ecosystem-Option-Analysis-508c.pdf}
 }
 
-@online{Manion_Proell_Schmidt2023,
+@inproceedings{Manion_Proell_Schmidt2023,
     author = {Manion, Art and Proell, Thomas and Schmidt, Thomas},
     title = {Universal (Software) Product Identity: Solving a Hard Problem Twice Over},
+    booktitle = {FIRSTCON23},
     year = {2023},
     url = {https://www.first.org/resources/papers/conf2023/FIRSTCON23-TLPCLEAR-Schmidt-Manion-Universal-Software-Product-Indentity.pdf},
     urldate = {2025-04-21},
@@ -30,6 +29,7 @@
 @article{OpenSourceMonitorWintergerst,
     title = {Open Source Monitor 2023},
     author = {Wintergerst, Dr Ralf},
+    organization = {Bitkom},
     language = {de},
     year = {2023},
     url = {https://www.bitkom.org/sites/main/files/2023-09/bitkom-studie-open-source-monitor-2023.pdf},
@@ -38,47 +38,43 @@
 @misc{eu2024cra,
     title = {Regulation (EU) 2024/2847 of the European Parliament and of the Council of 23 October 2024 on horizontal cybersecurity requirements for products with digital elements (Cyber Resilience Act)},
     year = {2024},
-    institution = {European Union},
+    organization = {European Union},
     url = {http://data.europa.eu/eli/reg/2024/2847/oj},
     note = {Official Journal of the European Union, L Series, 20.11.2024}
 }
 
 @article{Sanguino_Uetz_2017,
     title = {Software Vulnerability Analysis Using CPE and CVE},
-    url = {http://arxiv.org/abs/1705.05347},
-    DOI = {10.48550/arXiv.1705.05347},
-    abstractNote = {In this paper, we analyze the Common Platform Enumeration (CPE) dictionary and the Common Vulnerabilities and Exposures (CVE) feeds. These repositories are widely used in Vulnerability Management Systems (VMSs) to check for known vulnerabilities in software products. The analysis shows, among other issues, a lack of synchronization between both datasets that can lead to incorrect results output by VMSs relying on those datasets. To deal with these problems, we developed a method that recommends to a user a prioritized list of CPE identifiers for a given software product. The user can then assign (and, if necessary, adapt) the most suitable CPE identifier to the software so that regular (e.g., daily) checks can find known vulnerabilities for this software in the CVE feeds. Our evaluation of this method shows that this interaction is indeed necessary because a fully automated CPE assignment is prone to errors due to the CPE and CVE shortcomings. We implemented an open-source VMS that employs the proposed method and published it on GitHub.},
-    note = {arXiv:1705.05347 [cs]},
-    number = {arXiv:1705.05347},
-    publisher = {arXiv},
     author = {Sanguino, Luis Alberto Benthin and Uetz, Rafael},
     year = {2017},
-    month = may
+    month = may,
+    eprint = {1705.05347},
+    eprinttype = {arXiv},
+    archiveprefix = {cs},
+    doi = {10.48550/arXiv.1705.05347},
 }
 
-@misc{nvd12mai2025dashboard,
+@online{nvd12mai2025dashboard,
     author = {{National Institute of Standards and Technology}},
     title = {National Vulnerability Database Dashboard},
     year = {2025},
     url = {https://nvd.nist.gov/general/nvd-dashboard},
-    note = {Zugriff am 12. Mai 2025},
-    institution = {U.S. Department of Commerce},
+    urldate = {2025-05-12},
+    organization = {U.S. Department of Commerce},
+    howpublished = {NIST Official Website}
 }
 
 @article{Idrissi_Sebai_Faroukhi_Mahouachi_2024,
     title = {A Comprehensive Review and Assessment of Cybersecurity Vulnerability Detection Methodologies},
+    author = {Bennouk, Khalid and Ait Aali, Nawal and El Bouzekri El Idrissi, Younès and Sebai, Bechir and Faroukhi, Abou Zakaria and Mahouachi, Dorra},
     volume = {4},
-    rights = {http://creativecommons.org/licenses/by/3.0/},
-    ISSN = {2624-800X},
-    DOI = {10.3390/jcp4040040},
-    abstractNote = {The number of new vulnerabilities continues to rise significantly each year. Simultaneously, vulnerability databases have challenges in promptly sharing new security events with enough information to improve protections against emerging cyberattack vectors and possible exploits. In this context, several organizations adopt strategies to protect their data, technologies, and infrastructures from cyberattacks by implementing anticipatory and proactive approaches to their system security activities. To this end, vulnerability management systems play a crucial role in mitigating the impact of cyberattacks by identifying potential vulnerabilities within an organization and alerting cyber teams. However, the effectiveness of these systems, which employ multiple methods and techniques to identify weaknesses, relies heavily on the accuracy of published security events. For this reason, we introduce a discussion concerning existing vulnerability detection methods through an in-depth literature study of several research papers. Based on the results, this paper points out some issues related to vulnerability databases handling that impact the effectiveness of certain vulnerability identification methods. Furthermore, after summarizing the existing methodologies, this study classifies them into four approaches and discusses the challenges, findings, and potential research directions.},
+    issn = {2624-800X},
+    doi = {10.3390/jcp4040040},
     number = {44},
     journal = {Journal of Cybersecurity and Privacy},
-    publisher = {Multidisciplinary Digital Publishing Institute},
-    author = {Bennouk, Khalid and Ait Aali, Nawal and El Bouzekri El Idrissi, Younès and Sebai, Bechir and Faroukhi, Abou Zakaria and Mahouachi, Dorra},
+    publisher = {MDPI},
     year = {2024},
     month = dec,
-    pages = {853–908},
     language = {en}
 }
 
@@ -86,63 +82,55 @@
     title = {CPE and CVE based Technique for Software Security Risk Assessment},
     volume = {1},
     ISSN = {2770-4254},
-    url = {https://ieeexplore.ieee.org/document/9660968},
     DOI = {10.1109/IDAACS53288.2021.9660968},
-    abstractNote = {Currently, a lot of work has been done in the area of detection, scoring, and inventory of software and hardware vulnerabilities. Known vulnerabilities are listed in the open databases. It is essential to continuously monitor that information system doesn’t contain severe vulnerabilities to ensure its information security. Applicability of open vulnerability databases is limited by the challenges occurring due to automated mapping the software product names in the analyzed system logs to their product names in the open sources (to extract relevant vulnerabilities from them). The paper proposes the technique incorporating an algorithm for mapping the software products names in the analyzed system logs to the relevant Common Platform Enumeration entries in open vulnerability databases based on the Ratcliff/Obershelp algorithm, identification of known vulnerabilities for the detected entries, and security risk assessment of the analysed system. The technique is implemented and tested using Windows computers software and has shown an accuracy of 79% on average.},
     booktitle = {2021 11th IEEE International Conference on Intelligent Data Acquisition and Advanced Computing Systems: Technology and Applications (IDAACS)},
     author = {Ushakov, Roman and Doynikova, Elena and Novikova, Evgenia and Kotenko, Igor},
     year = {2021},
     month = sep,
-    pages = {353–356}
 }
 
-@book{Cheikes_Waltermire_Scarfone_2011,
+@techreport{Cheikes_Waltermire_Scarfone_2011,
     title = {Common Platform Enumeration: Naming Specification Version 2.3},
     author = {Cheikes, Brant and Waltermire, David and Scarfone, Karen},
-    year = 2011,
+    institution = {National Institute of Standards and Technology (NIST)},
+    year = {2011},
     month = aug,
-    number = {NIST Internal or Interagency Report (NISTIR) 7695},
+    number = {NISTIR 7695},
     doi = {10.6028/NIST.IR.7695},
-    url = {https://csrc.nist.gov/pubs/ir/7695/final},
-    abstractnote = {This report defines the Common Platform Enumeration (CPE) Naming version 2.3 specification. The CPE Naming specification is a part of a stack of CPE specifications that support a variety of use cases relating to IT product description and naming. The CPE Naming specification defines the logical structure of names for IT product classes and the procedures for binding and unbinding these names to and from machine-readable encodings. This report also defines and explains the requirements that IT products must meet for conformance with the CPE Naming version 2.3 specification.},
-    institution = {National Institute of Standards and Technology},
     language = {en}
 }
 
-@book{Cichonski_Waltermire_Scarfone_2011,
+@techreport{Cichonski_Waltermire_Scarfone_2011,
     title = {Common Platform Enumeration: Dictionary Specification Version 2.3},
     author = {Cichonski, Paul and Waltermire, David and Scarfone, Karen},
-    year = 2011,
+    institution = {National Institute of Standards and Technology (NIST)},
+    year = {2011},
     month = aug,
-    number = {NIST Internal or Interagency Report (NISTIR) 7697},
+    number = {NISTIR 7697},
     doi = {10.6028/NIST.IR.7697},
-    url = {https://csrc.nist.gov/pubs/ir/7697/final},
-    abstractnote = {This report defines the Common Platform Enumeration (CPE) Dictionary version 2.3 specification. The CPE Dictionary Specification is a part of a stack of CPE specifications that support a variety of use cases relating to IT product description and naming. An individual CPE dictionary is a repository of IT product names, with each name in the repository identifying a unique class of IT product in the world. This specification defines the semantics of the CPE Dictionary data model and the rules associated with CPE dictionary creation and management. This report also defines and explains the requirements that IT products and services, including CPE dictionaries, must meet for conformance with the CPE Dictionary version 2.3 specification.},
-    institution = {National Institute of Standards and Technology},
     language = {en}
 }
 
-@article{Parmelee_Booth_Waltermire_Scarfone_2011,
+@techreport{Parmelee_Booth_Waltermire_Scarfone_2011,
     title = {Common Platform Enumeration: Name Matching Specification Version 2.3},
     author = {Parmelee, Mary and Booth, Harold and Waltermire, David A. and Scarfone, Karen},
+    institution = {National Institute of Standards and Technology (NIST)},
     year = 2011,
     month = aug,
     journal = {NIST},
     publisher = {Mary Parmelee, Harold Booth, David A. Waltermire, Karen Scarfone},
     url = {https://www.nist.gov/publications/common-platform-enumeration-name-matching-specification-version-23},
-    note = {Last Modified: 2021-10-12T11:10-04:00},
-    abstractnote = {This report defines the Common Platform Enumeration (CPE) Name Matching version 2.3 specification},
     language = {en}
 }
 
-@book{Waltermire_Cichonski_Scarfone_2011,
+@techreport{Waltermire_Cichonski_Scarfone_2011,
     title = {Common Platform Enumeration: Applicability Language Specification Version 2.3},
     author = {Waltermire, David and Cichonski, Paul and Scarfone, Karen},
-    year = 2011,
+    institution = {National Institute of Standards and Technology (NIST)},
+    year = {2011},
     month = aug,
-    number = {NIST Internal or Interagency Report (NISTIR) 7698},
+    number = {NISTIR 7698},
     doi = {10.6028/NIST.IR.7698},
-    url = {https://csrc.nist.gov/pubs/ir/7698/final},
     abstractnote = {This report defines the Common Platform Enumeration (CPE) Applicability Language version 2.3 specification. The CPE Applicability Language specification is part of a stack of CPE specifications that support a variety of use cases relating to IT product description and naming. The CPE Applicability Language data model builds on top of other CPE specifications to provide the functionality required to allow CPE users to construct complex groupings of CPE names to describe IT platforms. These groupings are referred to as applicability statements because they are used to designate which platforms particular guidance, policies, etc. apply to. This report defines the semantics of the CPE Applicability Language data model and the requirements that IT products and CPE Applicability Language documents must meet for conformance with the CPE Applicability Language version 2.3 specification.},
     institution = {National Institute of Standards and Technology},
     language = {en}
@@ -151,11 +139,10 @@
 @article{Sun_Ou_Zheng_Liao_Wang_Zhang_2023,
     title = {Inconsistent measurement and incorrect detection of software names in security vulnerability reports},
     author = {Sun, Hongyu and Ou, Guoliang and Zheng, Ziqiu and Liao, Lei and Wang, He and Zhang, Yuqing},
-    year = 2023,
+    year = {2023},
     month = dec,
     journal = {Computers & Security},
-    volume = 135,
-    pages = 103477,
+    volume = {135},
     doi = {10.1016/j.cose.2023.103477},
     issn = {01674048},
     language = {en}
@@ -177,21 +164,18 @@
     year = 2022,
     month = nov,
     address = {Gaithersburg, MD},
-    number = {NIST SP 800-160v1r1},
-    pages = {NIST SP 800--160v1r1},
     doi = {10.6028/NIST.SP.800-160v1r1},
-    url = {https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-160v1r1.pdf},
-    abstractnote = {This publication describes a basis for establishing principles, concepts, activities, and tasks for engineering trustworthy secure systems. Such principles, concepts, activities, and tasks can be effectively applied within systems engineering efforts to foster a common mindset to deliver security for any system, regardless of the system’s purpose, type, scope, size, complexity, or the stage of its system life cycle. The intent of this publication is to advance systems engineering in developing trustworthy systems for contested operational environments (generally referred to as systems security engineering) and to serve as a basis for developing educational and training programs, professional certifications, and other assessment criteria.},
-    institution = {National Institute of Standards and Technology (U.S.)},
+    publisher = {National Institute of Standards and Technology (U.S.)},
     language = {en}
 }
 
 @misc{CveGlossaryCommonVulnerabilitiesAndExposures12mai2025,
-    url = {https://www.cve.org/ResourcesSupport/Glossary},
+    author = {{MITRE Corporation}},
     title = {CVE: Common Vulnerabilities and Exposure Glossary},
     year = {2025},
-    note = {Zugriff am 12. Mai 2025},
-    institution = {U.S. Department of Commerce},
+    url = {https://www.cve.org/ResourcesSupport/Glossary},
+    urldate = {2025-05-12},
+    howpublished = {CVE Official Website}
 }
 
 @inproceedings{Takahashi_Miyamoto_Nakao_2016,
@@ -200,15 +184,12 @@
     year = 2016,
     month = mar,
     booktitle = {2016 IEEE International Conference on Pervasive Computing and Communication Workshops (PerCom Workshops)},
-    pages = {1–4},
-    doi = {10.1109/PERCOMW.2016.7457049},
-    url = {https://ieeexplore.ieee.org/document/7457049},
-    abstractnote = {To maintain acceptable levels of security, organizations must manage their IT assets and related vulnerabilities. However, this can be a considerable burden because their resources are often limited. This paper introduces a technique and system architecture that monitor the vulnerability of the IT assets on an organization’s administrative networks. We use open information and standardized, non-proprietary tools in order to bolster cybersecurity capability for a wide range of organizations. In the proposed system, an agent module installed on each IT asset sends information to its server, while the server also probes the network to collect information on agentless IT assets. The server then converts the information into standard identifiers, which are used to query open repositories to obtain vulnerability information. The system provides an alert when vulnerability information pertaining to the IT asset is identified. This paper also introduces a prototype system, with which we analyze and discuss the proposed technique and system and clarify issues to be solved in our future work.}
+    doi = {10.1109/PERCOMW.2016.7457049}
 }
 
 @book{foreman2019vulnerabilityManagement,
     title = {Vulnerability Management},
-    author = {Park Foreman},
+    author = {Foreman, Park},
     edition = {2nd},
     year = {2019},
     publisher = {CRC Press, Taylor \& Francis Group},
@@ -224,18 +205,15 @@
     publisher = {arXiv},
     number = {arXiv:2304.13261},
     doi = {10.48550/arXiv.2304.13261},
-    url = {http://arxiv.org/abs/2304.13261},
-    note = {arXiv:2304.13261 [cs]},
-    abstractnote = {The Software Bill of Materials (SBOM) has emerged as a promising solution, providing a machine-readable inventory of software components used, thus bolstering supply chain security. This paper presents an extensive study concerning the practical aspects of SBOM practice. Leveraging an analysis of 4,786 GitHub discussions from 510 SBOM-related projects, our research delineates key topics, challenges, and solutions intrinsic to the effective utilization of SBOMs. Furthermore, we shed light on commonly used tools and frameworks for generating SBOMs, exploring their respective strengths and limitations. Our findings underscore the pivotal role SBOMs play in ensuring resilient software development practices and underscore the imperative of their widespread integration to bolster supply chain security. The insights accrued from our study hold significance as valuable input for prospective research and development in this crucial domain.}
 }
 
 @online{spdxOverview1june2024,
     author = {{The Linux Foundation}},
-    institution = {The Linux Foundation},
     title = {SPDX: About Overview},
+    organization = {The Linux Foundation},
     year = {2024},
     url = {https://spdx.dev/about/overview},
-    note = {Accessed on 1 June 2025},
+    urldate = {2025-06-01},
     howpublished = {SPDX Official Website}
 }
 
@@ -244,8 +222,7 @@
     title = {CycloneDX Specification Overview},
     year = {2024},
     url = {https://cyclonedx.org/specification/},
-    note = {Accessed on 1 June 2025},
-    institution = {OWASP Foundation},
+    urldate = {2025-06-01},
     howpublished = {CycloneDX Official Website},
     version = {1.6},
     organization = {Technical Committee TC54},
@@ -254,10 +231,10 @@
 
 @online{PackageURLSpec,
     author = {{Package URL Project}},
-    title = {Package URL specification (purl)},
+    title = {Package URL Specification (PURL)},
     year = {2024},
     url = {https://github.com/package-url/purl-spec/blob/main/PURL-SPECIFICATION.rst},
-    note = {Accessed on 06.07.2025},
+    urldate = {2025-07-06},
     howpublished = {GitHub Repository},
     version = {1.0.X},
     keywords = {package URL, purl, software identification, package management}
@@ -268,8 +245,7 @@
     title = {endoflife.date - Informative Lifecycles of Software Products},
     year = {2025},
     url = {https://endoflife.date},
-    note = {Accessed on 07 July 2025},
-    howpublished = {Official Project Website},
+    urldate = {2025-07-07},
     keywords = {end of life, EOL, software lifecycle, support status, release cycles}
 }
 
@@ -278,58 +254,52 @@
     title = {Guava Wiki: Caches Explained},
     year = {2021},
     url = {https://github.com/google/guava/wiki/CachesExplained},
-    note = {Accessed on 13 July 2025},
-    howpublished = {GitHub Wiki},
-    institution = {Google Inc.},
+    urldate = {2025-07-13},
     keywords = {Guava, caching, LoadingCache, CacheBuilder, Java utilities}
 }
 
 @standard{ecma424:2024,
     author = {{Ecma International}},
     title = {ECMA-424: CycloneDX Bill of Materials Specification},
-    edition = {1st},
+    organization = {Technical Committee TC54},
     month = {6},
     year = {2024},
-    institution = {Ecma International},
+    publisher = {Ecma International},
     address = {Rue du Rhône 114, 1204 Geneva, Switzerland},
     url = {https://www.ecma-international.org/publications-and-standards/standards/ecma-424/},
     howpublished = {Ecma International Standard},
     type = {Standard},
-    organization = {Technical Committee TC54},
     keywords = {SBOM, Software Bill of Materials, CycloneDX, Supply Chain Security}
 }
 
 @article{Huebner_2003,
     title = {CAS bringt Übersicht in die publizierte Chemie},
     author = {Hübner, Karl},
-    year = 2003,
     journal = {Chemie in unserer Zeit},
-    volume = 37,
-    number = 4,
-    pages = {284–285},
+    volume = {37},
+    number = {4},
+    year = {2003},
+    pages = {284–-285},
     doi = {10.1002/ciuz.200390060},
     issn = {1521-3781},
-    abstractnote = {Seit 1907 gibt es die Chemical Abstracts. Heute bietet der Chemical Abstracts Service die vermutlich umfangreichsten chemischen Datenbanken. Ganz nebenbei ist mit dem CAS Registry auch ein Register entstanden, das jederzeit die bekannte stoffliche Vielfalt widerspiegelt. Im Juni 2003 wurde die 50.000.000ste Substanz registriert. Der Zuwachs ist rasant. Noch zum Jahrtausendwechsel kannte die Menschheit nicht einmal halb so viele Stoffe.},
     language = {de}
 }
 
 @online{MdnRegularExpressions2025,
-    Author = {{MDN Contributors}},
-    Date-Added = {2025-06-10 12:00:00 +0000},
-    Date-Modified = {2025-06-10 12:00:00 +0000},
-    Title = {{Regular expressions - JavaScript | MDN}},
-    Url = {https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions},
-    Urldate = {2025-06-10},
-    Year = {2025},
-    Bdsk-Url-1 = {https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions}
+    author = {{MDN Contributors}},
+    title = {Regular Expressions - JavaScript | MDN},
+    url = {https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions},
+    urldate = {2025-06-10},
+    year = {2025},
+    howpublished = {Mozilla Developer Network}
 }
 
-@misc{BSI_TR03183,
-    author = {Bundesamt für Sicherheit in der Informationstechnik (BSI)},
+@techreport{BSI_TR03183,
+    author = {{Bundesamt für Sicherheit in der Informationstechnik (BSI)}},
     title = {Technische Richtlinie BSI TR-03183: Cyber-Resilienz-Anforderungen für Hersteller und Produkte},
     year = {2024},
     url = {https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/TechGuidelines/TR03183/BSI-TR-03183-2-2_0_0.pdf?__blob=publicationFile&v=3},
-    note = {Zugriff am 22. Juni 2025}
+    urldate = {2025-06-22}
 }
 
 @inproceedings{Gawron2017,
@@ -340,20 +310,17 @@
     month = {4},
     doi = {10.1109/IACS.2017.7921992},
     publisher = {IEEE},
-    organization = {Deutsche Bahn, Peking University, Hasso Plattner Institute},
-    url = {https://ieeexplore.ieee.org/document/7921992},
+    organization = {Deutsche Bahn, Peking University, Hasso Plattner Institute}
 }
 
 @inproceedings{McClanahan_Li_2024,
     title = {Towards Automatically Matching Security Advisories to CPEs: String Similarity-based Vendor Matching},
     author = {McClanahan, Kylie and Li, Qinghua},
-    year = 2024,
+    year = {2024},
     month = feb,
     booktitle = {2024 International Conference on Computing, Networking and Communications (ICNC)},
-    pages = {233–238},
     doi = {10.1109/ICNC59896.2024.10556231},
-    issn = {2473-7585},
-    url = {https://ieeexplore.ieee.org/document/10556231},
+    issn = {2473-7585}
 }
 
 @inproceedings{Huff2021Recommender,
@@ -362,27 +329,22 @@
     booktitle = {Proceedings of the 16th International Conference on Availability, Reliability and Security},
     series = {ARES '21},
     year = {2021},
-    pages = {1--7},
+    month = aug,
+    day = {17},
     publisher = {Association for Computing Machinery},
     address = {New York, NY, USA},
     location = {Vienna, Austria},
-    date = {2021-08-17},
-    articleno = {114},
-    numpages = {7},
     doi = {10.1145/3465481.3470039},
-    url = {https://doi.org/10.1145/3465481.3470039},
-    isbn = {978-1-4503-9051-4},
+    isbn = {978-1-4503-9051-4}
 }
 
 @article{8846081,
     author = {Zou, Deqing and Wang, Sujuan and Xu, Shouhuai and Li, Zhen and Jin, Hai},
-    journal = {IEEE Transactions on Dependable and Secure Computing},
     title = {A Deep Learning-Based System for Multiclass Vulnerability Detection},
-    year = {2021},
+    journal = {IEEE Transactions on Dependable and Secure Computing},
     volume = {18},
     number = {5},
-    pages = {2224-2236},
-    keywords = {Deep learning;Neural networks;Technological innovation;Software;Feature extraction;Big Data;Vulnerability detection;multiclass classification;data-dependence;control-dependence;code gadget;code attention;deep learning},
+    year = {2021},
     doi = {10.1109/TDSC.2019.2942930}
 }
 
@@ -398,7 +360,6 @@
     Url = {http://www.icst.pku.edu.cn/cpdp/ICDAR2017_PODCompetition/evaluation.html},
     Urldate = {2017-05-30},
     Year = {2017},
-    Bdsk-Url-1 = {http://www.icst.pku.edu.cn/cpdp/ICDAR2017_PODCompetition/evaluation.html}
 }
 
 @book{Kornmeier2011,
@@ -456,7 +417,7 @@
     Url = {http://www.heise.de/tp/druck/mb/artikel/24/24221/1.html},
     Urldate = {2011-10-27},
     Year = {2006},
-    Bdsk-Url-1 = {http://www.heise.de/tp/druck/mb/artikel/24/24221/1.html} }
+}
 
 @online{Wikipedia_HarveyBalls,
     Author = {{Harvey Balls}},

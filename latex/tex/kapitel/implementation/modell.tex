@@ -72,6 +72,26 @@ Eine Prüfung auf zirkuläre Vererbungs-Referenzen ist dabei nötig, um Schleife
 
 Falls es nötig ist, eine bidirektionale Beziehung darzustellen, kann mit einer identische, umgekehrten Kante die Richtung auf beide Seiten erweitert werden.
 
+\medskip
+
+Zur einheitlichen Visualisierung der Graphen in dieser Arbeit wird im Folgenden eine konsistente Darstellungsform beschrieben und in \autoref{fig:example-graph-node-explanation} beispielhaft veranschaulicht.
+
+Knotenpunkte werden als vertikal unterteilte Rechtecke dargestellt, deren Farbe vom Knotentyp abhängig ist.
+Der Knotentyp wird in der obersten Zeile aufgeführt, wie \texttt{cpe} oder \texttt{artifact}.
+Direkt darunter folgt die Knoten-Id, die in Kombination mit dem Typ im Graphen eindeutig ist.
+Optional darunterliegende Abschnitte enthalten typspezifische Attribute, wie die Selektionskriterien bei Artefakt-Knoten.
+
+Die Relationen zwischen den Knoten werden durch gerichtete Kanten als Pfeile visualisiert.
+Jeder Pfeil trägt eine Beschriftung, die den Beziehungstyp definiert.
+Weitere Kantenattribute werden ebenfalls in der Beschriftung aufgeführt.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth]{\includesvg[width=0.45\textwidth, inkscapelatex=false]{bilder/example-graph-node-explanation}}
+    \caption{Modellierung einer Artefakt-Zuordnung durch eine positive \texttt{is}- und eine ausschließende \texttt{is not}-Beziehung.}
+    \label{fig:example-graph-node-explanation}
+\end{figure}
+
 \subsubsection{Produkt-Knoten}\label{subsubsec:model-product-node}
 Produkt-Knoten sind eine spezielle Form von Knoten, die ein Software-Produkt wie in \autoref{subsec:produkte-vs-reprasentation} detailliert darstellen.
 Sie enthalten im Gegensatz zu den konkreten Repräsentationsknoten keine Selektoren oder Informationen darüber, wie eine Repräsentation modifiziert werden soll, sondern dient als logische Klammer und zentraler Knoten für alle Repräsentationen, mit denen ein Produkt identifiziert werden kann.

@@ -13,7 +13,7 @@ Ab dem 11.\ Juni 2026 sind Unternehmen verpflichtet, bekannte Schwachstellen in 
 Spätestens ab dem 11.\ Dezember 2027 sind alle Vorgaben des \acrshort{cra} verbindlich.
 Eine aktiv ausgenutzte Schwachstelle ist nach dem \acrshort{cra} ein meldepflichtiger Sicherheitsvorfall und muss innerhalb von 72 Stunden an die zuständigen Behörden gemeldet werden\ \autocite{eu2024cra}.
 
-Eine der am weitesten verbreiteten Quellen für Schwachstelleninformationen ist das \acrfull{cve}-System, das als Bestandteil der \acrfull{nvd} des \acrfull{nist}\footnote{\url{https://nvd.nist.gov/vuln}} mit derzeit fast 300.000 Einträgen die umfangreichste öffentlich zugängliche Schwachstellendatenbank darstellt\ \autocite{nvd12mai2025dashboard}.
+Eine der am weitesten verbreiteten Quellen für Schwachstelleninformationen ist das \acrfullr{cve}-System, das als Bestandteil der \acrfull{nvd} des \acrfull{nist}\footnote{\url{https://nvd.nist.gov/vuln}} mit derzeit fast 300.000 Einträgen die umfangreichste öffentlich zugängliche Schwachstellendatenbank darstellt\ \autocite{nvd12mai2025dashboard}.
 Diese große Anzahl an erfassten Schwachstellen und der kontinuierliche Zuwachs machen es in Kombination mit den kurzen Meldefristen des \acrshort{cra} unmöglich, den Prozess der Schwachstellensuche rein manuell abzubilden.
 Für 65\% der Unternehmen ist eine manuelle Überwachung dieser Datenmengen durch den zeitlichen Aufwand und das Risiko eines menschlichen Fehlers unmöglich\ \autocite{OpenSourceMonitorWintergerst}, weshalb sie automatisierte \acrfull{vms} einsetzen.
 
@@ -30,7 +30,7 @@ Das Problem beschränkt sich jedoch nicht auf die \acrshort{nvd} mit ihren \acrs
 
 Die \metaeffekt\ entwickelt seit mehreren Jahren ein eigenes \acrshort{vms}, bei dem die Abbildung von Komponenten auf verschiedene Produktbezeichner ein zentrales Problem darstellt.
 Dafür wurde bisher ein \acrshort{yaml}-basiertes \enquote{Korrelationsformat} verwendet, das manuelle Anpassungen an den automatisierte Zuordnungen ermöglicht.
-Dieses Format stößt jedoch zunehmend an seine Grenzen, weshalb mit dieser Arbeit ein neues Format entworfen und eingeführt werden soll, das das bestehende System ersetzt.
+Dieses Format stößt jedoch zunehmend an seine Grenzen, weshalb mit dieser Arbeit ein neues System entworfen und eingeführt werden soll, das das bestehende Verfahren ersetzt.
 
 
 \section{Zielsetzung und Forschungsfrage}\label{sec:ziel-forschungsfrage}
@@ -53,14 +53,14 @@ Diese Fragestellung präsentiert bei genauerer Untersuchung zwei Herausforderung
 \end{enumerate}
 
 Basierend auf diesen und weiteren Erkenntnissen über die letzten Jahre hat diese Arbeit als Ziel, ein neues System für die \metaeffektsp zu entwickeln und zu implementieren, das das alte Korrelationsformat ablösen wird.
-Das neue System soll eine bidirektionale Abbildung zwischen verschiedenen Produktrepräsentationen ermöglichen, sodass ausgehend von einer beliebigen Identifikation (z.\ B.\ einer internen Komponente oder einer \acrshort{cpe}) alle zugehörigen Bezeichner ermittelt werden können.
+Das neue System soll eine Abbildung zwischen verschiedenen Produktrepräsentationen ermöglichen, sodass ausgehend von einer beliebigen Identifikation (z.\ B.\ einer internen Komponente oder einer \acrshort{cpe}) alle zugehörigen Bezeichner ermittelt werden können.
 
 \paragraph{Forschungsfrage}
 
 Dies führt zu der Forschungsfrage dieser Arbeit:
 
 \begin{quote}
-    Wie muss ein Produkt-zentrischer Graph strukturiert sein, der heterogene Repräsentationen von Software- und Hardwarekomponenten (wie \acrfull{cpe} oder \acrfull{purl}) verknüpft und
+    Wie muss ein Produkt-zentrischer Graph strukturiert sein, der heterogene Repräsentationen von Software- und Hardwarekomponenten (wie \acrfullr{cpe} oder \acrfullr{purl}) verknüpft und
     dabei sowohl manuelle Korrekturen, als auch die automatische integration von importierten Daten aus Schwachstellendatenbanken ermöglicht?
 \end{quote}
 
@@ -94,7 +94,8 @@ Die Arbeit schließt mit einer Zusammenfassung der Erkenntnisse und einem Ausbli
 
 \bigskip
 
-Einen ersten Überblick über die grundlegende Struktur des in dieser Arbeit zu entwickelnden Graphenmodells liefert die Visualisierung in \autoref{fig:example-graph-title-page}, dessen detaillierte Konzeption und Implementierung in den nachfolgenden Kapiteln dieser Arbeit behandelt wird.
+Um einen ersten Einblick in die Lösung der Forschungsfrage zu geben, veranschaulicht die Visualisierung in \autoref{fig:example-graph-title-page} beispielhaft einen Anwendungsfall im entwickelten Graphenmodell.
+Die Konzeption und Implementierung dieses Modells sind Gegenstand der nachfolgenden Kapitel.
 
 \clearpage
 \thispagestyle{empty}
