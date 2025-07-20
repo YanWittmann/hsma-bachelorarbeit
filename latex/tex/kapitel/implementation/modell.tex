@@ -47,19 +47,24 @@ Um von Anfang an ein einheitliches Format für die Ids unterschiedlicher Typen z
 Jeder Knoten, und jede Kante, soll zudem Metadaten über sich selbst speichern können, wie in \autoref{subsec:model-rationale} näher erläutert wird.
 
 Das neue Korrelationssystem basiert also auf einem Graphenmodell mit klar definierten Knoten und Kanten, um Repräsentationen nachvollziehbar zu verknüpfen.
-Jeder Knoten repräsentiert eine eindeutige Produkt- oder Repräsentation mit typspezifischen Attributen und einer Id, die eine genaue Identifikation und die weiteren Anforderungen der Traversierung und Transformation ermöglicht.
+Jeder Knoten repräsentiert ein eindeutiges Produkt oder eine Repräsentation mit typspezifischen Attributen und einer Id.
+Diese Kombination ermöglicht eine genaue Identifikation und unterstützt die Anforderungen der Traversierung und Transformation.
 
 \subsubsection{Kanten}\label{subsubsec:model-edges-relations}
 
 Die Kanten des Graphen sind gerichtete Beziehungen zwischen den Knotenpunkten und modellieren die logischen Verknüpfungen innerhalb des Korrelationssystems.
 Die zwei primären Kantentypen sind \enquote{is} und \enquote{is not}, deren Interpretation bei dem Zielknoten liegt, jedoch allgemein das Folgende gilt:
 
-Die \enquote{is}-Kante (auch \enquote{is represented by}) drückt eine Zugehörigkeitsbeziehung aus.
-Allgemein beschreibt sie, dass eine bestimmte Repräsentation die Ausgangsrepräsentation vollständig in einem anderen Ökosystem darstellt und für Anfragen in diesem verwendet werden kann.
-Die \enquote{is not}-Kante (auch \enquote{is not represented by}) ist für einen expliziten Ausschluss der Anwendbarkeit einer Repräsentation auf einer Ausgangsrepräsentation zuständig und so Fehlidentifikationen explizit zu vermeiden.
+\begin{itemize}
+    \itemsep0em
+    \item Die \enquote{is}-Kante (auch \enquote{is represented by}) drückt eine Zugehörigkeitsbeziehung aus.
+    Allgemein beschreibt sie, dass eine bestimmte Repräsentation die Ausgangsrepräsentation vollständig in einem anderen Ökosystem darstellt und für Anfragen in diesem verwendet werden kann.
+    \item Die \enquote{is not}-Kante (auch \enquote{is not represented by}) ist für einen expliziten Ausschluss der Anwendbarkeit einer Repräsentation auf einer Ausgangsrepräsentation zuständig und so Fehlidentifikationen explizit zu vermeiden.
+\end{itemize}
+
 So wird beispielsweise die positiv anwendbare Verknüpfung von Artefakt-Knoten mit Produkt-Knoten, und von Produkt-Knoten mit verschiedenen Standard-Identifikatoren (\acrshortpl{cpe}, \acrshortpl{purl}, etc.) über \enquote{is}-Kanten realisiert, oder wenn ein Artefakt mit einem bestimmten Namen fälschlicherweise einer Produktfamilie zugeordnet werden könnte, kann eine \enquote{is not}-Kante die korrekte Trennung sicherstellen.
 
-Beim Durchqueren des Graphen sind diese beiden Kantentypen jedoch nicht äquivalent auszuwerten, wie genauer in \autoref{subsubsec:model-traversal} beschrieben wird.
+Beim Traversieren des Graphen sind diese beiden Kantentypen jedoch nicht äquivalent auszuwerten, wie genauer in \autoref{subsubsec:model-traversal} beschrieben wird.
 
 Darüber hinaus existiert eine dritte Art von Kante, die eine Vererbung von Informationen repräsentiert (inheritance, \hyperref[subsec:req-selektor-inheritance]{A-07}).
 Über diese sollen Basis-Eigenschaften von einem Eltern-Knoten an einen Kind-Knoten weitergegeben werden, mit dem Ziel, die Redundanz im Datenmodell zu reduzieren und die Pflege zu vereinfachen.
@@ -108,7 +113,7 @@ Ein einfaches Beispiel für einen Produktknoten, der eine \acrshort{cpe} als \en
 
 Ausschlussbeziehungen zwischen Produkten werden durch \enquote{is not}-Kanten modelliert, die von einem Produkt-Knoten auf einen anderen Produkt-Knoten zeigen.
 Eine solche Kante drückt aus, dass alle mit dem Ziel-Produkt-Knoten verknüpften Repräsentationen im Kontext des Ausgangsknotens als unzutreffend zu interpretieren sind.
-Dies erlaubt es einfach eine komplizierte semantische Aussage über die Beziehungen von Repräsentationen auf der Basis explizit formulierter Produktausschlüsse zu formulieren.
+Dies erlaubt es, komplexe semantische Aussagen über die Beziehungen von Repräsentationen auf der Basis explizit formulierter Produktausschlüsse zu modellieren.
 Die Nicht-Anwendbarkeit wird also durch den Graphen propagiert.
 
 Ein Beispiel für diese Art der \enquote{is not}-Kantenverwendung ist in \autoref{fig:example-graph-cloudfoundry} zu sehen.
@@ -134,9 +139,11 @@ Diese Ansammlung an Metadaten zusammen mit den Kanten zu Produktrepräsentatione
 Jeder Knotenpunkt kann optional eine Menge an \enquote{Namespaces} als eine Liste an Labels zugewiesen bekommen.
 Diese Namespaces können auf beliebige Nutzungsfälle erweitert werden, sind im Moment jedoch ausschließlich für das Filtern von Transformationen geplant, die in diesem Kapitel erklärt werden.
 
-Da eine Repräsentation im Graphen in nur einem Knoten ohne Wiederholung ausgeprägt sein soll, müssen Attribute wie Versionen oder Editionen für den Zielknoten aus dem Weg von dem selektierten Knoten zur Zielrepräsentation abgeleitet werden.
+Die Anforderung, eine Repräsentation im Graphen nur durch einen einzigen versionsagnostischen Knoten darzustellen, hat die Konsequenz, dass weitere Attribute wie Versionen oder Editionen auf dem Pfad von der Quellrepräsentation zur Zielrepräsentation definiert und eingesammelt werden müssen.
 Dies wird durch \enquote{transform}-Anweisungen gelöst, die allgemein auf Kanten, aber auch speziell auf Produkt-Knoten angebracht sein können und dementsprechend unterschiedlich ausgewertet werden.
-Eine Transformation besitzt immer einen Anwendbarkeitsfilter, der auf Quell- und Zielknoteneigenschaften prüfen kann, und einen Effekt, der auf den Zielknoten bei erfolgreicher Prüfung beider Knoten angewendet werden kann, und eine Transformation, die auf einen Zielknoten angewendet werden soll.
+Transformationen müssen jedoch gefiltert werden können, da nicht alle Pfade durch einen Knoten oder eine Kante automatisch alle angehängten Transformationen angewendet bekommen sollen.
+Darum wird ein Anwendbarkeitsfilter verwendet, der auf Quell- und Zielknoteneigenschaften prüfen kann.
+Nur bei erfolgreicher Prüfung wird ein definierter Effekt auf den Zielknoten angewendet.
 
 Auf Kanten wird eine vereinfachte Form der Filtermechanismen eingesetzt, da hier die Quelle bereits bekannt ist und so nur noch auf das Ziel gefiltert werden muss.
 Auf Produkt-Knoten können beide geprüft werden.
@@ -160,7 +167,8 @@ Die neuen Formate werden anhand von häufigen Mustern definiert, die aus dem bes
 In \hyperref[subsec:c-05-reason-not-good-enough]{C-05} wurden Beispiele für bisherige Entscheidungsketten aufgeführt.
 Diese Ketten sind lose in einem Kommentarblock strukturiert, über den eigentlichen Einträgen.
 Jede Kette startet mit der Repräsentation, zu der es zu prüfen gilt, ob sie auf das aktuelle Artefakt anwendbar ist.
-Die Elemente der Kette stellen je eine Referenz, ein Zitat, eine Begründung oder Ableitung dar, die im letzten Kettenelement verwendet werden, um ein Urteil über die Anwendbarkeit der Repräsentation zu fällen.
+Die Elemente der Kette stellen je eine Referenz, ein Zitat, eine Begründung oder eine ausformulierte Ableitung dar.
+Im letzten Element der Kette wird auf Basis der vorhergegangenen Informationen eine Entscheidung über die Anwendbarkeit der Repräsentation getroffen.
 Der klare Vorteil dieses Schemas ist die Leichtigkeit, während der Forschungsarbeit über die Schlussfolgerungsketten die einzelnen Schritte in dem formlosen Kommentarfeld zu dokumentieren, da jede Art von Inhalt erlaubt ist.
 Jedoch kann ein Kommentar in \acrshort{yaml} nicht ausgewertet werden, und die Formlosigkeit erlaubt es, auch \enquote{falsch} formatierte Ketten aufzubauen.
 
@@ -173,11 +181,11 @@ Diese Felder sind außer der Einordnung als Textfelder noch immer nicht weiter t
 
 \subsubsection{Produktreferenzen auf Knoten}
 
-Auf einem Knoten wurden als relevante Metadaten die Produktbeschreibung und eine Menge an Referenzen auf Webseiten wie die Projekte, Homepages, Dokumentationen, \ldots identifiziert.
+Auf einem Knoten wurden als relevante Metadaten die Produktbeschreibung und eine Menge an Referenzen auf Webseiten wie die Projekte, Homepages, Dokumentationen, und weitere identifiziert.
 Diese werden als solche in das Datenmodell aufgenommen.
-Die Beschreibung wird als ein einfaches Textfeld dargestellt, die Referenzen sind ein Objekt, bei dem die Schlüssel die Art der Referenz und der Wert die Referenz (Link) selbst ist.
-Bisher festgelegte Referenztypen sind unter anderem \enquote{homepage}, \enquote{repository}, \enquote{documentation} und \enquote{api}.
-Um jedoch die Erweiterbarkeit zu sichern, kann als Schlüssel jeder Wert verwendet werden.
+Die Beschreibung wird als einfaches Textfeld abgebildet.
+Die Referenzen werden als Schlüssel-Wert-Menge modelliert, bei dem die Schlüssel die Art der Referenz (z.\,B. \enquote{homepage}, \enquote{repository}, \enquote{documentation}, \enquote{api}, \ldots) und die Werte den zugehörigen Link darstellen.
+Um die Erweiterbarkeit dieser Referenztypen zu sichern, kann als Schlüssel ein beliebiger Wert verwendet werden.
 
 \subsection{Datenmodell}
 
@@ -209,60 +217,64 @@ Diese Elementeigenschaften werden bei der Implementierung die Grundlage für das
 
 \subsection{Graphmodifikation}\label{subsec:model-graph-modification}
 
-Um es nach \hyperref[subsec:req-manual-format-modification]{A-10} zu ermöglichen, auf eine normalisierte Weise den Graphen von den automatisierten oder manuellen Prozessen zu modifizieren, ist ein allgemeines Schema nötig, das von allen gleichermaßen verwendet werden kann.
-Das Modifikationsformat muss grundlegende Operationen auf dem Graphen erlauben: die Erstellung, Änderung und Entfernung von Knotenpunkten jeden Typs sowie die Erstellung, Änderung und Entfernung von Kanten zwischen diesen Knoten.
+Um den Graphen nach \hyperref[subsec:req-manual-format-modification]{A-10} auf eine normalisierte Weise durch alle automatisierte oder manuelle Prozesse modifizieren zu können, ist ein allgemeines Schema erforderlich, das von diesen Prozessen einheitlich verwendet wird.
+Dieses Modifikationsformat muss grundlegende Operationen auf dem Graphen unterstützen: die Erstellung, Änderung und Entfernung von Knotenpunkten jedes Typs sowie die dazugehörigen Kanten zwischen ihnen.
 
-Das Subjekt einer Modifikation ist ein typisierter Knotenpunkt, von dem die Metadaten oder angrenzenden Kanten modifiziert werden können.
-Da jeder Knotenpunkt mit der Kombination aus Typ und Id eindeutig ist, ist die Angabe eines Typs und einer Id in der Modifikation unerlässlich.
-Da die einzelnen Knotentypen jeweils dedizierte Metadaten enthalten, muss auch die Modifikation über den Typ Zugriff auf diese dedizierten Attribute der Knoten erhalten.
-Im vorherigen Format war es eine Herausforderung, ursprüngliche Einträge in den \acrshort{yaml}-Dateien aus dem Datenmodell heraus wiederzufinden (\hyperref[subsec:c-11-finding-yaml-entries]{C-11}).
-Dies ist im neuen System eine einfache Aufgabe, da die Einträge jeweils ihren Typ und die Id angeben müssen, um das Subjekt der Modifikation zu identifizieren.
+Das Subjekt einer Modifikation ist ein typisierter Knotenpunkt, dessen Metadaten oder angrenzende Kanten verändert werden sollen.
+Da jeder Knoten durch die Kombination aus Typ und Id eindeutig ist, ist deren Angabe in der Modifikation zur Identifikation des Zielknotens unerlässlich.
+Da ein Knoten abhängig von seinem Typen jeweils individuelle Metadaten aufweist, muss die Modifikation über die Angabe eines Typs auch den Zugriff auf diese spezifischen Attribute ermöglichen.
+Die im vorherigen Format bestehende Herausforderung \hyperref[subsec:c-11-finding-yaml-entries]{C-11}, ursprüngliche Einträge in den \acrshort{yaml}-Dateien wiederzufinden, wird im neuen System gelöst, da jede Modifikation explizit Typ und Id des Zielknotens angeben muss.
 
-Bei der Selektion können zwei Szenarien auftreten: der Knoten existiert bereits, oder er tut es noch nicht.
-Die Modifikationen operieren überschreibend oder erweiternd auf Knotenpunkten, sie fügen ihre Informationen zu diesen hinzu oder überschreiben vorhandene Attribute.
-Für die einzelnen Attribute muss dementsprechend festgelegt werden, wie sie sich bei einer Erweiterung oder beim Überschreiben verhalten.
-Falls ein Knotenpunkt dem Graphen noch nicht bekannt ist, kann er einfach durch die Kombination aus Typ und Id angelegt, und die Modifikation auf diesen neuen Knoten angewendet werden.
-Da die automatisierten Generierungsprozesse in der Regel für ihre Modifikationen nicht daran interessiert sind, ob ein Knotenpunkt bereits existiert oder nicht, sondern einfach ihre Relationen oder Metadaten hinzufügen wollen, kann hier der vorherige Zustand ignoriert werden und die Modifikation auf den neuen oder bereits vorhandenen angewendet werden.
+Bei der Selektion eines Knotens für eine Modifikation können zwei Szenarien eintreten: Der Knoten existiert bereits im Graphen, oder er existiert nicht.
+Falls ein Knotenpunkt dem Graphen noch nicht bekannt ist, wird er durch die Kombination aus Typ und Id angelegt, bevor die Modifikation auf ihn initialisierend angewendet wird.
+Automatisierte Generierungsprozesse sind in der Regel nicht am vorherigen Zustand eines Knotens interessiert, sondern möchten ihre Relationen und Metadaten hinzufügen, daher werden diese den vorherigen Zustand in den meisten Fällen ignorieren und die Modifikation auf einen neuen oder bereits vorhandenen Knoten anwenden.
+Für manuelle Modifikationen hingegen muss die Erwartungshaltung bezüglich des vorherigen Zustands explizit in der Modifikation festgehalten werden.
+Dies ist so wichtig, da sich der Zustand eines Knotens durch eine Änderung in den automatisierten Datenquellen unangekündigt ändern kann, sodass er plötzlich doch bereits existiert oder gar wegfällt.
+In diesen Fällen muss manuell geprüft werden, ob das sich ergebende Verhalten noch der Erwartungshaltung entspricht.
 
-Für den Fall der manuellen Modifikation muss jedoch die Erwartungshaltung an den vorherigen Zustand in der Modifikation festgehalten werden.
-Dies liegt daran, dass wenn bisher ein Knoten erzeugt werden musste, weil es ihn noch nicht gab, und er dann auf einmal durch eine Änderung der automatisierten Datenquellen doch bereits vorhanden ist, muss manuell geprüft werden, ob dies noch immer das erwartete Verhalten bewirkt.
-Der umgekehrte Fall ist ebenso relevant, falls ein Knotenpunkt auf einmal aus einer Datenquelle verschwinden sollte, will man dies mitbekommen.
+Allgemein operieren Modifikationen in ihrer Anwendung erweiternd oder überschreibend, indem sie ihre Informationen zu einem Knoten hinzufügen oder dessen vorhandene Attribute ersetzen.
+Das Verhalten bei einer Erweiterung oder Überschreibung muss daher für die einzelnen Attribute festgelegt werden.
 
 Zudem muss es die Möglichkeit geben, Informationen aus einem Knoten wieder zu entfernen.
-Da dies in der Analysephase des Projekts immer gut durch das Überschreiben von Kantentypen oder Überschreiben von anderen Attributen gelöst werden konnte, wird hier der einfache Ansatz einer \enquote{reset}-Modifikation gewählt, der einen Knotenpunkt vollständig zurücksetzt und alle ein- und ausgehenden und Kanten entfernt.
+Da sich das Entfernen von Informationen in der Analysephase dieser Arbeit stets durch das Überschreiben von Kantentypen oder anderen Attributen realisieren ließ, wird hier der Ansatz einer \enquote{reset}-Modifikation gewählt.
+Diese setzt einen Knotenpunkt vollständig zurück, indem alle seine Attribute sowie ein- und ausgehenden Kanten entfernt werden, um eine Neudefinition zu ermöglichen.
+So können die Attributdefinitionen neu gestartet werden.
 
 Daraus ergeben sich die folgenden Modifikationsmodi:
 
 \begin{itemize}
     \itemsep0em
-    \item \enquote{create} geht davon aus, dass ein Knoten noch nicht existiert.
+    \item \enquote{create} geht davon aus, dass ein Knoten noch nicht existiert, und legt ihn vor dem anwenden der angegebenen Informationen an.
     Er wird den Modifikationsprozess zum Stoppen bringen, falls der Knoten bereits existierte, hat aber sonst keine weiteren Effekte.
-    Der Erstellungsmodus ist der Standard-Modus, da dieser in Tests der am häufigsten verwendete war.
-    \item \enquote{append} erwartet, dass der Knoten bereits existiert.
+    \item \enquote{append} erwartet, dass der Knoten bereits existiert, und erweitert ihn um die angegebenen Informationen.
     Bei ihm wird der Prozess gestoppt, falls er noch nicht existiert.
-    \item \enquote{reset} erwartet, dass der Knoten bereits existiert, und setzt all seine Attribute und Kanten zurück.
-    Er stoppt den Prozess ebenfalls, falls der Knoten noch nicht existiert.
-    \item \enquote{create\_or\_append} ignoriert den vorherigen Zustand.
+    \item \enquote{reset} erwartet, dass der Knoten bereits existiert, und setzt all seine Attribute und Kanten zurück um sie dann mit den neuen Informationen wieder zu befüllen.
+    Existiert der Knoten nicht, wird der Prozess gestoppt.
+    \item \enquote{create\_or\_append} führt keine Validierung des vorherigen Zustandes durch.
+    Der Knoten wird angelegt, falls er noch nicht existiert und dann werden die Informationen angewendet.
     Dieser Modus wird nur den automatischen Prozessen exponiert, da die Erwartungshaltung im manuellen Format angegeben werden soll.
 \end{itemize}
 
-Der Kernpunkt ist, dass das Format alle als notwendig identifizierten Modifikationen am Graphen vollführen, und so in den automatischen Contributor-Prozessen und einem manuellen Format einheitlich mit allen Zusicherungen verwendet werden kann.
+Der entscheidende Aspekt des Formats ist, dass es alle notwendigen Modifikationen am Graphen ausführen kann.
+Es stellt somit einen einheitlichen Mechanismus für automatische Contributor-Prozesse sowie manuelle Eingriffe dar und gewährleistet die definierten Zusicherungen über die Daten.
 
 \subsection{\acrshort{yaml}-Format für Graphmodifikationen}\label{subsec:modell-graph-modification-yaml}
 
-Um die Nutzerfreundlichkeit zu gewährleisten, wurde über einen iterativen Designprozess ein neues \acrshort{yaml}-basiertes Format entwickelt, mit dem Graphmodifikationen ausgedrückt werden können (\hyperref[subsec:req-manual-format-modification-for-real]{A-11}).
-Das Format muss auf dem definierten Modifikationsformat aufbauen und sich darin abbilden lassen.
-Eine Priorität des Formats war nicht nur die Lesbarkeit und Einfachheit das \acrshort{yaml} zu schreiben, sondern auch die Länge der einzelnen Einträge so kurz wie möglich zu halten.
+Um die Nutzerfreundlichkeit des neuen Formats zu sichern, wurde über einen iterativen Designprozess ein neues \acrshort{yaml}-basiertes Format entwickelt, mit dem Graphmodifikationen ausgedrückt werden können (\hyperref[subsec:req-manual-format-modification-for-real]{A-11}).
+Das Format muss sich auf das definierte Modifikationsformat abbilden lassen, um von den Vorteilen davon profitieren zu können.
+Eine Priorität des Formats war nicht nur die Lesbarkeit und Einfachheit das \acrshort{yaml} zu schreiben, sondern auch die Länge und Verschachtelungsebenen der einzelnen Einträge so klein wie möglich zu halten.
 
 Die oberste Ebene des \acrshort{yaml}-Dokuments ist eine Liste, in der jeder Eintrag eine Modifikation an einem Knoten, und damit in den meisten Fällen einen Knoten im Graphen darstellt.
-Um die Identifikation eines Knotens so kurz und einfach wie möglich zu gestalten, wird Knotentyp (z.\,B. \texttt{cpe}, \texttt{product}, \texttt{artifact}) als Top-Level-Schlüssel verwendet, dessen Wert die eindeutige Id des Knotens enthält.
-Dies aggregiert zwei Attribute in eines und spart damit Zeilen und kann dennoch problemlos erkannt werden, da alle Knotentyp-Bezeichner bekannt sind.
-Zudem wird dieses Muster (\enquote{type: id}) immer wieder im Format verwendet und schafft damit eine einheitliche Weise, wie Knoten selektiert werden.
-Da im Moment keine der geplanten Knotentypen, neben Produkt- und Artefakt-Knoten, weitere komplexen identifizierenden Attribute besitzen, wurde diese Adressierungslogik noch weiter vereinfacht, sodass direkt eine Repräsentation des gegebenen Typs angegeben werden kann und daraus nach den Regeln aus \autoref{subsubsec:model-graph-knoten} eine Id erzeugt wird.
-Beispielsweise wird ein \texttt{artefact}-Knoten durch \texttt{artifact: "npm @material / banner"} adressiert, oder ein Knoten vom Typ \texttt{cpe} durch \texttt{cpe: "cpe:/a:redis:redis"} angegeben, woraus implizit die Id \texttt{a:redis:redis} abgeleitet wird.
+Um die Identifikation eines Knotens via Typ und Id so kurz und einfach wie möglich zu gestalten, wird Knotentyp (z.\,B. \texttt{cpe}, \texttt{product}, \texttt{artifact}) als Top-Level-Schlüssel verwendet und die eindeutige Id als dessen Wert gesetzt (\enquote{type: id}).
+Dies aggregiert zwei Attribute in eines und spart damit Zeilen und kann dennoch problemlos über die registrierten Knotentypen erkannt werden.
+Zudem wird mit diesem Muster eine einheitliche Weise geschaffen, wie Knoten angesprochen werden, welches noch öfters im Format verwendet wird.
+Beispielsweise wird ein \texttt{artefact}-Knoten in einem \acrshort{yaml}-Eintrag durch \texttt{artifact: "npm @material / banner"} adressiert.
 
-An Knoten können mit \texttt{metadata} diverse Metadaten angefügt werden (\hyperref[subsec:req-reason-format]{A-12}).
-Das \texttt{metadata}-Feld ermöglicht es Beschreibungen (\texttt{description}) und externe Referenzen (\texttt{references}) unter beliebigen Keywords wie \texttt{homepage} abzulegen.
+Neben Produkt- und Artefakt-Knoten besitzen im Moment keine der geplanten Knotentypen weitere Attribute besitzen außer ihren direkten Repräsentationen (\acrshort{cpe}, \ldots).
+Daher wurde diese Adressierungslogik noch weiter vereinfacht, sodass statt einer Id direkt eine Repräsentation angegeben werden kann und daraus nach den Regeln aus \autoref{subsubsec:model-graph-knoten} automatisch eine kanonische Id erzeugt wird.
+So kann ein Knoten vom Typ \texttt{cpe} durch \texttt{cpe: "cpe:/a:redis:redis"} angegeben, woraus implizit die Id \texttt{a:redis:redis} abgeleitet wird.
+
+An Knoten können mit dem Attribut \texttt{metadata} Beschreibungen (\texttt{description}) und externe Referenzen (\texttt{references}) unter beliebigen Keywords wie \texttt{homepage} angefügt werden (\hyperref[subsec:req-reason-format]{A-12}).
 
 Typspezifisch sind momentan nur für Produkt- und Artefakt-Knoten weitere Attribute geplant.
 Bei Artefakten ist das \texttt{identification}-Attribut, welches eine Liste von Selektoren mit den Kriterien für das Matching von eingehenden Artefakten enthält.
@@ -284,8 +296,6 @@ In den Objekt-Werten sind über das \texttt{source}-Attribut weitere Filter auf 
 Die Begründungsfelder sind genau wie in \autoref{subsec:model-rationale} erklärt auf den Knoten und Kanten als Objekte und Listen verfügbar.
 
 Ein einfaches Beispiel für die Definition von drei Knoten und zwei Kanten kann in \autoref{lst:modell-graph-modification-yaml-demo} im \acrshort{yaml}-Format eingesehen werden, wie sich die Auswertung davon im Graphen darstellt ist in \autoref{fig:modell-graph-modification-yaml-demo-rendered} abgebildet.
-Um die Fähigkeiten des Formats als \textit{Modifikations}format zu demonstrieren wird auf dem vorherigen Graphen mit einer weiteren Modifikation in \autoref{lst:modell-graph-modification-yaml-demo-append} aufgebaut, woraus sich der Graph in \autoref{fig:modell-graph-modification-yaml-demo-append-rendered} ergibt.
-Weitere Beispiele und die Referenzfälle können in \autoref{sec:beispiele-fertige-implementierung} gefunden werden.
 
 \begin{lstlisting}[style=yaml,caption={Beispiel des \acrshort{yaml}-Modifikationsformats (create mode)},label={lst:modell-graph-modification-yaml-demo},basicstyle=\ttfamily\scriptsize]
 - cpe: "cpe:/a:ellucian:banner"
@@ -317,6 +327,8 @@ Weitere Beispiele und die Referenzfälle können in \autoref{sec:beispiele-ferti
     \caption{Generierter Graph aus dem Beispiel des \acrshort{yaml}-Modifikationsformats (create mode)}
     \label{fig:modell-graph-modification-yaml-demo-rendered}
 \end{figure}
+
+Um die Fähigkeiten des Formats als \textit{Modifikations}format zu demonstrieren wird auf dem vorherigen Graphen mit einer weiteren Modifikation in \autoref{lst:modell-graph-modification-yaml-demo-append} aufgebaut, woraus sich der Graph in \autoref{fig:modell-graph-modification-yaml-demo-append-rendered} ergibt.
 
 \begin{lstlisting}[style=yaml,caption={Beispiel des \acrshort{yaml}-Modifikationsformats (append mode)},label={lst:modell-graph-modification-yaml-demo-append},basicstyle=\ttfamily\scriptsize]
 - cpe: "cpe:/a:blogstand_banner_plugin_project:blogstand-smart-banner"
@@ -362,11 +374,11 @@ Diese Schritte werden in den folgenden Unterkapiteln detailliert.
 \subsubsection{Matching von Artefakt-Repräsentationen}\label{subsubsec:model-matching}
 
 Eine der Qualitätsanforderungen an den Graphen (\hyperref[subsec:req-graph-inner-consistency]{A-19}) ist, dass genaue eine Repräsentation im Graphen mit einer Eingabe übereinstimmt.
-Das bedeutet auch, dass bei der Abfrage eines Artefakts nur ein einiger Knoten gefunden werden darf, der diesem entspricht.
+Das bedeutet auch, dass bei der Abfrage eines Artefakts nur ein einziger Knoten gefunden werden darf, der diesem entspricht.
 Es werden dafür im Folgenden zwar Mechanismen bereitgestellt, die dieses Verhalten möglichst einfach für einen Anwender nutzbar machen, jedoch kann die explizite manuelle Modellierung eines solchen Falles nicht von der Konzeption her ausgeschlossen werden.
-Daher ist es so wichtig, einen sich selbst pflegenden Testdatensatz zu führen, der die Identifikationen regelmäßig automatisch prüft.
+Daher ist es wichtig, einen automatisiert gepflegten Testdatensatz zu unterhalten, der die Eindeutigkeit der Identifikationen regelmäßig überprüft.
 
-In den nächsten Kapiteln wird wird zunächst die Artefakt-Selektion auf einzelnen Knoten eingeführt, dann werden mehrere Knoten über Vererbungsregeln kombiniert und deren Regeln erläutert.
+In den nächsten Kapiteln wird zunächst die Artefakt-Selektion auf einzelnen Knoten eingeführt, dann werden mehrere Knoten über Vererbungsregeln kombiniert und deren Regeln erläutert.
 
 \paragraph{Artefakt-Typ-Erkennung}
 
@@ -380,13 +392,13 @@ Das ermöglicht es, mehrere Alternativen aufzuführen, wie sich ein reales Artef
 
 Jeder Selektor besteht aus einer Menge an Attributen, von denen alle für ein Artefakt mit einem logischen UND übereinstimmen müssen, um den Eintrag zu aktivieren.
 Um \hyperref[subsec:req-multiple-attribute-values]{A-08} zu erfüllen, sind die Werte der abzugleichenden Attribute als Listen an möglichen Werten abgelegt, die mit einem weiteren logischen ODER verbunden sind, also von denen nur ein Wert zutreffen muss.
-Zudem können die Werte nach \hyperref[subsec:req-regex-support]{A-09} das bisherige inkrementelle Wildcard-System verwenden, um möglichst alle Matching-Fälle abzudecken.
+Zudem können die Werte nach \hyperref[subsec:req-regex-support]{A-09} das bisherige inkrementelle Wildcard-System verwenden, um mindestens alle bisher realisierbaren Matching-Mechanismen nachzubilden.
 Die abfragbaren Attribute sind in zwei Mengen geteilt, die sich in ihrer Quellen unterscheiden.
 
 Rohe Artefakt-Attribute beziehen sich auf die Attribute, die das Artefakt direkt in sich speichert.
 Im alten System war diese Menge die einzige, die abgefragt werden konnte.
 Häufig verwendete Attribute sind \texttt{Id}, \texttt{Type} und Ökosystemspezifische wie \texttt{Group Id}.
-Da diese Art von Abfrage in dem neuen Format aufgrund ihrer Instabilität, der Unschärfe wegen der Kombination von mehreren Werten in einem Attribut und der anderen Herausforderungen auf Artefakt-Attributen in den Hintergrund treten soll, werden diese Abfragen explizit als solche gekennzeichnet werden müssen.
+Da diese Art von Abfrage im neuen Format aufgrund von potenzieller Instabilität und Unschärfe durch die Kombination mehrerer Werte in einem Attribut an Bedeutung verlieren soll, müssen Abfragen, die auf rohe Artefakt-Attribute prüfen, explizit als solche gekennzeichnet werden.
 
 Die neuen typspezifischen Attribute werden von den in \autoref{subsubsec:model-graph-knoten} aufgelisteten Extraktoren aufbereitet und in den Selektoren als primäre, auf der obersten Ebene bereitgestellten Attribute zur Verfügung gestellt.
 Die Standard-Attribute sind \texttt{type} zur Auswahl eines erkannten Artefakttyps, \texttt{name} für einen ökosystemspezifischen Paketnamen und \texttt{version} für die Version.
@@ -395,7 +407,7 @@ Basierend auf dem \texttt{type}-Wert wird in dem Objekt die Präsenz weiterer At
 \paragraph{Vererbung von Selektoren}
 
 Wie in \autoref{subsubsec:model-edges-relations} erwähnt haben Artefakt-Knoten die Möglichkeit, sich mit einer Vererbungskante auf weitere Artefakt-Knoten zu beziehen.
-Eine solche Beziehung bedeutet, dass der Knoten, von dem geerbt wird, ebenfalls mit seinen Selektoren auf das aktuell zu prüfende Artefakt erfolgreich übereinstimmen muss.
+Eine solche Beziehung bedeutet, dass der Knoten, von dem geerbt wird, ebenfalls mit seinen Selektoren auf das aktuell zu prüfende Artefakt übereinstimmen muss.
 Diese Beziehung kann verkettet werden, indem von dem geerbten Knoten eine weitere Vererbungskante startet.
 Auf diese Weise können beliebig viele Identifikationen aufeinander folgen.
 
@@ -406,31 +418,33 @@ Da immer die spezifischste Identifikation für die Repräsentation gewählt werd
 \paragraph{Ergebnisse der Selektion}
 
 Das Ergebnis des Selektionsprozesses ist im optimalen Fall ein einziger \texttt{artifact}-Knoten im Graphen, dem das eingehende Software-Artefakt entspricht.
-Es lässt sich jedoch aufgrund eines ungünstig strukturierten Graphen nicht ausschließen, dass doch eine Menge an Knoten identifiziert wird.
+Es lässt sich jedoch aufgrund einer mehrdeutigen oder fehlerhaften manuellen Modellierung im Graphen nicht ausschließen, dass eine Menge von Knoten identifiziert wird.
 Da der restliche Ablauf des Prozesses den Graphen auf ein Artefakt anzuwenden jedoch pro Knotenpunkt getrennt durchgeführt wird, macht dies für die restliche Beschreibung keinen Unterschied.
-Dieser (bzw.\ diese) gefundene(n) Knoten dienen als Ausgangspunkt für die anschließende Durchquerung des Graphen (\autoref{subsubsec:model-traversal}), um die zugehörigen Repräsentationen zu ermitteln.
+Dieser (bzw.\ diese) gefundene(n) Knoten dienen als Ausgangspunkt für die anschließende Traversierung des Graphen (\autoref{subsubsec:model-traversal}), um die zugehörigen Repräsentationen zu ermitteln.
 
-\subsubsection{Durchquerung des Graphen}\label{subsubsec:model-traversal}
+\subsubsection{Traversierung des Graphen}\label{subsubsec:model-traversal}
 % Auswertungslogik für Relationen und Versionstransformation
 
-Nachdem ein eingehendes Artefakt erfolgreich einem \texttt{artifact}-Knoten im Graphen zugeordnet wurde, beginnt die Phase der Graphen-Durchquerung.
-In der Traversierung des Graphen von dem Startknoten zu den Zielknoten werden entlang der Kanten und Knoten zugehörige Metainformationen aggregiert, die dann in der anschließenden Auswertungsphase interpretiert werden.
+Nachdem ein eingehendes Artefakt erfolgreich einem \texttt{artifact}-Knoten im Graphen zugeordnet wurde, beginnt die Phase der Graphen-Traversierung.
+In der Traversierung des Graphen von dem Startknoten zu den Zielknoten werden entlang der Kanten und Knoten zugehörige Metainformationen aggregiert, die in der anschließenden Auswertungsphase interpretiert werden.
 In diesem Prozess werden Kanten der Repräsentationsbeziehungen \enquote{is} und \enquote{is not} unterschiedlich behandelt als die Vererbungsbeziehungen vom Typ \enquote{inherit}.
 
 Der erste Pfad folgt allgemein den Repräsentationsbeziehungen, die zunächst vom Artefakt-Knoten und später von allen weiteren erreichbaren Knoten ausgehen.
 Diesen Beziehungen wird allgemein immer gefolgt, egal ob es eine positive oder negative Relation ist.
 Falls es sich jedoch um eine negative Relation handelt, werden alle auf diesem Pfad durch den Graphen nachfolgenden Kanten ebenfalls als \enquote{is not} behandelt, was den späteren Anwendungsschritt beeinflusst.
-Jede Kante stellt zudem optional Transformationsregeln bereit, die bei der Traversierung je durchquertem Pfad zunächst einmal einfach alle eingesammelt werden.
+Jede Kante stellt optional Transformationsregeln bereit, die während der Traversierung entlang eines Pfades gesammelt werden und erst beim Erreichen des Zielknotens ausgewertet werden.
+
 Erreichte Produktknoten enthalten ebenfalls optional Transformationsregeln, die nur dann mit in die Liste an Transformationen eingesammelt werden, wenn der ursprüngliche Quellknoten teil des Namensraums ist, unter dem diese Transformation abgelegt ist.
-Die konkrete Anwendbarkeit basierend auf Quell- und Zielknoteneigenschaften wird erst im nächsten Schritt ausgewertet, wenn die Zielknoten alle gesammelt wurden.
+Die konkrete Anwendbarkeit basierend auf Quell- und Zielknoteneigenschaften wird erst im nächsten Schritt der Anwendung der Knotenpunkte auf die Quellrepräsentation in der nächsten Sektion des Kapitels ausgewertet, wenn die Zielknoten alle gesammelt wurden.
 
-Der zweite Pfad wertet Vererbungshierarchien zwischen Knoten aus.
-Vererbungshierarchien bei Artefakt-Knoten werden ausschließlich zum Teilen der Selektoren in dem initialen Identifikationsprozess verwendet.
-Daher werden hier ausschließlich die Vererbungskanten zwischen Produkt-Knoten ausgewertet.
-Allgemein funktioniert das Folgen der Vererbungskanten identisch, wie die regulären Repräsentationsbeziehungen, mit dem Unterschied, dass nur die spezifischsten Kanten auf einen zwischen Vererbungsebenen geteilten Knoten behalten werden.
-Dies wird dadurch ermöglicht, indem zunächst über die Auswertung der allgemeinen Knoten die allgemeineren Kanten zum Erreichen eines Knotens gespeichert werden und die spezialisierten Knoten später diese Kanten mit ihren eigenen überschreiben werden.
+Der zweite Pfad wertet Vererbungshierarchien aus.
+Da diese bei Artefakt-Knoten ausschließlich für die initiale Identifikation genutzt werden, betrachtet die Traversierung nur die Vererbungskanten zwischen Produkt-Knoten.
+Das Traversieren dieser Kanten folgt den Mechanismen der regulären \enquote{is}-Repräsentationsbeziehungen, solange ein aus der Kette erreichbarer Repräsentationsknoten nur von einem Produkt aus erreicht werden kann.
+Führen mehrere Kanten aus der Vererbungshierarchie zum selben Zielknoten, hat immer die Kante des spezifischsten Produkts Vorrang.
+Dies wird dadurch ermöglicht, dass die Auswertung der Vererbungshierarchie von den allgemeinen zu den spezifischen Knoten fortschreitet.
+Da pro Knoten nur eine erreichende Kante berücksichtigt werden kann, überschreiben die Kanten eines spezialisierten Knotens die Kanten von allgemeineren Knoten.
 
-Während der rekursiven Durchquerung sollte das System einen Kontextzustand mit Informationen über den aktuellen Pfad durch den Graphen verwalten.
+Während der rekursiven Traversierung sollte das System einen Kontextzustand mit Informationen über den aktuellen Pfad durch den Graphen verwalten.
 Die Informationen, die der Pfad verwaltet, sind der aktuellen Knoten, die Beziehung die zum Erreichen dieses verwendet wurde, der gesamte bisherige Pfad zur Vermeidung von Schleifen, und die gesammelten Transformationsanweisungen.
 
 Die Gesamtheit der gesammelten Kontextzustände ist das Ergebnis dieser Phase und die Eingabe für die finale Anwendung der Zielknoten.
@@ -443,7 +457,8 @@ Dabei werden je Knoten zudem die erreichende Kante und die gesammelten Transform
 
 Zunächst werden die gesammelten Transformationen auf ihre Anwendbarkeit gefiltert.
 Der Namensraum-Filter wurde bereits während dem letzten Schritt der Traversierung berücksichtigt, sodass nun die Quellartefakt- und Zielknotenfilter aus \autoref{subsubsec:model-graph-knoten} angewendet werden.
-Die erste Prüfung ist die Existenz einer Transformation mit dem \texttt{discard}-Attribut, hier wird der Knoten vollständig von der Identifikation verworfen.
+Zuerst wird geprüft, ob eine Transformation das Attribut \texttt{discard} enthält.
+Ist dies der Fall, wird der betroffene Zielknoten vollständig von der weiteren Verarbeitung ausgeschlossen.
 Ein weiteres Transformationsattribut kann den Typ der eingehenden Kante auf einen anderen (z.\,B. \enquote{is not}) überschreiben.
 
 Die verbleibenden Transformationen modifizieren die Knotendaten mit typspezifischen Attributen.

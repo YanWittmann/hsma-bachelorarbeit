@@ -9,13 +9,14 @@ Bei der Implementierung des neuen Korrelationssystems wurden mehrere technische 
 
 \paragraph{Programmiersprache}
 
-Als Programmiersprache wurde Java in der Version 8 gewählt, da das bestehende Schwachstellenmanagement der \metaeffektsp in dieser Sprache und Version implementiert ist und das neue Korrelationssystem sich damit integrieren können muss.
+Als Programmiersprache wurde Java in der Version 8 gewählt.
+Dies stellt sicher, dass sich das neue Korrelationssystem in das bestehende Schwachstellenmanagement der \metaeffektsp integrieren lässt, welches ebenfalls auf dieser Technologie basiert.
 Das Ökosystem von Java bietet zudem eine umfangreiche Liste an Bibliotheken über das Repository von Maven Central\footnote{\url{https://search.maven.org}} für alle Nutzungskontexte und das robuste Typsystem mit Unterstützung für Generics wird die Entwicklung der Datenstrukturen für den Korrelationsgraphen vereinfachen.
 
 \paragraph{Datenbanktechnologie}
 
-Für die persistente Speicherung des Korrelationsgraphen wurde SQLite\footnote{\url{https://sqlite.org}} als relationale Datenbank aufgrund von mehreren Faktoren ausgewählt.
-SQLite benötigt keinen separaten Datenbankserver, sondern speichert die gesamte Datenbank in einer einzigen Datei, was die Verwaltung, Sicherung, Auslieferung und den Einsatz auf der Seite von Kunden stark vereinfacht.
+Für die persistente Speicherung des Korrelationsgraphen wurde SQLite\footnote{\url{https://sqlite.org}} als relationale Datenbank gewählt.
+Diese serverlose, dateibasierte relationale Datenbank vereinfacht die Verwaltung, Sicherung und Auslieferung erheblich, was insbesondere den Einsatz auf Kundenseite erleichtert.
 
 Als relationale Datenbank muss von Anfang an ein einheitliches Schema für die Tabellen definiert werden.
 Die Kernattribute der Datenelemente werden als dedizierte Attribute in den Spalten der Tabellen abgelegt.
@@ -28,8 +29,9 @@ Alternativen, die in Betracht gezogen wurden, sind:
     \itemsep0em
     \item Ein Lucene-Index\footnote{\url{https://lucene.apache.org}}, da Apache Lucene bereits im Projektumfeld für die performante Speicherung anderer Schwachstellendaten genutzt wird und eine sehr schnelle Volltextsuche auf strukturierter und unstrukturierten Information erlaubt.
     Jedoch wäre nicht nur das Verteilen der Datenbank komplizierter, da es sich um einen Ordner an Dateien handelt der zunächst komprimiert und entkomprimiert werden müsste, sondern auch das iterative Arbeiten mit dem Index wäre schwerer, da bei diesem nicht einfach eine Datei als Backup verwendet werden könnte, die die Arbeitsversion einfach überschreiben könnte, sondern ein ganzer Ordner ersetzt werden muss.
-    \item Die direkte Speicherung der Daten als \acrshort{json}-Dateien auf dem Dateisystem, was die einfachste Version ist, da es keine weiteren Treiber oder Bibliotheken bedarf.
-    Diese Option wurde verworfen, da sie keine effiziente Abfrage bereitstellt und dementsprechend nicht skalierbar genug ist und zudem Integritätsgarantien fehlen.
+    \item Die direkte Speicherung der Daten als \acrshort{json}-Dateien auf dem Dateisystem wurde ebenfalls in Betracht gezogen.
+    Dieser Ansatz hat in seiner Einfachheit Vorteile, da er keine zusätzlichen Treiber oder Bibliotheken erfordert.
+    Er wurde jedoch verworfen, da er keine effizienten Abfragemechanismen bietet, was die Skalierbarkeit einschränkt und zudem keine automatisierten Garantien für die Datenintegrität bestehen.
     \item Der Einsatz einer dokumentenorientierten NoSQL Datenbank wie MongoDB\footnote{\url{https://www.mongodb.com}}, welche native JSON-Speicherung und flexible Schemata bietet.
     Aufgrund des Overheads durch eine zusätzliche Serverkomponente und Lizenzüberlegungen wurde diese Lösung nicht weiterverfolgt.
 \end{itemize}
@@ -75,10 +77,10 @@ Jeder Knotentyp (\acrshort{cpe}, \acrshort{purl}, Artefakt, Produkt usw.) wird d
 Die Klasse \texttt{RepCpeNode} beispielsweise implementiert die Logik für \acrshort{cpe}-Knoten, einschließlich der Verarbeitung von CPE-Strings und der Anwendung von Transformationen.
 Ähnlich implementiert \texttt{RepArtifactNode} die Logik für Artefaktknoten, einschließlich der Matching-Algorithmen für die Identifikation von Artefakten.
 
-Um die programmatische Traversierung des Graphen für Abfragen möglichst einfach zu gestalten, werden in jedem Knoten die von diesem aus erreichbaren Knoten zusammen mit ihren Kanten in einer Liste als Attribut abgelegt.
-Diese Liste wird implizit erst bei dem ersten Zugriff auf referenzierte Knoten befüllt, um nicht automatisch rekursiv ganze Inseln im Graphen abzufragen.
-Ein weiterer Vorteil, einen Cache für die Instanziierung der Knoten und Kanten zu verwenden ist, dass bei zyklischen Verbindungen oder erneuten Zugriffen diese Liste nicht neu berechnet werden muss, und für einen konkreten Knoten die Instanz immer die selbe sein wird.
-Der Datenkonstruktor hat zwei Betriebsmodi \enquote{Read-Only} und \enquote{Read/Write}, wobei der Cache nur in dem Lesemodus verwendet wird, um zusichern zu können, dass immer der aktuelle Datensatz aus der Datenbank zurückgegeben wird.
+Um die programmatische Traversierung des Graphen für Abfragen für die Verwendung möglichst ausdrucksstark gestalten zu können, hält jeder Knoten eine Liste der von ihm ausgehenden Kanten samt ihrer Zielknoten als Attribut bereit.
+Diese Liste wird mittels Lazy Loading erst bei dem ersten Zugriff befüllt, um zu verhindern, dass große Inseln des Graphen unnötig geladen werden.
+Die Verwendung eines Caches für die Instanziierung von Knoten und Kanten stellt zudem sicher, dass bei zyklischen Verbindungen oder wiederholten Zugriffen kein zusätzliches Laden von Daten erforderlich ist und für jeden Knoten nur eine einzige wiederverwendbare Objektinstanz existiert.
+Der Datenzugriff erfolgt in zwei Modi: \enquote{Read-Only} und \enquote{Read/Write}, wobei der Cache nur im Lesemodus aktiv ist, um zu garantieren, dass Abfragen im Schreibmodus stets den aktuellen Datenstand aus der Datenbank widerspiegeln.
 
 Kanten werden durch die Klasse \texttt{RepGraphEdge} repräsentiert, die Informationen über Quell- und Zielknoten und Beziehungstyp, sowie Metadaten enthält.
 Die Klasse implementiert auch die Logik für die Anwendung von Transformationen, die entlang der Kanten propagiert werden.
@@ -145,8 +147,8 @@ END FOR
 \paragraph{RepContributor}
 
 Die abstrakte Klasse \texttt{RepContributor} definiert über einen einheitlichen Mechanismus die Struktur für verschiedene Datenquellen, die Daten zum Korrelationsgraphen beitragen wollen.
-Die Implementierungen stellen fast alle die automatischen Anteile dar, die \acrshortpl{vdb} oder anderen Datenquellen automatisch auswerten, um Informationen abzuleiten.
-Allerdings gibt es natürlich die eine Implementierung, die das manuelle \acrshort{yaml}-Format auswertet und auf den Graphen anwendet.
+Die meisten Implementierungen dieser Klasse repräsentieren automatisierte Prozesse, die \acrshortpl{vdb} oder weitere Datenquellen auswerten, um daraus Korrelationsinformationen abzuleiten.
+Eine dedizierte Implementierung ist jedoch für die Verarbeitung des manuellen \acrshort{yaml}-Formats und dessen Anwendung auf den Graphen zuständig.
 Dieser manuelle Contributor ist der letzte, der ausgeführt wird, um sicherzustellen, dass alle vorherigen Contributors durch den manuellen korrigiert werden können.
 
 Auch wenn jede Implementierung sich auf andere Daten- und Knotentypen bezieht, funktionieren alle nach demselben Muster:
@@ -232,17 +234,18 @@ Jeder \texttt{RepArtifactNode}-Knotenpunkt enthält eine Liste von Instanzen die
 Die in \autoref{subsubsec:model-matching} beschriebene Typ-Erkennung ist die Grundlage der Erkennung.
 
 Die Klasse \texttt{RepFieldMatcher} ist der Ersatz für das bisherige System des Wildcard-Abgleichs.
-Eine Herausforderung des alten Wildcard-Systems war es, dass ein \texttt{Object} für den zu prüfenden Wert eingesetzt werden musste, da sowohl ein Text, als auch ein \texttt{Pattern} als Grundlage dienen konnte.
-So musste zunächst immer ein Typabgleich und ein Cast gemacht werden und im Fall des regulären Ausdrucks konnte der originale Wildcard-String nicht mehr vollständig rekonstruiert werden, da er durch das inkrementelle Wildcard-System potenziell transformiert wurde.
-Die neue Klasse enthält immer den Eingabetext als \texttt{String}-Attribut und optional ein erkanntes \texttt{Pattern}.
-Bei der Serialisierung in den Graphen wird immer nur der Eingabetext wieder zurückgeschrieben.
+Eine Herausforderung des alten Wildcard-Systems bestand darin, dass der zu prüfende Wert als generisches \texttt{Object} in der Datenstruktur der Selektoren gespeichert wurde.
+Dieses konnte als Wert entweder einen Text oder ein kompiliertes \texttt{Pattern} annehmen.
+Dies erforderte ständige Typüberprüfungen und Typumwandlungen (Casts).
+Zudem konnte der ursprüngliche Wildcard-String nach der Transformation und Kompilierung durch das inkrementelle Wildcard-System nicht mehr zuverlässig rekonstruiert werden.
+Im neuen System werden die unveränderten Quellmuster also neben den transformierten Patterns abgelegt und bei der Serialisierung in den Graphen wird immer nur das Quellmuster verwendet.
 
 Der Selektor prüft alle konfigurierten Attribute, wobei die Logik für UND- und ODER-Verknüpfungen wie im Modell beschrieben umgesetzt werden.
 Um die typspezifischen Attribute der Knoten prüfen zu können, stellt das \texttt{TypedArtifact} eine Methode \texttt{buildTypeSpecificAttributes()} bereit, mit der auf eine Menge an benannten Eigenschaften zugegriffen werden kann.
 
 \subsubsection{Traversierung}
 
-Um die Traversierung des Graphen möglichst einfach zu gestalten, wird in der \texttt{TraversalQuery}-Klasse eine fluent \acrshort{api} für die Definition von Durchquerungsregeln bereitgestellt.
+Um die Traversierung des Graphen möglichst einfach zu gestalten, wird in der \texttt{TraversalQuery}-Klasse eine fluent \acrshort{api} für die Definition von Traversierungsregeln bereitgestellt.
 Mit Methoden wie \texttt{outgoing()}, \texttt{incoming()} und \texttt{undirected()} kann die Richtung der Traversierung gesteuert werden.
 Zusätzlich können Filter für Knotentypen (\texttt{targetNodeType(type)}), Beziehungstypen (\texttt{relationshipType(type)}) und benutzerdefinierte Prädikate für Knoten und Kanten genutzt werden.
 Die Abfragen können wiederverwendet werden und die am häufigsten eingesetzten werden als statische Konstanten definiert.
@@ -253,7 +256,7 @@ Da in dem System häufig mehrere Abfragen auf einen selben Knotenpunkt gemacht w
 Die Ergebnisse einer Traversierung werden in der \texttt{TraversalResult}-Klasse gekapselt, um auf die gefundenen Knoten und die dabei verwendeten Kanten zuzugreifen.
 Ein Beispiel für den Zugriff ist in \autoref{lst:graph-traversal-code} zu finden.
 
-\begin{lstlisting}[language=Java,caption={Durchquerungsabfragen in Java},label=lst:graph-traversal-code,basicstyle=\ttfamily\scriptsize]
+\begin{lstlisting}[language=Java,caption={Traversierungsabfragen in Java},label=lst:graph-traversal-code,basicstyle=\ttfamily\scriptsize]
 RepGraphQuery.TraversalQuery query = traversalQuery()
     .outgoing()
     .relationshipType(RelationshipType.INHERITANCE)
@@ -272,7 +275,6 @@ Der erste Schritt der Artefakt-Typ-Erkennung wurde bereits in \autoref{subsubsec
 
 \subsubsection{Durchsuchung des Graphen nach anwendbaren Artefakt-Knoten}
 
-Die in \autoref{subsec:model-apply-to-artifact} beschriebenen Schritte das neue Korrelationssystem auf ein Artefakt anzuwenden werden im Folgenden anhand der Code-Implementierung erklärt.
 Die Verarbeitung eines Artefakts beginnt mit der Erstellung einer Instanz eines \texttt{RepTypedArtifact}, wie in \autoref{subsubsec:impl-artifact-type-detection} beschrieben.
 Auf dieser Basis kann nun der Matching-Prozess gestartet werden.
 
