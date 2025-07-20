@@ -11,6 +11,7 @@ Ein kleines Beispiel bei dem eine \acrshort{cpe} zu einem Artefakt hinzugefügt 
 \begin{lstlisting}[style=yaml,caption={Korrelationseintrag für die Java-Komponente Liquibase},label={lst:correlation-initial-example}]
 - affects:
     - Id: liquibase-*.jar
+      Group Id: org.liquibase
     - Id: org.liquibase.liquibase-*.jar
   append:
     Additional CPE URIs: cpe:/a:liquibase:liquibase
@@ -47,19 +48,18 @@ Typischerweise betrifft dies \acrshortpl{cpe}, die nachträglich als gültig ode
 \bigskip
 
 Mit diesen Methoden, auf Artefakte zuzugreifen, können potenziell alle Transformationen an Artefakten durchgeführt werden, die von Interesse sind.
-Im Kontext der \acrshort{cpe}-Zuordnung sind besonders die drei Felder relevant, die auch schon in \autoref{subsec:effective-cpe-calculation} aufgeführt wurden:
+Im Kontext der \acrshort{cpe}-Zuordnung sind besonders die drei Felder relevant, die auch schon in \autoref{subsubsec:effective-cpe-calculation} aufgeführt wurden:
 \texttt{Additional CPE URIs}, \texttt{Inapplicable CPE URIs} und \texttt{CPE URIs}.
 
 Ein Konsens, der sich über die Zeit aus Gründen der Nachvollziehbarkeit geformt hat, ist das Hinzufügen eines Kommentarblocks vor dem Korrelationseintrag mit Informationen über das Artefakt, für den der Eintrag angelegt wurde und eine Begründung, warum er nötig ist.
 Dieser Kommentar kann beliebige Begründungen enthalten, etwa Verweise auf Dokumentationen, URLs zu Projektseiten oder kurze Erklärungen, warum etwa eine bestimmte \acrshort{cpe} als passend oder unpassend eingestuft wurde.
 Bei späteren Revisionen und Diskussionen im Team erleichtert das die Nachvollziehbarkeit vergangener Entscheidungen.
 
-\paragraph{Inkrementelle Korrelationseinträge}\label{par:incremental-correlation-entries}
-werden ermöglicht, da für ein Artefakt alle Korrelationseinträge im Datensatz ausgewertet werden und nicht einfach bei einem ersten zutreffenden gestoppt wird.
-Dadurch können aufeinanderfolgende Korrelationseinträge definiert werden, die nacheinander auf ein Artefakt angewendet werden, um einen gewünschten Effekt zu erzielen.
+\paragraph{Inkrementelle aufeinanderfolgende Korrelationseinträge}\label{par:incremental-correlation-entries}
+ermöglichen die Kombination von mehreren Einträgen, um eine kompliziertere, abfolgeabhängige Logik zu erzielen, da für ein Artefakt alle Korrelationseinträge im Datensatz ausgewertet werden und nicht einfach bei einem ersten zutreffenden gestoppt wird.
 
 Ein beispielhafter Anwendungsfall betrifft Artefakte mit dem Namensbestandteil \enquote{git} (vgl. \autoref{lst:correlation-incremental-git-example}).
-Oft wird auf Artefakten die \acrshort{cpe} \texttt{cpe:/a:github:github} durch die CPE URI Derivation automatisch hinzugefügt, die den Text-Schnipsel \texttt{git} in ihrem Namen enthalten.
+Oft wird auf Artefakten die \acrshort{cpe} \texttt{cpe:/a:github:github} durch die \acrshort{cpe} URI Derivation automatisch hinzugefügt, die den Text-Schnipsel \texttt{git} in ihrem Namen enthalten.
 Oft wird durch die automatische \acrshort{cpe} URI Derivation die \acrshort{cpe} \texttt{cpe:/a:github:github} zugewiesen, die den GitHub Enterprise Server\footnote{\url{https://docs.github.com/en/enterprise-server/admin/all-releases}} referenziert.
 Um es für den Großteil der Einträge im \acrshort{yaml}-Format einfacher zu machen, deaktiviert ein generischer Eintrag diese \acrshort{cpe} für alle Artefakte, die \enquote{git} in egal welchem Attribut enthalten.
 Ein spezifischer Folgeeintrag darunter führt die tatsächliche \texttt{git}-Kommandozeilenapplikation auf, bei der dann die falsche \texttt{cpe:/a:github:github} nicht mehr behandelt werden muss, sondern nur noch die konkreten git-spezifischen \acrshortpl{cpe} aufgeführt werden können.
@@ -85,9 +85,12 @@ In \autoref{fig:correlation-utilities-demo} können oben rechts weitere Beispiel
 
 \subsection{Beispiele zu Korrelationsdaten}
 
+In diesem Kapitel werden zwei Beispiele aus dem aktuellen Korrelationsdatensatz gewählt, um die Funktionsweise und Abläufe darzustellen.
+In \label{sec:reference-case-chapter} werden weitere Referenzfälle mit dem Ziel aufgeführt, diese als Grundlage für die Mindestanforderungen an die Modellierung des neuen Korrelationssystems zu verwenden.
+
 \paragraph{Beispiel 1: snappy-1.1.8}
 In \autoref{lst:correlation-snappy} ist ein Beispiel aufgeführt, bei dem ein Artefakt \texttt{snappy-1.1.8} als ein Linux Package (Typ \texttt{package}) in einem Softwareinventar identifiziert wurde.
-Der CPE URI Derivation-Algorithmus hat in das Attribut \texttt{Derived CPE URIs} seine Identifikation aufgenommen, nämlich \texttt{cpe:/a:knplabs:snappy}.
+Der \acrshort{cpe} URI Derivation-Algorithmus hat in das Attribut \texttt{Derived CPE URIs} seine Identifikation aufgenommen, nämlich \texttt{cpe:/a:knplabs:snappy}.
 Vom Namen her sieht diese Identifikation vielleicht überzeugend aus, allerdings stellt sich dies als eine Fehlidentifikation heraus, denn die \acrshort{cpe} verlinkt in ihren Metadaten auf \url{https://github.com/KnpLabs/snappy}, was eine PHP Bibliothek ist und kein Linux Paket.
 Erst bei einer manuellen Suche kommt eine zweite \acrshort{cpe} hervor, \texttt{cpe:/a:google:snappy}, die tatsächlich ein Linux Paket darstellt welches nicht nur vom Namen her passt, sondern auch von der Versionsreichweite der veröffentlichten Versionen.
 Allerdings wurde auch eine Java-Bibliothek mit demselben Namen identifiziert, also mussten die entsprechenden jar-Dateien über \texttt{ignores} ausgeschlossen werden.
@@ -199,14 +202,15 @@ Das Ergebnis ist eine automatisch generierte Datei mit \acrshort{yaml}-Einträge
     Additional CPE URIs: cpe:/a:uniswap:web3-react_walletconnect
 \end{lstlisting}
 
-\subsection{Correlation Utilities als Tool zur Korrelationsarbeit}\label{subsec:correlation-utilities}
+\subsection{Correlation Utilities als Werkzeug zur Korrelationsarbeit}\label{subsec:correlation-utilities}
 
 Die \metaeffekt-intern entwickelten \enquote{Correlation Utilities} sind ein spezialisiertes Experten-Werkzeug zur Analyse von Software-Inventaren im Rahmen der Erstellung und Pflege von Korrelationsdaten.
 Ein Software-Inventar mit dem Ziel der korrekten Schwachstellenzuordnung manuell durchzuarbeiten ist ein komplexer und zeitintensiver Prozess.
 Die Correlation Utilities stellen eine dedizierte Benutzeroberfläche dar, mit der die spezifischen Aufgabenbereiche dieser Arbeit unterstützt werden.
 
 Technisch besteht das Werkzeug aus einer Spring-Boot-basierten Backend-Anwendung und einem Frontend, das über kachelartige Widgets dynamisch vom Nutzer angeordnet werden kann.
-Eine typische Sitzung beginnt mit der Auswahl eines Inventars und dem automatisierten Anreichern von Schwachstellinformationen und begibt sich dann auf den Prozess, jedes Artefakt in dem Inventar auf seine \acrshort{cpe}-Zuordnungen einzeln zu prüfen und Korrekturen durch das Anlegen von neuen Korrelationseinträgen vorzunehmen.
+Eine typische Sitzung beginnt mit der Auswahl eines Inventars und dem automatisierten Anreichern von Schwachstelleninformationen.
+Dann begibt sich die Person auf den Prozess, jedes Artefakt in dem Inventar auf seine \acrshort{cpe}-Zuordnungen einzeln zu prüfen und Korrekturen durch das Anlegen von neuen Korrelationseinträgen vorzunehmen.
 
 In \autoref{fig:correlation-utilities-demo} kann eine beispielhaft angeordnete Nutzeroberfläche gesehen werden.
 Die Benutzeroberfläche in dieser Anordnung besteht links oben aus der Tabelle der Artefakte, mit farbigen Status-Indikatoren pro Zeile um schnell nach relevanten Metriken filtern zu können.

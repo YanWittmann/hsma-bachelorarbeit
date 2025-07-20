@@ -5,7 +5,7 @@ Basierend auf der Analyse der bestehenden Herausforderungen und weiteren Rahmenb
 \subsection{A-01: Graphstruktur als Datenmodell}\label{subsec:req-format-product-graph}
 
 \textbf{Ziel:}
-Das System muss ein gerichtetes Graphmodell verwenden, in dem Knoten typisierte Produktrepräsentationen (z.\ B. Artefakte, \acrshort{cpe}, \acrshort{eol}-Id, MS Product ID) abbilden und Kanten explizite Relationen zwischen diesen darstellen.
+Das System muss ein gerichtetes Graphmodell verwenden, in dem Knoten typisierte Produktrepräsentationen (z.\,B. Artefakte, \acrshort{cpe}, \acrshort{eol}-Id, MS Product ID) abbilden und Kanten explizite Relationen zwischen diesen darstellen.
 Mindestens die Relationstypen \enquote{is} (positive Zugehörigkeit) und \enquote{is not} (expliziter Ausschluss) sind zu unterstützen.
 
 Die Richtung der Kanten steuert die semantische Auswertung.
@@ -79,7 +79,7 @@ Im Graph existiert pro Repräsentation exakt ein Knoten, der über Kanten mit an
 \subsection{A-06: Normalisierte Typidentifikation und typspezifische Attribute für Software-Artefakte}\label{subsec:req-type-specific-matching}
 
 \textbf{Ziel:}
-Im Bezug auf Artefakte als Datenmodell muss eine Typinferenz-Logik existieren, die Artefakttypen konsistent aus der Kombination von mehreren Attributen identifiziert und auf normalisierte Ökosystembezeichner (z.B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}) abbildet.
+Im Bezug auf Artefakte als Datenmodell muss eine Typinferenz-Logik existieren, die Artefakttypen konsistent aus der Kombination von mehreren Attributen identifiziert und auf normalisierte Ökosystembezeichner (z.\,B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}) abbildet.
 Je nach erkannten Typ müssen weitere, typspezifische Extraktoren bereitgestellt werden, die relevante Attribute (wie Maven-Koordinaten für Java oder Paketnamen für NPM) als primäre Matching-Kriterien in den Artefakt-Selektoren exponieren.
 Für nicht erkennbare Typen muss auf Basisattribute zurückgefallen werden.
 
@@ -95,7 +95,7 @@ Artefakte unbekannter Typen werden mit Basisattributen bereitgestellt.
 \subsection{A-07: Vererbung von Artefaktmerkmalen}\label{subsec:req-selektor-inheritance}
 
 \textbf{Ziel:}
-Ein Vererbungssystem für Artefakt-Selektoren muss existieren, bei dem mit Basis-Selektoren generische Attribute (z.\ B.\ für alle Microsoft Windows-Varianten) definiert werden können und abgeleitete Selektoren spezifische Erweiterungen (z.\ B.\ Architektur) hinzufügen.
+Ein Vererbungssystem für Artefakt-Selektoren muss existieren, bei dem mit Basis-Selektoren generische Attribute (z.\,B.\ für alle Microsoft Windows-Varianten) definiert werden können und abgeleitete Selektoren spezifische Erweiterungen (z.\,B.\ Architektur) hinzufügen.
 Bei der Auswertung eines Artefakts über die Vererbungshierarchie müssen alle generischen Selektoren ebenfalls zu dem Artefakt zutreffen.
 Es wird ausschließlich der spezifischste Knoten in der Kette gewählt.
 

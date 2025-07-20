@@ -31,7 +31,7 @@ So würde ein Eintrag für \texttt{auth-*.jar} sowohl \texttt{auth-1.2.3.jar} al
 Felder wie \texttt{Component} mit ihren konkreten Komponentenbezeichnern sind bedauerlicherweise ebenfalls unzuverlässig, da sie teils manuell gepflegt und teils automatisch abgeleitet werden und über Inventare nicht immer einheitlich sind.
 Obwohl \acrshort{purl}-basierte Identifikation in den \metaeffekt-Inventaren zunimmt, ist sie bei weitem noch nicht flächendeckend genug verfügbar um diese als Hauptkriterium verwenden zu können.
 
-\subsection{C-02: Inkonsistente und fehlende Artefakt-Typisierung}\label{subsec:c-02-uneindeutige-artefakt-typinformation}
+\subsection{C-02: Mangelnde Normalisierung der Artefakt-Typisierung}\label{subsec:c-02-uneindeutige-artefakt-typinformation}
 
 % AE-556: [Artifact Analysis] Define [Artifact Type] / [Component Source Type], create Data Types and apply consistently across code baseTo Do).
 % It would be nice if there was a smarter preprocessing step, that would attempt to recover this kind of information in a normalized way, based on several different criteria. The ones listed below are merely examples to illustrate what could be done, this is to be defined:
@@ -71,7 +71,7 @@ Jedoch haben diese mehrere Probleme:
 
 Eine Normalisierung dieser Felder ist seit einiger Zeit geplant, jedoch ist hierzu noch keine Arbeit geschehen.
 
-\subsection{C-03: Duplizierte Artefakt-Selektoren}\label{subsec:c-03-duplizierte-artefakt-selektoren}
+\subsection{C-03: Redundanz durch Duplizierte Artefakt-Selektoren}\label{subsec:c-03-duplizierte-artefakt-selektoren}
 
 % doppelt weil aufeinander aufbauende einträge
 % wenn ein feld unterschiedlich gleich neuer eintrag
@@ -111,15 +111,15 @@ Dieses Beispiel offenbart ein weiteres Problem der Artefakt-Matcher:
 Pro Attribut ist nur ein Wertvergleich möglich.
 Sobald es also zwei oder mehr Varianten für ein Feld existieren, müssen entweder reguläre Ausdrücke verwendet, oder der gesamte Eintrag dupliziert werden.
 
-\subsection{C-04: Große Korrelationsdateien als Wartungsproblem}\label{subsec:c-04-groe-und-unubersichtliche-yaml-dateien}
+\subsection{C-04: Wartungsprobleme durch übergroße \acrshort{yaml}-Dateien}\label{subsec:c-04-groe-und-unubersichtliche-yaml-dateien}
 
 % Find a way to better split the entries into multiple files. The 6000-lines files are not only tedious to work with, but also require unnecessarily large amounts of computational power to render, with a notable slowdown of the IDE in use.
 % Maybe, as suggested below, YAML files could not even be required for this, maybe another data format would be better suited. We will see.
 
 Der aktuelle Korrelationsdatensatz der \metaeffektsp umfasst fast 30000 Zeilen an \acrshort{yaml}, die manuell erstellt wurden.
-Die Performanz ist wie bereits festgestellt kein Problem, eher die Übersichtlichkeit über diese großen Datenmengen.
+Die Performanz ist wie festgestellt kein Problem, eher die Übersichtlichkeit über diese großen Datenmengen.
 
-\subsection{C-05: Unstrukturierte und unklare Entscheidungsbegründungen}\label{subsec:c-05-reason-not-good-enough}
+\subsection{C-05: Mangelnde Nachvollziehbarkeit und Struktur von Korrelationsentscheidungen}\label{subsec:c-05-reason-not-good-enough}
 
 % The current “reason” format is a simple, unstructured text comment. It is not machine-readable or evaluate-able in any way.
 % The current format has a loosely defined arrow reasoning chain syntax that looks like this (fake values) cpe:/a:apache:commons_io --> https://github.com/apache/commons-io --> "library for doing IO operations" --> same library as artifact
@@ -135,12 +135,11 @@ Beispielketten können sein:
 
 \begin{itemize}
     \itemsep0em
-    \item \texttt{cpe:/a:apache:commons\_io --> https://github.com/apache/commons-io --> "library for IO operations" --> same as artifact}
     \item \texttt{cpe:/a:golang:crypto\ -->\\https://github.com/golang/crypto / https://golang.org/x/crypto\ --> by golang (Go, [mirror] Go supplementary cryptography libraries)\ --> version range matches artifact}
     \item \texttt{cpe:/a:setorinformatica:sil\ --> CVE-2024-22633\ -->\\https://tomiodarim.io/posts/cve-2024-22632-3 -->\\"Setor Informatica is a Brazilian company that develops software for the Brazilian market" / "Smart System for Laboratories (S.I.L.)"\ -->\\they reported a vulnerability for another S.I.L. software -->\\cpe is applicable}
 \end{itemize}
 
-\subsection{C-06: Keine Einträge für Negatividentifikationen}\label{subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden}
+\subsection{C-06: Undokumentierter Analyseaufwand bei nicht zuordenbaren Artefakten}\label{subsec:c-06-falle-ohne-aktion-konnen-nicht-dokumentiert-werden}
 
 % If an artifact lacks any CPE or other identifiers, a correlation assistant may have already put in significant effort to reach this point. He might have had to make quite the research or other logical conclusions.
 % But, in the current system, such cases \textit{cannot} at all be put into the correlation files. A separate (non-normalized or used) file would have to be used to keep this knowledge. But such an additional system does not exist yet, so nothing is done to document the effort and the information is lost.
@@ -150,7 +149,7 @@ Wenn eine Person ein Artefakt ohne \acrshort{cpe} darauf analysiert, ob diese Ab
 Das liegt daran, dass ein Korrelationseintrag nur dann gültig ist, wenn er eine Selektion und eine Modifikations-Aktion definiert, und damit gibt es keinen Eintrag, auf den die Erkenntnisse notiert werden könnten.
 Diese Wissenslücke führt zu wiederholtem Aufwand bei erneuten Analysen desselben Artefakts, da das Wissen über die korrekte Abwesenheit verloren gegangen ist.
 
-\subsection{C-07: Unzureichendes Testframework, wenig Unterstützung für automatisierte Prüfung der Daten}\label{subsec:c-07-test-framework}
+\subsection{C-07: Unzureichende Testautomatisierung und Qualitätssicherung}\label{subsec:c-07-test-framework}
 
 % The current correlation system does have a “validation” format that allows for the manual creation of test cases for the created correlation entries, but it’s quite tedious to use.
 % It would be much nicer, if the system used to create the correlation data (e.g. correlation utilities) would automatically (or with the press of a button) record the artifact the correlation was created on, the before and after states and create a test case with an expected result based on that.
@@ -159,7 +158,7 @@ Diese Wissenslücke führt zu wiederholtem Aufwand bei erneuten Analysen desselb
 Existierende Testfälle für Korrelationseinträge werden manuell in einem separaten Validierungsformat gepflegt, was in seiner Konfiguration aufwendig ist.
 Dieser Aufwand führt dazu, dass es in der Realität nicht von den Mitarbeitern verwendet wird, und so nur ein sehr kleiner Datensatz an automatisierbaren Testfällen existiert.
 
-\subsection{C-08: Generierte YAML-Dateien}\label{subsec:c-08-generated-correlation-data}
+\subsection{C-08: Generierte \acrshort{yaml}-Dateien}\label{subsec:c-08-generated-correlation-data}
 
 % The generated directory contains several automatically generated YAML correlation files, based on the data that is present in the index when generating.
 % These need to be converted into the new format somehow.
@@ -183,7 +182,7 @@ Da in dem manuellen Teil dieses Datensatzes viel Firmenzeit geflossen ist, stell
 Analog zum bereits existierenden \enquote{\metaeffekt-kosmos}-Projekt\footnote{\url{https://github.com/org-metaeffekt/metaeffekt-kosmos}}, welches den Open-Source-Anteil der \metaeffekt-Lizenzdatenbank öffentlich frei verfügbar zugänglich macht, könnte ein Konzept eingeführt werden, bei dem die automatisch generierten Einträge ohne die manuellen Arbeiten auf eine ähnliche Weise verfügbar gemacht werden, damit jeder eine gewisse Grundqualität der Ergebnisse erhält.
 So können firmeninterne Ergänzungen weiterhin in einem separaten, nicht öffentlichen Datensatz verteilt werden.
 
-\subsection{C-10: Reihenfolgenbedingte Seiteneffekte von Einträgen}\label{subsec:c-10-order-dependency}
+\subsection{C-10: Unbeabsichtigte Seiteneffekte durch implizite reihenfolgenbedingte Abhängigkeiten}\label{subsec:c-10-order-dependency}
 
 % Die inkrementelle Anwendung von Korrelationseinträgen erfordert eine strenge Reihenfolge, die aktuell nur durch die Position in der \acrshort{yaml}-Datei gesteuert wird. Änderungen in der Eintragsreihenfolge können unbeabsichtigte Seiteneffekte verursachen. Explizite Abhängigkeitsdeklarationen oder eine deklarative Priorisierungslogik (anstatt impliziter Dateiordnung) würden Robustheit und Verständlichkeit erhöhen.
 
@@ -214,7 +213,7 @@ Wenn nun die Verarbeitungsreihenfolge der Einträge sich durch eine Verschiebung
     Additional CPE URIs: cpe:/a:redis:redis-py
 \end{lstlisting}
 
-\subsection{C-11: YAML-Eintrag finden}\label{subsec:c-11-finding-yaml-entries}
+\subsection{C-11: Unzuverlässige Zuordnung von Daten zu ihren Quelldateien}\label{subsec:c-11-finding-yaml-entries}
 
 Die Correlation Utilities, wie in \autoref{subsec:correlation-utilities} vorgestellt, erlauben es mit einem Klick auf einen Korrelationseintrag zu diesem in der entsprechenden \acrshort{yaml}-Datei zu springen.
 Das Problem hierbei liegt darin, dass das aus dem \acrshort{yaml} erzeugten Datenmodell von sich aus keine Referenz mehr auf die Zeilennummern der Datei enthält.

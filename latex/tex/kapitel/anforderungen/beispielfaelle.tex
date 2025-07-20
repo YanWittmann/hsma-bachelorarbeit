@@ -4,7 +4,7 @@ Aus einer Analyse des bestehenden Korrelationsdatensatzes wurden vier Referenzf�
 Deren Abbildung auf das neue System mit einer Verbesserung der Modellierung wird als Mindestanspruch vorausgesetzt.
 Die Auswahl erfolgte auf Basis der strukturellen Merkmale und einer Abdeckung von möglichst allen Mechanismen, nicht aufgrund der betreffenden Produkte.
 
-Ein größer konzeptioneller Unterschied zum neuen Korrelationsformat ist, dass die bisherigen Korrelationsdaten mit dem Ziel erstellt werden, ein Inventar an Software-Artefakten zu modifizieren.
+Ein konzeptioneller Unterschied zum neuen Korrelationsformat ist, dass die bisherigen Korrelationsdaten mit dem Ziel erstellt werden, ein Inventar an Software-Artefakten zu modifizieren.
 Es wird also immer ausschließlich von einem Artefakt ausgegangen, und explizit die Attribute definiert, die auf diesem gesetzt werden sollen.
 Das neue Graphenformat verschiebt diesen Fokus zugunsten einer semantischen Modellierung, in der Bezüge zwischen Repräsentationen durch Kanten modelliert werden und die Effekte auf eine Quell-Repräsentation sich durch die Gefüge im Graphen ergeben.
 
@@ -98,7 +98,7 @@ Diese Redundanz ist bei den meisten Fällen durch die geringe Anzahl an Wiederho
 \textbf{Analyse:}
 Die Unfähigkeit zur kompakten Darstellung mehrerer Attributwerte innerhalb eines Eintrags wird durch \hyperref[subsec:req-multiple-attribute-values]{A-08} angesprochen.
 Die Kernproblematik liegt jedoch in einem fehlenden Mechanismus zum Teilen von Attributen zwischen Artefakt-Selektoren getrennter Einträge, welche in \hyperref[subsec:req-selektor-inheritance]{A-07} durch Vererbungsregeln adressiert wird.
-Durch die hierarchischen Knotenstrukturen im neuen Modell soll ein allgemeiner Windows-10-Produktknoten generische Eigenschaften definieren, von dem spezifische Versionen (z.\ B. 21H2) erben, welche wiederum architekturspezifische Knoten (x64/x86) als Kinder enthalten können.
+Durch die hierarchischen Knotenstrukturen im neuen Modell soll ein allgemeiner Windows-10-Produktknoten generische Eigenschaften definieren, von dem spezifische Versionen (z.\,B. 21H2) erben, welche wiederum architekturspezifische Knoten (x64/x86) als Kinder enthalten können.
 An jeden Artefakt-Knoten in der Hierarchie wird ein Produkt-Knoten angehängt, über den weitere versionsabhängige Repräsentationen (\acrshort{cpe}, Microsoft-Produkt-ID, \acrshort{eol}-Id) angehängt werden.
 Redundanzen entfallen durch die Vererbung gemeinsamer Attribute entlang der Knotenhierarchie und das Aufführen mehrerer alternativer Werte in einem Selektor-Attribut.
 

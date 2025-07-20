@@ -4,9 +4,9 @@
 Wie alle Datentypen im Inventar basieren auch Artefakte auf Key-Value-Pairs, einer frei definierbaren Zuordnung von Textschlüsseln zu Textwerten.
 Dieses Format wurde gewählt, um flexibel einfach Änderungen und neue Felder einführen zu können, ohne Schemata definieren und ändern zu müssen.
 
-Komplexere Werte als flache Texte werden z.\ B.\ automatisch als JSON-Objekte serialisiert und beim Einlesen wieder als Objekte deserialisiert.
+Komplexere Werte werden z.\,B.\ automatisch als JSON-Objekte zu flachen Texten serialisiert und beim Einlesen wieder als Objekte deserialisiert.
 
-Für Artefakte ist die zugrundeliegende Struktur mit einigen Basis-Feldern für alle Software-Ökosysteme die gleiche, jedoch unterscheidet sich je nach Ökosystem die tatsächliche Verwendung der Felder.
+Für Artefakte ist die zugrundeliegende Struktur mit einigen Basis-Attributen für alle Software-Ökosysteme die gleiche, jedoch unterscheidet sich je nach Ökosystem die tatsächliche Verwendung der Felder.
 Jedes Ökosystem hat somit eine übliche Menge an Feldern, mit denen eine Komponente beschrieben wird, die typischerweise ausgefüllt werden.
 
 Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inventory-artifact-entries} dargestellt.
@@ -31,7 +31,7 @@ Beispielhafte Artefakte aus dem Java/Maven-Ökosystem sind in \autoref{tab:inven
     \label{tab:inventory-artifact-entries}
 \end{table}
 
-Die \texttt{Id} eines Artefakts ist das einzige Attribut, welches auf einem Artefakt immer gesetzt sein muss.
+Die \texttt{Id} eines Artefakts ist das einzige Attribut, welches auf einem Artefakt immer gesetzt sein muss und sichert die Eindeutigkeit innerhalb eines Inventars.
 Sie ist meist einfach der Dateiname, wie er im Dateisystem vorgefunden wurde, inklusive Versionen und Dateiendungen.
 
 Da das Datenmodell tabellarisch angeordnet ist und damit in Tabelleneditoren mit mehreren Tabellenblättern abbildbar ist, wird es häufig in menschenlesbarer Form als \texttt{.xlsx} oder ähnlichen Formaten exportiert.
@@ -99,7 +99,7 @@ Diese Attribute sind in der Spalte \enquote{Bereitgestellte Attribute} gefunden 
                 \midrule
                 NPM Module & \makecell[l]{\texttt{Type} ist \texttt{web-module} oder \\ \texttt{Type} ist \texttt{npm-module} oder \\ \texttt{Type} ist \texttt{nodejs-module} oder \\ \texttt{Component Source Type} ist \texttt{npm-module}} & \makecell[l]{\texttt{scope}\\ \texttt{packageName} (ohne scope)} \\
                 \midrule
-                Java Runtime & \makecell[l]{\texttt{Specific Type} ist \texttt{java-runtime} oder \\ (\texttt{Id} enthält \texttt{jdk} oder \texttt{jre}) und \texttt{GroupId} ist leer} & \makecell[l]{\texttt{supplier} (z.B. Temurin), \\ \texttt{variant} (JRE/JDK)} \\
+                Java Runtime & \makecell[l]{\texttt{Specific Type} ist \texttt{java-runtime} oder \\ (\texttt{Id} enthält \texttt{jdk} oder \texttt{jre}) und \texttt{GroupId} ist leer} & \makecell[l]{\texttt{supplier} (z.\,B. Temurin), \\ \texttt{variant} (JRE/JDK)} \\
                 \midrule
                 Linux Paket & \makecell[l]{\texttt{Type} ist \texttt{package} oder \\ \texttt{Ecosystem} ist in \texttt{\{rpm, deb, apk, pacman\}}} & \makecell[l]{\texttt{distribution}} \\
                 \midrule

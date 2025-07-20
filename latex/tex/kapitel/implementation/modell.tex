@@ -1,37 +1,37 @@
 \section{Modell des neuen Korrelationssystems}\label{sec:model-modellierungsansatz}
 
-Aufgrund der abgeleiteten Anforderungen und den Referenzfällen wird in den folgenden Unterkapiteln das neue Korrelationssystem mit der Struktur des Graphen, einem Modifikationsformat um den Graphen zu transformieren, dem \acrshort{yaml}-Format um die Modifikationen manuell durchführen zu können, und die Matching- und Durchquerungsregeln für die Auswertung von Repräsentationsauflösungen.
+Basierend auf den abgeleiteten Anforderungen und den analysierten Referenzfällen wird in den nachfolgenden Kapiteln das Modell des neuen Korrelationssystems vorgestellt.
+Dieses umfasst die Graphenstruktur, ein Modifikationssystem zur Transformation des Graphen, das zugehörige \acrshort{yaml}-Format für manuelle Modifikationen sowie die Matching- und Traversierungsregeln, die für die Auswertung von Repräsentationsauflösungen notwendig sind.
 
 \subsection{Struktur des Graphen}\label{subsec:model-graph-struktur}
 
-Wie in \hyperref[subsec:req-format-product-graph]{A-01} und \hyperref[subsec:req-product-concept]{A-04} gefordert, wird das neue Korrelationssystem mithilfe eines Graphens modelliert, in dem jeder Knotenpunkt entweder einem Produkt oder einer Repräsentation eines Produktes entspricht und durch Kanten verbunden sind, die die Beziehungen zwischen diesen modellieren.
+Wie in den Anforderungen \hyperref[subsec:req-format-product-graph]{A-01} und \hyperref[subsec:req-product-concept]{A-04} festgelegt, wird das neue Korrelationssystem als Graph modelliert.
+In dieser Struktur entspricht jeder Knotenpunkt entweder einem Produkt oder einer spezifischen Repräsentation dieses Produktes.
+Die Knoten werden durch Kanten verbunden, welche die semantischen Beziehungen zwischen ihnen abbilden.
 
 \subsubsection{Knotenpunkte}\label{subsubsec:model-graph-knoten}
 
-Betrachtet werden zunächst die Knotenpunkte der Repräsentationen von Produkten.
-Für jedes Produktidentifikationsökosystem wird ein Typ für einen Knotenpunkt angelegt, der dem Knoten typspezifische Attribute und Eigenschaften zuweisen kann.
-Diese definieren, wie sich ein Knoten selbst identifiziert und kann zum Abgleich von zugehörigen Repräsentationen mit sich selbst verwendet werden, um herauszufinden, ob eine reale Repräsentation einem Knotenpunkt entspricht.
-Zudem kann diese Knoteninformation in Kombination mit dem Typen einer eingehenden Kante interpretiert werden, um eine Transformation an dem Ursprungsknotenpunkt anzuwenden.
+Knotenpunkte sind grundlegend typisiert, wobei ihr Typ Auskunft über zusätzliche Attribute und Eigenschaften gibt.
+Zunächst werden die Typen der Produktrepräsentationen betrachtet, wobei für jedes Produktidentifikationsökosystem ein eigener Typ definiert wird.
+Ein Typ legt fest, wie sich ein Knoten selbst identifiziert und wie er mit realen Repräsentationen abgeglichen wird, um eine Übereinstimmung mit einem Knoten festzustellen.
+In der Auswertungsphase bestimmt die Kombination aus dem Knotentyp und dem Typ einer eingehenden Kante zudem, welchen Effekt er auf Eingabedaten hat.
 
-Um jeden Knoten eindeutig ansprechen zu können und um die Eindeutigkeit eines Knotens zu sichern hat jeder Knoten im Datenmodell neben seinem Typen zusätzlich eine eindeutige Id.
-Die Kombination aus Typ und Id ermöglicht eine genaue Identifikation.
-Die Anforderung, dass sich jede Repräsentation eines Produkts in nur einem Knoten ausprägen darf, löst die Reihenfolgenabhängigkeit (\hyperref[subsec:c-10-order-dependency]{C-10}), da jede Identifikation nur einmal vorkommen kann und die weiteren Abhängigkeiten über weitere Kanten dargestellt werden.
+Um die in \hyperref[subsec:req-node-id-type]{A-02} geforderte Eindeutigkeit eines Knotens sicherzustellen, besitzt jeder Knoten im Datenmodell zusätzlich zu seinem Typ eine Id.
+Die Kombination aus Typ und Id ermöglicht eine eindeutige Adressierung eines Knotens im Graphen.
+Nach \hyperref[subsec:req-unique-product-representations]{A-05} darf sich jede Repräsentation in nur einem Knoten ausprägen und muss zur Wiederverwendung über gerichtete Kanten angesprochen werden.
 
-Allgemein soll jeder Knoten, und jede Kante, in der Lage sein, Metadaten über sich selbst abzulegen.
-Mehr Details dazu kann in \autoref{subsec:model-rationale} gefunden werden.
-
-Die genauen Ausprägungen der initial geplanten Knotentypen und deren Attribute und Verhalten können in der folgenden Liste betrachtet werden.
-Der Produkt-Knotenpunkt wird in \autoref{subsubsec:model-product-node} detailliert beschrieben.
-Um von Anfang an ein einheitliches Format für die Ids unterschiedlicher Typen zu sichern, wird zudem auch eine Regel angegeben, wie aus einer Repräsentation die entsprechende Id abgeleitet werden kann.
+Die initial geplanten Knotentypen und deren Attribute und Verhalten können in der folgenden Liste betrachtet werden.
+Der Typ des Produkt-Knotenpunkts wird in \autoref{subsubsec:model-product-node} beschrieben.
+Um von Anfang an ein einheitliches Format für die Ids unterschiedlicher Typen zu sichern, wird zudem auch eine Regel angegeben, wie aus einer Repräsentation eine kanonische Id abgeleitet werden kann.
 
 \begin{itemize}
     \itemsep0em
-    \item \textit{\acrshort{cpe}}: repräsentieren genau eine \acrshort{cpe} mit einer Menge an gesetzten Parts, beispielsweise \texttt{cpe:/a:redis:redis}.
+    \item \textit{\acrshort{cpe}}: repräsentieren genau eine \acrshort{cpe} mit einer Menge an gesetzten Attributen, beispielsweise \texttt{cpe:/a:redis:redis}.
     Wenn ein solcher Knoten über eine \enquote{is}-Beziehung von einem Artefakt aus erreicht wird, wird die entsprechende \acrshort{cpe} dem Ziel-Artefakt als \texttt{Additional CPE URIs} hinzugefügt, und von \texttt{Inapplicable CPE URIs} entfernt.
     Bei \enquote{is not} passiert entsprechend das Gegenteil.
-    Die Id eines \acrshort{cpe}-Knotens leitet sich aus der Menge an Doppelpunkt-getrennten Parts ab, die in der \acrshort{cpe} gesetzt sind, wobei Lücken zwischen gesetzten Parts immer mit \enquote{*} aufgefüllt werden müssen.
-    Zu der redis-\acrshort{cpe} wäre die Id entsprechend: \texttt{a:redis:redis}.
-    \item \textit{\acrshort{purl}}: verhält sich ähnlich wie ein \acrshort{cpe}-Knoten, es werden beliebige Attribute einer \acrshort{purl} abgelegt, auf die ein Artefakt geprüft werden kann.
+    Die kanonische Id eines \acrshort{cpe}-Knotens leitet sich aus der Menge an Doppelpunkt-getrennten Attributen ab, die in der \acrshort{cpe} gesetzt sind, wobei Lücken zwischen gesetzten Attributen immer mit \enquote{*} aufgefüllt werden müssen.
+    Zu der beispielhaften redis-\acrshort{cpe} wäre die Id entsprechend: \texttt{a:redis:redis}.
+    \item \textit{\acrshort{purl}}: verhält sich ähnlich wie ein \acrshort{cpe}-Knoten, es werden die Attribute einer \acrshort{purl} abgelegt.
     Bei \acrshortpl{purl} wird für die Knoten-Id die Attributmenge der \acrshort{purl} selbst in kanonischer Reihenfolge ohne den \texttt{pkg:}-Präfix verwendet.
     \item \textit{MS Product ID}: stellen eine numerische Produkt-Id dar, und können optional anzuwendende KB-Nummern (Security-Patch Ids) enthalten.
     Ähnlich wie bei dem \acrshort{cpe}-Knoten werden Artefakten bei positiver oder negativer Übereinstimmung die Ids in dem Attribut \texttt{MS Product Id} hinzugefügt oder entfernt.
@@ -44,23 +44,22 @@ Um von Anfang an ein einheitliches Format für die Ids unterschiedlicher Typen z
     Die Selektionslogik wird in \autoref{subsubsec:model-matching} genauer ausgeführt.
 \end{itemize}
 
-Das neue Korrelationssystem basiert auf einem Graphenmodell mit klar definierten Knoten und Kanten, um Repräsentationen nachvollziehbar zu verknüpfen.
+Jeder Knoten, und jede Kante, soll zudem Metadaten über sich selbst speichern können, wie in \autoref{subsec:model-rationale} näher erläutert wird.
+
+Das neue Korrelationssystem basiert also auf einem Graphenmodell mit klar definierten Knoten und Kanten, um Repräsentationen nachvollziehbar zu verknüpfen.
 Jeder Knoten repräsentiert eine eindeutige Produkt- oder Repräsentation mit typspezifischen Attributen und einer Id, die eine genaue Identifikation und die weiteren Anforderungen der Traversierung und Transformation ermöglicht.
 
-\subsubsection{Kanten und Relationen}\label{subsubsec:model-edges-relations}
+\subsubsection{Kanten}\label{subsubsec:model-edges-relations}
+
 Die Kanten des Graphen sind gerichtete Beziehungen zwischen den Knotenpunkten und modellieren die logischen Verknüpfungen innerhalb des Korrelationssystems.
-Die zwei primären Kantentypen sind \enquote{is} und \enquote{is not}.
-Die Interpretation dieser Beziehungen liegt bei den Zielknoten, jedoch gilt allgemein das Folgende:
+Die zwei primären Kantentypen sind \enquote{is} und \enquote{is not}, deren Interpretation bei dem Zielknoten liegt, jedoch allgemein das Folgende gilt:
 
 Die \enquote{is}-Kante (auch \enquote{is represented by}) drückt eine Zugehörigkeitsbeziehung aus.
 Allgemein beschreibt sie, dass eine bestimmte Repräsentation die Ausgangsrepräsentation vollständig in einem anderen Ökosystem darstellt und für Anfragen in diesem verwendet werden kann.
 Die \enquote{is not}-Kante (auch \enquote{is not represented by}) ist für einen expliziten Ausschluss der Anwendbarkeit einer Repräsentation auf einer Ausgangsrepräsentation zuständig und so Fehlidentifikationen explizit zu vermeiden.
-So wird beispielsweise die positiv anwendbare Verknüpfung von Artefakt-Knoten mit Produkt-Knoten, und von Produkt-Knoten mit verschiedenen Standard-Identifikatoren (\acrshortpl{cpe}, \acrshortpl{purl} etc.) über \enquote{is}-Kanten realisiert, oder wenn ein Artefakt mit einem bestimmten Namen fälschlicherweise einer Produktfamilie zugeordnet werden könnte, kann eine \enquote{is not}-Kante die korrekte Trennung sicherstellen.
+So wird beispielsweise die positiv anwendbare Verknüpfung von Artefakt-Knoten mit Produkt-Knoten, und von Produkt-Knoten mit verschiedenen Standard-Identifikatoren (\acrshortpl{cpe}, \acrshortpl{purl}, etc.) über \enquote{is}-Kanten realisiert, oder wenn ein Artefakt mit einem bestimmten Namen fälschlicherweise einer Produktfamilie zugeordnet werden könnte, kann eine \enquote{is not}-Kante die korrekte Trennung sicherstellen.
 
 Beim Durchqueren des Graphen sind diese beiden Kantentypen jedoch nicht äquivalent auszuwerten, wie genauer in \autoref{subsubsec:model-traversal} beschrieben wird.
-So überschreibt eine einzige Kante vom Typ \enquote{is not} bei allen direkt und indirekt darüber erreichbaren Knotenpunkten den Kantentyp ebenfalls auf \enquote{is not}.
-Dies ist nötig, da es nicht korrekt wäre, eine Repräsentation als Anwendbar zu klassifizieren, nur weil die direkte Kante von der vorherigen Repräsentation sie als auf sich Anwendbar sieht.
-Die Nicht-Anwendbarkeit wird also durch den Graphen propagiert.
 
 Darüber hinaus existiert eine dritte Art von Kante, die eine Vererbung von Informationen repräsentiert (inheritance, \hyperref[subsec:req-selektor-inheritance]{A-07}).
 Über diese sollen Basis-Eigenschaften von einem Eltern-Knoten an einen Kind-Knoten weitergegeben werden, mit dem Ziel, die Redundanz im Datenmodell zu reduzieren und die Pflege zu vereinfachen.
@@ -88,37 +87,35 @@ Weitere Kantenattribute werden ebenfalls in der Beschriftung aufgeführt.
 \begin{figure}[htbp]
     \centering
     \makebox[\textwidth]{\includesvg[width=0.45\textwidth, inkscapelatex=false]{bilder/example-graph-node-explanation}}
-    \caption{Modellierung einer Artefakt-Zuordnung durch eine positive \texttt{is}- und eine ausschließende \texttt{is not}-Beziehung.}
+    \caption{Modellierung einer Artefakt-Zuordnung durch eine positive \texttt{is}- und eine ausschließende \texttt{is not}-Beziehung. In einer realen Modellierung würde ein Produkt-Knoten zwischen den Repräsentationen liegen.}
     \label{fig:example-graph-node-explanation}
 \end{figure}
 
 \subsubsection{Produkt-Knoten}\label{subsubsec:model-product-node}
 Produkt-Knoten sind eine spezielle Form von Knoten, die ein Software-Produkt wie in \autoref{subsec:produkte-vs-reprasentation} detailliert darstellen.
 Sie enthalten im Gegensatz zu den konkreten Repräsentationsknoten keine Selektoren oder Informationen darüber, wie eine Repräsentation modifiziert werden soll, sondern dient als logische Klammer und zentraler Knoten für alle Repräsentationen, mit denen ein Produkt identifiziert werden kann.
-So sollen Repräsentationen nicht direkt miteinander über Kanten verbunden werden, sondern einen Zwischenknoten definieren, der sie und potenziell weitere verbindet.
-Produkt-Knoten stellen eine abstrakte zentrale Einheit dar, an der Repräsentationen aggregiert werden und durch Metadaten (z.\ B. Versionsräume) zu einer einheitlichen Produktdefinition ergänzt werden.
+So sollen Repräsentationen nicht direkt miteinander über Kanten verbunden werden, sondern über einen Zwischen-Produkt-Knoten, der sie und potenziell weitere verbindet.
+Produkt-Knoten stellen eine abstrakte zentrale Einheit dar, an der Repräsentationen aggregiert werden und durch Metadaten (z.\,B. Versionsräume) zu einer einheitlichen Produktdefinition ergänzt werden.
 
 Ein einfaches Beispiel für einen Produktknoten, der eine \acrshort{cpe} als \enquote{anwendbar} kennzeichnet, kann in \autoref{fig:example-graph-simple-log4j} gefunden werden.
 
 \begin{figure}[htbp]
     \centering
     \makebox[\textwidth]{\includesvg[width=0.45\textwidth, inkscapelatex=false]{bilder/example-graph-simple-log4j}}
-    \caption{Beispielgraph mit zwei Knoten zu Log4J}
+    \caption{Beispielgraph mit einen Produkt-Knoten und einem Artefakt-Knoten zu Log4J}
     \label{fig:example-graph-simple-log4j}
 \end{figure}
 
-Negativbeziehungen zwischen Produkten werden durch \enquote{is not}-Kanten modelliert, die von einem Produkt-Knoten auf einen anderen Produkt-Knoten zeigen.
+Ausschlussbeziehungen zwischen Produkten werden durch \enquote{is not}-Kanten modelliert, die von einem Produkt-Knoten auf einen anderen Produkt-Knoten zeigen.
 Eine solche Kante drückt aus, dass alle mit dem Ziel-Produkt-Knoten verknüpften Repräsentationen im Kontext des Ausgangsknotens als unzutreffend zu interpretieren sind.
 Dies erlaubt es einfach eine komplizierte semantische Aussage über die Beziehungen von Repräsentationen auf der Basis explizit formulierter Produktausschlüsse zu formulieren.
+Die Nicht-Anwendbarkeit wird also durch den Graphen propagiert.
 
-Ein Beispiel für diese Art der Kantenverwendung ist in \autoref{fig:example-graph-cloudfoundry} zu sehen.
+Ein Beispiel für diese Art der \enquote{is not}-Kantenverwendung ist in \autoref{fig:example-graph-cloudfoundry} zu sehen.
 Darin wird einem Produkt-Knoten \enquote{Cloudfoundry CLI} die zugehörigen Repräsentationen mit einer \acrshort{cpe} und einem Artefakt zugeordnet.
 Daneben wird ein weiterer Produkt-Knoten \enquote{CF Cloud Controller}, ebenfalls mit einer \acrshort{cpe} und einem Artefakt, angelegt.
 Gleichzeitig wird im Produkt-Knoten \enquote{CF Cloud Controller} über eine \enquote{is not}-Relation zu \enquote{Cloudfoundry CLI} ein expliziter Ausschluss aller darüber erreichbaren Repräsentationen angegeben.
-Dies bewirkt, dass bei der Identifikation des Cloud-Controller-Artefakts über die Traversierung über beide Produkt-Knoten die CLI-\acrshort{cpe} als unzutreffend markiert wird, und nur die \acrshort{cpe} des Cloud Controllers bleibt weiterhin gültig und wird durch die direkte \enquote{is}-Relation eingebracht.
-
-Ein weiterer praktischer Nutzen zeigt sich im Vergleich mit dem Redis-Referenzfall (\autoref{par:reference-case-redis}), bei dem im alten Format durch den Aufbau einer impliziten Beziehung von Einträgen der manuelle Ausschlüss über eine Dreifachnennung einer \acrshort{cpe} notwendig war.
-Dieser neue Mechanismus ermöglicht es, mehrdeutige oder ökosystemabhängige Bezeichner eindeutig aufzulösen, ohne redundante Selektoren zu formulieren.
+Dies bewirkt, dass bei der Identifikation des Cloud-Controller-Artefakts über die Traversierung beider Produkt-Knoten die CLI-\acrshort{cpe} als unzutreffend markiert wird, und nur die \acrshort{cpe} des Cloud Controllers bleibt durch die direkte \enquote{is}-Relation weiterhin gültig.
 
 \begin{figure}[htbp]
     \centering
@@ -127,7 +124,7 @@ Dieser neue Mechanismus ermöglicht es, mehrdeutige oder ökosystemabhängige Be
     \label{fig:example-graph-cloudfoundry}
 \end{figure}
 
-Weiterhin, um zu vermeiden, dass ähnlich wie im alten Korrelationssystem potenziell viele versionierte Ausprägungen einer gleichen Repräsentation als Knotenpunkte erstellt werden müssen, mit dem Ziel versionierte \acrshortpl{cpe} zu Artefakten zuordnen zu können, müssen Produkt-Knoten in der Lage sein, neben den normalen Begründungen und Referenzen auch weitere Metainformationen über die zugehörigen Repräsentationen abzulegen.
+Um zu vermeiden, dass ähnlich wie im alten Korrelationssystem potenziell viele versionierte Ausprägungen einer gleichen Repräsentation als Knotenpunkte erstellt werden müssen, mit dem Ziel versionierte \acrshortpl{cpe} zu Artefakten zuordnen zu können, müssen Produkt-Knoten in der Lage sein, neben den normalen Begründungen und Referenzen auch weitere Metainformationen über die zugehörigen Repräsentationen abzulegen.
 Insbesondere betrifft dies Informationen über Versionsräume und die Mechanismen, wie zwischen diesen konvertiert werden kann.
 
 Diese Ansammlung an Metadaten zusammen mit den Kanten zu Produktrepräsentationen soll zu einem einheitlich aggregierten Produktkonzept führen.
@@ -135,11 +132,10 @@ Diese Ansammlung an Metadaten zusammen mit den Kanten zu Produktrepräsentatione
 \subsubsection{Namensräume und Transformationen}\label{subsubsec:model-namespaces-transformations}
 
 Jeder Knotenpunkt kann optional eine Menge an \enquote{Namespaces} als eine Liste an Labels zugewiesen bekommen.
-Diese Namespaces können auf beliebige Nutzungsfälle erweitert werden, sind im Moment jedoch ausschließlich für das Filtern von Transformationen geplant, die im folgenden Abschnitt erklärt werden.
+Diese Namespaces können auf beliebige Nutzungsfälle erweitert werden, sind im Moment jedoch ausschließlich für das Filtern von Transformationen geplant, die in diesem Kapitel erklärt werden.
 
 Da eine Repräsentation im Graphen in nur einem Knoten ohne Wiederholung ausgeprägt sein soll, müssen Attribute wie Versionen oder Editionen für den Zielknoten aus dem Weg von dem selektierten Knoten zur Zielrepräsentation abgeleitet werden.
 Dies wird durch \enquote{transform}-Anweisungen gelöst, die allgemein auf Kanten, aber auch speziell auf Produkt-Knoten angebracht sein können und dementsprechend unterschiedlich ausgewertet werden.
-Produkt-Knoten werden in \autoref{subsubsec:model-product-node} spezifiziert.
 Eine Transformation besitzt immer einen Anwendbarkeitsfilter, der auf Quell- und Zielknoteneigenschaften prüfen kann, und einen Effekt, der auf den Zielknoten bei erfolgreicher Prüfung beider Knoten angewendet werden kann, und eine Transformation, die auf einen Zielknoten angewendet werden soll.
 
 Auf Kanten wird eine vereinfachte Form der Filtermechanismen eingesetzt, da hier die Quelle bereits bekannt ist und so nur noch auf das Ziel gefiltert werden muss.
@@ -154,29 +150,32 @@ Neben diesen freien Attributen gibt es auch noch weitere spezielle Schlüsselwö
 Die Transformationen auf Produkt-Knoten sind unter Anderem eine Lösung für \hyperref[subsec:req-unique-product-representations]{A-05}, welche verlangt, dass eine Repräsentation im Graphen in nur einem Knoten ausgeprägt sein darf.
 So können mehrere versionierte Varianten eines Knotens durch einen einzigen generischen ersetzt werden, und die Versionen als Transformationen auf einem dazwischenliegenden Produkt-Knoten ergänzt werden.
 
-\subsection{Beschreibungen und Begründungen}\label{subsec:model-rationale}
+\subsection{Dokumentation von Entscheidungen und Produkteigenschaften}\label{subsec:model-rationale}
 
 Dieser Abschnitt teilt sich in zwei Unterkapitel, die das Format der Dokumentation von Metadaten auf Knoten und von Begründungen auf Kanten beschreiben.
-Aus dem bestehenden Datensatz werden Muster identifiziert, wie diese bisher in der Regel angegeben wurden, anhand von denen diese neuen Formate entworfen werden.
+Die neuen Formate werden anhand von häufigen Mustern definiert, die aus dem bestehenden Datensatz identifiziert wurden.
 
-\subsubsection{Kanten}
+\subsubsection{Begründungsfelder auf Kanten}
 
-In \hyperref[subsec:c-05-reason-not-good-enough]{C-05} wurden einige Beispiele für bisherige Entscheidungsketten aufgeführt.
+In \hyperref[subsec:c-05-reason-not-good-enough]{C-05} wurden Beispiele für bisherige Entscheidungsketten aufgeführt.
+Diese Ketten sind lose in einem Kommentarblock strukturiert, über den eigentlichen Einträgen.
 Jede Kette startet mit der Repräsentation, zu der es zu prüfen gilt, ob sie auf das aktuelle Artefakt anwendbar ist.
-Jedes Element in der Kette stellt eine Referenz, ein Zitat, eine Begründung oder Ableitung dar, die im letzten Schritt verwendet werden, um ein Urteil über die Anwendbarkeit der Repräsentation zu fällen.
-
-Der klare Vorteil von diesem Schema ist es, dass es sehr einfach ist, diese Ketten zu formulieren und während der Forschungsarbeit die einzelnen Schritte zu dokumentieren, da das Kommentarfeld formlos ist und jede Art von Inhalt erlaubt ist.
+Die Elemente der Kette stellen je eine Referenz, ein Zitat, eine Begründung oder Ableitung dar, die im letzten Kettenelement verwendet werden, um ein Urteil über die Anwendbarkeit der Repräsentation zu fällen.
+Der klare Vorteil dieses Schemas ist die Leichtigkeit, während der Forschungsarbeit über die Schlussfolgerungsketten die einzelnen Schritte in dem formlosen Kommentarfeld zu dokumentieren, da jede Art von Inhalt erlaubt ist.
 Jedoch kann ein Kommentar in \acrshort{yaml} nicht ausgewertet werden, und die Formlosigkeit erlaubt es, auch \enquote{falsch} formatierte Ketten aufzubauen.
-Das neue Format soll also die Einfachheit und Erweiterbarkeit des alten Formats zu behalten, aber es auf eine Weise zu strukturieren, dass es Teil der Kantenangaben sein kann.
-Da das Subjekt der Begründung bereits durch die Kantenrichtung festgelegt ist, muss nur die Begründungskette und das Urteil aufgenommen werden.
 
-Daher wird das Urteil einfach in einem \enquote{why}-Attribut als Text abgelegt und die Begründung für diese als Liste an Texten in \enquote{because}, wobei jeder Eintrag in dieser Liste einem der ursprünglichen Schritte in der Kette entspricht (Referenz, \ldots).
-Die Begründungsschritte sind nicht typisiert, um noch immer eine möglichst große Freiheit zu ermöglichen und zukünftige Begründungen nicht einzuschränken.
+Das neue Format soll die Einfachheit und Erweiterbarkeit des alten Formats zu behalten, aber soll es so strukturieren, dass es Teil des Modells der Kanten sein kann.
+Da das Subjekt der Begründung bereits durch die Kantenrichtung festgelegt ist, muss nur die Begründungskette und das Urteil aufgenommen werden, nicht der Startpunkt.
+Daraus lässt sich ein neues Format ableiten:
+Das Urteil wird in einem Attribut \enquote{why} als Text abgelegt und die Begründung für dieses als Liste an Texten in \enquote{because}.
+Jeder Eintrag in dieser Liste entspricht einem der ursprünglichen Schritte in der Kette entspricht.
+Diese Felder sind außer der Einordnung als Textfelder noch immer nicht weiter typisiert, um noch immer eine möglichst große Freiheit zu ermöglichen und zukünftige Begründungstechniken nicht einzuschränken.
 
-\subsubsection{Knoten}
+\subsubsection{Produktreferenzen auf Knoten}
 
-In dieser initialen Version sind auf einem Knoten einer Repräsentation die relevanten Metadaten die Produktbeschreibung und eine Menge an Referenzen auf Webseiten wie die Projekte, Homepages, Dokumentationen oder weitere.
-Die Beschreibung ist ein einfaches Textfeld, die Referenzen sind ein Objekt, bei dem die Schlüssel die Art der Referenz und der Wert der Link selbst ist.
+Auf einem Knoten wurden als relevante Metadaten die Produktbeschreibung und eine Menge an Referenzen auf Webseiten wie die Projekte, Homepages, Dokumentationen, \ldots identifiziert.
+Diese werden als solche in das Datenmodell aufgenommen.
+Die Beschreibung wird als ein einfaches Textfeld dargestellt, die Referenzen sind ein Objekt, bei dem die Schlüssel die Art der Referenz und der Wert die Referenz (Link) selbst ist.
 Bisher festgelegte Referenztypen sind unter anderem \enquote{homepage}, \enquote{repository}, \enquote{documentation} und \enquote{api}.
 Um jedoch die Erweiterbarkeit zu sichern, kann als Schlüssel jeder Wert verwendet werden.
 
@@ -188,8 +187,8 @@ Jeder Knoten wird durch mindestens die folgenden Basisattribute definiert:
 
 \begin{itemize}
     \itemsep0em
-    \item \texttt{id}: Eindeutiger Bezeichner innerhalb des Knotentyps, abgeleitet aus der jeweiligen Repräsentationslogik (z.\ B. CPE-Parts oder PURL-Attribute).
-    \item \texttt{node type}: Klassifizierung des Knotens entsprechend der unterstützten Ökosysteme (z.\ B. \texttt{cpe}, \texttt{purl}, \texttt{artifact}).
+    \item \texttt{id}: Eindeutiger Bezeichner innerhalb des Knotentyps, abgeleitet aus der jeweiligen Repräsentationslogik (z.\,B. CPE-Parts oder PURL-Attribute).
+    \item \texttt{node type}: Klassifizierung des Knotens entsprechend der unterstützten Ökosysteme (z.\,B. \texttt{cpe}, \texttt{purl}, \texttt{artifact}).
     Je nach Typ erhält ein Knoten weitere Attribute, in denen er weitere für ihn relevante Daten ablegen kann.
     \item \texttt{namespaces}: Menge an Namensraum-Labels zur Filterung von Transformationen.
     \item \texttt{metadata}: Dokumentationselemente mit Beschreibungen (\texttt{description}) und einer Menge an benannten externen Referenzen (\texttt{references}).
@@ -256,7 +255,7 @@ Das Format muss auf dem definierten Modifikationsformat aufbauen und sich darin 
 Eine Priorität des Formats war nicht nur die Lesbarkeit und Einfachheit das \acrshort{yaml} zu schreiben, sondern auch die Länge der einzelnen Einträge so kurz wie möglich zu halten.
 
 Die oberste Ebene des \acrshort{yaml}-Dokuments ist eine Liste, in der jeder Eintrag eine Modifikation an einem Knoten, und damit in den meisten Fällen einen Knoten im Graphen darstellt.
-Um die Identifikation eines Knotens so kurz und einfach wie möglich zu gestalten, wird Knotentyp (z.\ B. \texttt{cpe}, \texttt{product}, \texttt{artifact}) als Top-Level-Schlüssel verwendet, dessen Wert die eindeutige Id des Knotens enthält.
+Um die Identifikation eines Knotens so kurz und einfach wie möglich zu gestalten, wird Knotentyp (z.\,B. \texttt{cpe}, \texttt{product}, \texttt{artifact}) als Top-Level-Schlüssel verwendet, dessen Wert die eindeutige Id des Knotens enthält.
 Dies aggregiert zwei Attribute in eines und spart damit Zeilen und kann dennoch problemlos erkannt werden, da alle Knotentyp-Bezeichner bekannt sind.
 Zudem wird dieses Muster (\enquote{type: id}) immer wieder im Format verwendet und schafft damit eine einheitliche Weise, wie Knoten selektiert werden.
 Da im Moment keine der geplanten Knotentypen, neben Produkt- und Artefakt-Knoten, weitere komplexen identifizierenden Attribute besitzen, wurde diese Adressierungslogik noch weiter vereinfacht, sodass direkt eine Repräsentation des gegebenen Typs angegeben werden kann und daraus nach den Regeln aus \autoref{subsubsec:model-graph-knoten} eine Id erzeugt wird.
@@ -267,9 +266,9 @@ Das \texttt{metadata}-Feld ermöglicht es Beschreibungen (\texttt{description}) 
 
 Typspezifisch sind momentan nur für Produkt- und Artefakt-Knoten weitere Attribute geplant.
 Bei Artefakten ist das \texttt{identification}-Attribut, welches eine Liste von Selektoren mit den Kriterien für das Matching von eingehenden Artefakten enthält.
-Nach \hyperref[subsec:req-type-specific-matching]{A-06} ermöglicht es die Verwendung von normalisierten Ökosystembezeichnern (\texttt{type}, z.\ B. \texttt{python}, \texttt{npm}) und typspezifischen Attributen (\texttt{name}, \texttt{scope}, \texttt{packageName}), die über spezielle Extraktoren ermittelt werden.
+Nach \hyperref[subsec:req-type-specific-matching]{A-06} ermöglicht es die Verwendung von normalisierten Ökosystembezeichnern (\texttt{type}, z.\,B. \texttt{python}, \texttt{npm}) und typspezifischen Attributen (\texttt{name}, \texttt{scope}, \texttt{packageName}), die über spezielle Extraktoren ermittelt werden.
 Wildcard-Selektoren können noch immer im alten Format inkrementell aktiviert werden (\hyperref[subsec:req-regex-support]{A-09}).
-Um mehrere Werte pro Attribut angeben zu können (\hyperref[subsec:req-multiple-attribute-values]{A-08}), können statt wie bisher nur Text-Werte auf den Attributen auch \acrshort{yaml}-Listen angegeben werden, deren Elemente durch eine logische ODER-Verknüpfung verbunden werden (z.B. \texttt{name: ["web3-react\_walletconnect", "walletconnect", "@web3-react/walletconnect"]}).
+Um mehrere Werte pro Attribut angeben zu können (\hyperref[subsec:req-multiple-attribute-values]{A-08}), können statt wie bisher nur Text-Werte auf den Attributen auch \acrshort{yaml}-Listen angegeben werden, deren Elemente durch eine logische ODER-Verknüpfung verbunden werden (z.\,B. \texttt{name: ["web3-react\_walletconnect", "walletconnect", "@web3-react/walletconnect"]}).
 
 Kantenbeziehungen werden innerhalb der Knotendefinitionen unter den festgelegten Schlüsseln \texttt{is}, \texttt{is not} und \texttt{inherit}.
 Die Attribute enthalten je eine Liste von Zielknotenselektoren, zu denen die Beziehung aufgebaut werden soll, deren Format ebenfalls das \enquote{type: id}-Schema verwenden.
@@ -445,11 +444,11 @@ Dabei werden je Knoten zudem die erreichende Kante und die gesammelten Transform
 Zunächst werden die gesammelten Transformationen auf ihre Anwendbarkeit gefiltert.
 Der Namensraum-Filter wurde bereits während dem letzten Schritt der Traversierung berücksichtigt, sodass nun die Quellartefakt- und Zielknotenfilter aus \autoref{subsubsec:model-graph-knoten} angewendet werden.
 Die erste Prüfung ist die Existenz einer Transformation mit dem \texttt{discard}-Attribut, hier wird der Knoten vollständig von der Identifikation verworfen.
-Ein weiteres Transformationsattribut kann den Typ der eingehenden Kante auf einen anderen (z.\ B. \enquote{is not}) überschreiben.
+Ein weiteres Transformationsattribut kann den Typ der eingehenden Kante auf einen anderen (z.\,B. \enquote{is not}) überschreiben.
 
 Die verbleibenden Transformationen modifizieren die Knotendaten mit typspezifischen Attributen.
 Die restlichen Transformationsattribute werden an den Zielknoten übergeben, um typspezifische Änderungen an den anzuwendenden Daten vorzunehmen, bevor sie auf das Artefakt angewendet werden.
-So wird beispielsweise bei \acrshort{cpe}-Repräsentationen die \acrshort{cpe} in ihre Komponenten zerlegt, die dann durch Transformationen auf konkrete Werte gesetzt werden können (z.B. \texttt{vendor} oder \texttt{version}).
+So wird beispielsweise bei \acrshort{cpe}-Repräsentationen die \acrshort{cpe} in ihre Komponenten zerlegt, die dann durch Transformationen auf konkrete Werte gesetzt werden können (z.\,B. \texttt{vendor} oder \texttt{version}).
 Die modifizierten Komponenten werden dann wieder zu einer gültigen \acrshort{cpe} kombiniert.
 Andere Repräsentationstypen folgen ähnlichen Mustern mit eigenen typspezifischen Attributen.
 
