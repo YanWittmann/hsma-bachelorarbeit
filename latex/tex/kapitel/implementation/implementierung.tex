@@ -16,7 +16,7 @@ Das Ökosystem von Java bietet zudem eine umfangreiche Liste an Bibliotheken üb
 \paragraph{Datenbanktechnologie}
 
 Für die persistente Speicherung des Korrelationsgraphen wurde SQLite\footnote{\url{https://sqlite.org}} als relationale Datenbank gewählt.
-Diese serverlose, dateibasierte relationale Datenbank vereinfacht die Verwaltung, Sicherung und Auslieferung erheblich, was insbesondere den Einsatz auf Kundenseite erleichtert.
+Diese serverlose, dateibasierte, relationale Datenbank vereinfacht die Verwaltung, Sicherung und Auslieferung erheblich, was insbesondere den Einsatz auf Kundenseite erleichtert.
 
 Als relationale Datenbank muss von Anfang an ein einheitliches Schema für die Tabellen definiert werden.
 Die Kernattribute der Datenelemente werden als dedizierte Attribute in den Spalten der Tabellen abgelegt.
@@ -115,13 +115,13 @@ Die zuständigen Klassen sind im Klassendiagramm in \autoref{fig:impl-class-diag
 
 Die Klasse \texttt{RepGraphModifierEntry} ist die Basisklasse für Modifikationsanweisungen und ist dafür verantwortlich, sie auf den Graphen anzuwenden.
 Wie in \autoref{subsec:model-graph-modification} beschrieben, unterstützt sie mit den verschiedenen Modi die Erwartungshaltung an den Graphen auszudrücken und arbeitet allgemein inkrementell auf den Daten.
-Um eine Menge an Modifikationseinträgen auf den Graphen anzuwenden wird das System in zwei Phasen aufgeteilt und wird anhand vom Pseudocode in \autoref{lst:modifikation-pseudocode} erklärt.
+Um eine Menge an Modifikationseinträgen auf den Graphen anzuwenden, wird das System in zwei Phasen aufgeteilt, die nun anhand vom Pseudocode in \autoref{lst:modifikation-pseudocode} erklärt werden.
 
 In der ersten Phase wird für jeden Eintrag der Graph nach dem Knoten mit dem eindeutigen Typ und Id-Paar durchsucht, um je nach \texttt{ModificationType} das Prüfen der Knotenexistenz durchzuführen und den Knoten optional anzulegen.
 Diese erste Phase sorgt dafür, dass alle referenzierten Knoten instanziiert sind, sodass in der nächsten Phase die Relationen zwischen diesen korrekt aufgebaut werden können.
 In der zweiten Phase werden die Knotenattribute und Kanten in drei getrennten Schritten befüllt.
 Zunächst werden in \texttt{baseModification} einige Basisattribute ausgewertet, die für alle Knotentypen gültig sind, wie Namensräume und Metadaten.
-Die Methode \texttt{processRelations} verarbeitet dann alle konfigurierten Relationen.
+Die Methode \texttt{processRelations} verarbeitet daraufhin alle konfigurierten Relationen.
 Schließlich wird die \texttt{implementationSpecificModification} ausgeführt, in der je nach Knotentyp weitere Attribute aufgefüllt werden und dann wird der aktualisierte Knoten mit \texttt{graph.insertOrUpdateNode} persistiert.
 
 \begin{lstlisting}[language=pseudo,caption={Ablauf des Modifikationssystems für eine Menge an Modifikationen},label=lst:modifikation-pseudocode,basicstyle=\ttfamily\scriptsize]
@@ -159,7 +159,7 @@ Ein Beispiel ist der \texttt{CpeDictionaryRepContributor}, der als erster Contri
 Diese Klasse durchsucht den \acrshort{cpe}-Index nach Vendor-Produkt-Paaren und extrahiert die zugehörigen Metadaten wie Titel und Beschreibungen, um sie als Knoten im Graphen anzulegen.
 
 Mithilfe des \texttt{RepGraphModifierParser}, der für das rekursive Einlesen von \acrshort{yaml}-Dateien zuständig ist, wird der \texttt{FileRepContributor} implementiert.
-Er konvertiert die \acrshort{yaml}-Struktur in \texttt{RepGraphModifierEntry}-Objekte, die dann auf den Graphen angewendet werden können.
+Er konvertiert die \acrshort{yaml}-Struktur in \texttt{RepGraphModifierEntry}-Objekte, die in dieser Form auf den Graphen angewendet werden können.
 Fehler beim Parsing werden mit aussagekräftigen Meldungen mit Referenzen auf die originale Datei und die Zeile des Eintrags in der Datei protokolliert, um die Fehlersuche zu erleichtern.
 
 \subsubsection{Artefakt-Typ-Erkennung}\label{subsubsec:impl-artifact-type-detection}
@@ -283,7 +283,7 @@ Diese nimmt ein typisiertes Artefakt entgegen und erstellt zunächst eine leere 
 Anschließend wird mit der Hilfsmethode \texttt{processNodesByType} über alle Knoten eines bestimmten Typs, hier \texttt{artifact}, im Graphen zu iterieren.
 Um nicht alle Knoteninstanzen gleichzeitig im Speicher lagern zu müssen, wird statt einem Rückgabewert vom Typ \texttt{List<N>} eher ein Ansatz mit einem \texttt{Consumer} gewählt, der über einen Lambda-Ausdruck in der ursprünglichen Methode beliebige Aktionen auf den Knoten ausführen kann.
 
-Für jeden dieser Artefakt-Knoten wird dann überprüft, ob er mit dem gegebenen Artefakt übereinstimmt.
+Für jeden dieser Artefakt-Knoten wird überprüft, ob er mit dem gegebenen Artefakt übereinstimmt.
 In diesem ersten Schritt werden alle Vererbungsregeln ignoriert, da bei der Vererbung von Artefakt-Knoten bereits vom Konzept her beabsichtigt jeder Knoten in der Vererbungshierarchie mit einem seiner Selektoren zutreffen muss, um die darüberliegenden zu ermöglichen.
 Dies geschieht mittels der Methode \texttt{matchIdentification}, die über alle Selektoren in dem Knoten iteriert und den ersten erfolgreichen Vergleich als Instanz zurückgibt.
 Liefert diese Methode ein nicht-\texttt{null}-Ergebnis, ist der Knoten ein Treffer und wird zur Menge \texttt{matches} hinzugefügt.
@@ -353,7 +353,7 @@ private Set<RepGraphNode> filterByInheritance(Set<RepGraphNode> matches, RepMatc
 
 \subsubsection{Anwendung der gefundenen Knoten auf Artefakte}
 
-Die identifizierten Knotenpunkten werden nun mit der \texttt{applyToArtifact()}-Methode auf das Quellartefakt angewendet.
+Die identifizierten Knotenpunkte werden nun mit der \texttt{applyToArtifact()}-Methode auf das Quellartefakt angewendet.
 Wie in \autoref{subsubsec:model-result-processing-apply-nodes-to-artifact} beschrieben, implementiert die Klasse \texttt{RepGraphNode} eine Methode \texttt{collectApplyNodes()}, die rekursiv alle erreichbaren Knoten sammelt und dabei den Kontext mit Informationen über den Pfad und die gesammelten Transformationen verwaltet.
 Die innere Klasse \texttt{ApplyContext} kapselt diesen Kontext und bietet Methoden zur Prüfung der Anwendbarkeit von Transformationen und zur Bestimmung des effektiven Beziehungstyps.
 

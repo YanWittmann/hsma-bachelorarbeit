@@ -85,13 +85,13 @@ Dieses Verfahren ist fehleranfällig, insbesondere durch die Reihenfolgeabhängi
 
 \textbf{Analyse:}
 Das neue Modell führt in dem Graphen eine explizite Unterscheidung zwischen Produkt und Repräsentation ein (\hyperref[subsec:req-product-concept]{A-04}) und erlaubt damit eine getrennte Modellierung der beiden Repräsentationen durch individuelle Knotenpunkte.
-Zwischen den Produkt-Knotenpunkten der Repräsentationen kann dann über das semantische Klassifikationssystem mit \enquote{is}/\enquote{is not}-Relationen spezifiziert werden, dass eine weitere angrenzende Repräsentation explizit oder explizit nicht zugeordnet werden soll (\hyperref[subsec:req-format-product-graph]{A-01}).
+Zwischen den Produkt-Knotenpunkten der Repräsentationen kann über das semantische Klassifikationssystem mit \enquote{is}/\enquote{is not}-Relationen spezifiziert werden, dass eine weitere angrenzende Repräsentation explizit oder explizit nicht zugeordnet werden soll (\hyperref[subsec:req-format-product-graph]{A-01}).
 Mehrdeutigkeiten werden so nicht mehr über Auswertungsreihenfolgen und implizite Ausschlussmechanismen die das dreifache Aufführen einer \acrshort{cpe} verlangen, sondern nachvollziehbar (\hyperref[subsec:req-reason-format]{A-12}) durch explizite Kanten im Produktgraphen aufgelöst.
 
 \paragraph{Windows 10: Betriebssystem mit mehreren Identifikatoren}\label{par:reference-case-windows} (s. \autoref{lst:reference-case-windows})
 
 Die Modellierung von Windows 10 in den alten Korrelationsdaten stellt eine besondere Herausforderung durch die extreme Aufteilung der bekannten Repräsentationen des Betriebssystems nach Version, Architektur und weiteren Metriken dar.
-So muss das Betriebssystem nicht nur je nach Ausprägung durch unterschiedliche \acrshortpl{cpe} repräsentiert werden, sondern auch zusätzliche Microsoft-Produkt-IDs und \acrshort{eol}-Ids.
+So muss das Betriebssystem nicht nur je nach Ausprägung durch unterschiedliche \acrshortpl{cpe} repräsentiert werden, sondern auch zusätzliche Microsoft-Produkt-Ids und \acrshort{eol}-Ids.
 Die bisherige Lösung erfordert die Wiederholung von Attributkombinationen zwischen unterschiedlichen Einträgen, als auch innerhalb einzelner Einträge für verschiedene \texttt{Id}-Ausprägungen wie sie in den Quelldaten auftreten können.
 Diese Redundanz ist bei den meisten Fällen durch die geringe Anzahl an Wiederholungen ertragbar, jedoch wird besonders bei der Abbildung der großen Menge an hierarchisch angeordneten Windows-Versionen (Windows 10 → 21H2 → Architektur) die Beziehungen, die nur implizit angelegt und erkannt werden können, problematisch.
 
@@ -99,7 +99,7 @@ Diese Redundanz ist bei den meisten Fällen durch die geringe Anzahl an Wiederho
 Die Unfähigkeit zur kompakten Darstellung mehrerer Attributwerte innerhalb eines Eintrags wird durch \hyperref[subsec:req-multiple-attribute-values]{A-08} angesprochen.
 Die Kernproblematik liegt jedoch in einem fehlenden Mechanismus zum Teilen von Attributen zwischen Artefakt-Selektoren getrennter Einträge, welche in \hyperref[subsec:req-selektor-inheritance]{A-07} durch Vererbungsregeln adressiert wird.
 Durch die hierarchischen Knotenstrukturen im neuen Modell soll ein allgemeiner Windows-10-Produktknoten generische Eigenschaften definieren, von dem spezifische Versionen (z.\,B. 21H2) erben, welche wiederum architekturspezifische Knoten (x64/x86) als Kinder enthalten können.
-An jeden Artefakt-Knoten in der Hierarchie wird ein Produkt-Knoten angehängt, über den weitere versionsabhängige Repräsentationen (\acrshort{cpe}, Microsoft-Produkt-ID, \acrshort{eol}-Id) angehängt werden.
+An jeden Artefakt-Knoten in der Hierarchie wird ein Produkt-Knoten angehängt, über den weitere versionsabhängige Repräsentationen (\acrshort{cpe}, Microsoft-Produkt-Id, \acrshort{eol}-Id) angehängt werden.
 Redundanzen entfallen durch die Vererbung gemeinsamer Attribute entlang der Knotenhierarchie und das Aufführen mehrerer alternativer Werte in einem Selektor-Attribut.
 
 \begin{lstlisting}[style=yaml,caption={Windows-Korrelation mit mehreren Identifikatoren},label={lst:reference-case-windows},basicstyle=\ttfamily\scriptsize]

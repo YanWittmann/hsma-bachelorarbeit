@@ -1,11 +1,12 @@
 \section{Anforderungen an das neue Korrelationssystem}\label{sec:requirements}
 
 Basierend auf der Analyse der bestehenden Herausforderungen und weiteren Rahmenbedingungen werden die Anforderungen an das neue Korrelationssystem abgeleitet.
+Jede Anforderung folgt der Struktur aus Ziel, Begründung und Fit-Kriterium, wie sie in ISO/IEC/IEEE 29148:2018 als empfohlene Bestandteile einer Anforderungsspezifikation definiert sind \autocite{ISO_29148_2018}.
 
 \subsection{A-01: Graphstruktur als Datenmodell}\label{subsec:req-format-product-graph}
 
 \textbf{Ziel:}
-Das System muss ein gerichtetes Graphmodell verwenden, in dem Knoten typisierte Produktrepräsentationen (z.\,B. Artefakte, \acrshort{cpe}, \acrshort{eol}-Id, MS Product ID) abbilden und Kanten explizite Relationen zwischen diesen darstellen.
+Das System muss ein gerichtetes Graphmodell verwenden, in dem Knoten typisierte Produktrepräsentationen (z.\,B. Artefakte, \acrshort{cpe}, \acrshort{eol}-Id, MS Product Id) abbilden und Kanten explizite Relationen zwischen diesen darstellen.
 Mindestens die Relationstypen \enquote{is} (positive Zugehörigkeit) und \enquote{is not} (expliziter Ausschluss) sind zu unterstützen.
 
 Die Richtung der Kanten steuert die semantische Auswertung.
@@ -80,7 +81,7 @@ Im Graph existiert pro Repräsentation exakt ein Knoten, der über Kanten mit an
 
 \textbf{Ziel:}
 Im Bezug auf Artefakte als Datenmodell muss eine Typinferenz-Logik existieren, die Artefakttypen konsistent aus der Kombination von mehreren Attributen identifiziert und auf normalisierte Ökosystembezeichner (z.\,B. \texttt{java-module}, \texttt{npm-package}, \texttt{python-module}) abbildet.
-Je nach erkannten Typ müssen weitere, typspezifische Extraktoren bereitgestellt werden, die relevante Attribute (wie Maven-Koordinaten für Java oder Paketnamen für NPM) als primäre Matching-Kriterien in den Artefakt-Selektoren exponieren.
+Je nach erkanntem Typ müssen weitere, typspezifische Extraktoren bereitgestellt werden, die die relevante Attribute (wie Maven-Koordinaten für Java oder Paketnamen für NPM) als primäre Matching-Kriterien in den Artefakt-Selektoren exponieren.
 Für nicht erkennbare Typen muss auf Basisattribute zurückgefallen werden.
 
 \textbf{Begründung:}
@@ -140,7 +141,7 @@ Diese werden bei der Artefaktidentifikation korrekt interpretiert.
 \textbf{Ziel:}
 Das neue Korrelationssystem muss ein Modifikationsformat bereitstellen, das die vollständige Manipulation der Graphstruktur ermöglicht.
 Dies umfasst die Erstellung, Änderung und Löschung aller Knotentypen sowie die Verwaltung ihrer Kantenbeziehungen.
-Die Selektion von Knoten muss ausschließlich über ihre eindeutige Typ-ID-Kombination erfolgen, um Konsistent mit \hyperref[subsec:req-node-id-type]{A-02} zu sein.
+Die Selektion von Knoten muss ausschließlich über ihre eindeutige Typ-Id-Kombination erfolgen, um konsistent mit \hyperref[subsec:req-node-id-type]{A-02} zu sein.
 Das Format muss so gestaltet sein, dass es sowohl für manuelle Bearbeitungen als auch für automatische Prozesse geeignet ist.
 
 \textbf{Begründung:}
@@ -148,14 +149,14 @@ Dieses Modifikationsformat dient als einheitliche Schnittstelle für alle Graphm
 
 \textbf{Fit-Kriterium:}
 Das System stellt eine Menge an Operationen für die Modifikation von allen Graphkomponenten bereit.
-Knoten werden ausschließlich über ihre Typ-ID-Kombination referenziert.
+Knoten werden ausschließlich über ihre Typ-Id-Kombination referenziert.
 Das gleiche Format wird sowohl für manuelle Eingaben als auch für automatische Prozesse verwendet.
 
 \subsection{A-11: Manuelles Modifikationsformat}\label{subsec:req-manual-format-modification-for-real}
 
 \textbf{Ziel:}
 Das manuelle Modifikationsformat muss als \acrshort{yaml}-basierte Schnittstelle zu dem in \hyperref[subsec:req-manual-format-modification]{A-10} geforderten Modifikationssystem dienen.
-Das Einführen eines Graphens in das Korrelationssystems erhöt die Komplexität mit diesem umzugehen.
+Das Einführen eines Graphens in das Korrelationssystems erhöht die Komplexität mit diesem umzugehen.
 Die Syntax des Formats muss die komplexen Graphoperationen daher so abstrahieren, dass sie für Benutzer einfach handhabbar sind und dennoch die volle Funktionalität erhalten bleibt.
 
 \textbf{Begründung:}
@@ -172,7 +173,7 @@ Es existiert eine bidirektionale, deterministische Mapping-Logik zwischen \acrsh
 Das System muss in den strukturierten Metadaten der Knoten und Kanten Dokumentationseigenschaften als deren Bestandteil speichern.
 Kanten müssen standardisierte Begründungsfelder für Relationen enthalten, Knoten müssen produktbezogene Informationen wie Beschreibungen und Referenzen in maschinenlesbarer Form ablegen können.
 Diese Daten müssen über standardisierte Schnittstellen abfragbar sein.
-Trotz der Maschinenlesbarkeit der Attribute dürfen diese nicht zu restriktiv in ihrem Format sein, denn eine Möglichkeit, Dokumentation anzulegen wird nur dann von einer Person effektiv regelmäßig durchgeführt, wenn diese einfach zugänglich ist.
+Trotz der Maschinenlesbarkeit der Attribute dürfen diese nicht zu restriktiv in ihrem Format sein, denn eine Möglichkeit, Dokumentation anzulegen wird nur von einer Person effektiv regelmäßig durchgeführt, wenn diese einfach zugänglich ist.
 
 \textbf{Begründung:}
 Hiermit soll die unzureichende Dokumentation im bestehenden System (\hyperref[subsec:c-05-reason-not-good-enough]{C-05}) erweitert werden und eine bessere Verarbeitung dieser Daten im System und Darstellung auf Benutzeroberflächen ermöglichen.
@@ -256,7 +257,7 @@ Danach steigt die Laufzeit annähernd linear mit der Anzahl der Artefakte an, de
         6000               & 13,609         & 12,461            & 15,381            \\
         \bottomrule
     \end{tabular}
-    \caption{Gemessene Laufzeiten des alten Korrelationsformats bei unterschiedlichen Artefakt-Anzahlen.}
+    \caption{Laufzeiten des alten Korrelationsformats bei mehreren Artefakt-Anzahlen.}
     \label{tab:old-correlation-performance}
 \end{table}
 
@@ -275,7 +276,7 @@ Messbare Einhaltung der Performance-Grenzwerte bei Testinventaren, geringere Sta
 Der entstehende Korrelationsdatensatz muss als reiner Dateisystem-Export auslieferbar sein, ohne Abhängigkeiten von externen Infrastrukturkomponenten wie Datenbankkomponenten zu verlangen.
 
 \textbf{Begründung:}
-Es soll eine Kompatibilität mit den bestehenden Deployment-Prozessen und eine Minimierung der Betriebsanforderungen für eine praktische Nutzbarkeit gewähleistet sein.
+Es soll eine Kompatibilität mit den bestehenden Deployment-Prozessen und eine Minimierung der Betriebsanforderungen für eine praktische Nutzbarkeit gewährleistet sein.
 
 \textbf{Fit-Kriterium:}
 Vollständige Systemfunktionalität ohne zusätzliche installierte Komponenten neben der Software der \metaeffekt.
@@ -292,13 +293,13 @@ Die Implementierung muss in Java 8 erfolgen und soll, wenn möglich, ausschließ
 Die Einführung weiterer Open-Source Bibliotheken mit offenen Lizenzen ist theoretisch möglich, jedoch soll dies vermieden werden, falls möglich.
 
 \textbf{Begründung:}
-Berücksichtigung des Technologiestack und Vermeidung von Lizenz- und Wartungskomplexität.
+Berücksichtigung des Technologie-Stacks und Vermeidung von Lizenz- und Wartungskomplexität.
 
 \textbf{Fit-Kriterium:}
 Keine zusätzlichen Projektabhängigkeiten, falls nicht anders vereinbart.
 Lauffähigkeit in der vorhandenen JVM-Umgebung.
 
-\subsection{A-19: Qualitätsmetriken des Graphen}\label{subsec:req-graph-inner-consistency}
+\subsection{A-19: Qualitätskriterien des Graphen}\label{subsec:req-graph-inner-consistency}
 
 Um verifizieren zu können, dass der Graph sinnhaft strukturiert und in sich selbst konsistent ist, müssen einige Prüfungen darauf ablaufen können.
 Diese prüfen mindestens die folgenden Eigenschaften:
@@ -310,7 +311,7 @@ Diese prüfen mindestens die folgenden Eigenschaften:
     \item Eine Erweiterung zu dieser Metrik ist, dass pro Artefakt im Graphen nur ein einziger Produktknoten über eine \enquote{is}-Beziehung erreicht werden darf.
     Es muss also eine Prüfung auf die Erreichbarkeit und Überlappungen von Produktknoten von Artefaktknoten aus durchgeführt werden.
     % FIXME-KKL: das hier hat halt das Problem, dass wir den Graphen mit allen CPE, etc. füllen wollen und nicht immer ein zugehöriges Produkt erzeugt werden kann.
-    \item Es darf keine losen Knoten geben, jede Repräsentation muss mindestens zu einem Produkt-Knotenpunkt verbunden sein um sicherzustellen, dass mit einer Identifikation auch ein Informationsgewinn stattfinden kann.
+    \item Es darf keine losen Knoten geben, jede Repräsentation muss mindestens zu einem Produkt-Knotenpunkt verbunden sein, um sicherzustellen, dass mit einer Identifikation auch ein Informationsgewinn stattfinden kann.
     \item Um einen sich selbst erklärenden Datensatz zu erhalten, müssen die Metadaten jedes Knotenpunktes aufgefüllt sein und die Kanten eine Begründung enthalten, warum sie so existieren.
     \item Der Graph soll sich selbst prüfen können: Nachdem ein Software-Inventar manuell geprüft wurde, sollen alle Quell-Artefakte mit ihren Identifikationen in einem separaten Datensatz abgelegt werden, um diese bei zukünftigen Änderungen am Graphen automatisch prüfen zu können.
     So kann die Identifikation eines bekannten Produktes sich nicht einfach so ändern, ohne, dass man es mitbekommen würde.

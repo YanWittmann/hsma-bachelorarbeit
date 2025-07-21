@@ -4,7 +4,7 @@ Das Korrelationsformat wurde 2021 entwickelt, um manuelle Nachkorrekturen an den
 Während der Hauptanwendungsfall daraus besteht, fehlerhafte oder unpassende \acrshort{cpe}-Zuordnungen zu korrigieren, ermöglicht es die Modifikation beliebiger Artefaktattribute, und wurde so über die Zeit für viele weitere Anwendungsfälle eingesetzt.
 
 Das Format basiert auf \acrfull{yaml} und folgt einem zweistufigen Modell:
-Über einen Selektor werden Regeln für die Auswahl von Artefakten definiert, und dann eine Reihe an Modifikationen, die an diesem Artefakt vorgenommen werden sollen.
+Über einen Selektor werden Regeln für die Auswahl von Artefakten definiert, und die Modifikationen, die an diesem Artefakt vorgenommen werden sollen.
 Jeder Korrelationseintrag kann aus den folgenden Attributen bestehen, wobei mindestens ein \texttt{affects} und eine Modifikationsoperation definiert sein muss.
 Ein kleines Beispiel bei dem eine \acrshort{cpe} zu einem Artefakt hinzugefügt wird kann in \autoref{lst:correlation-initial-example} gefunden werden, ausführlichere Beispiele mit Beschreibungen werden nach der Formatbeschreibung aufgeführt.
 
@@ -62,7 +62,7 @@ Ein beispielhafter Anwendungsfall betrifft Artefakte mit dem Namensbestandteil \
 Oft wird auf Artefakten die \acrshort{cpe} \texttt{cpe:/a:github:github} durch die \acrshort{cpe} URI Derivation automatisch hinzugefügt, die den Text-Schnipsel \texttt{git} in ihrem Namen enthalten.
 Oft wird durch die automatische \acrshort{cpe} URI Derivation die \acrshort{cpe} \texttt{cpe:/a:github:github} zugewiesen, die den GitHub Enterprise Server\footnote{\url{https://docs.github.com/en/enterprise-server/admin/all-releases}} referenziert.
 Um es für den Großteil der Einträge im \acrshort{yaml}-Format einfacher zu machen, deaktiviert ein generischer Eintrag diese \acrshort{cpe} für alle Artefakte, die \enquote{git} in egal welchem Attribut enthalten.
-Ein spezifischer Folgeeintrag darunter führt die tatsächliche \texttt{git}-Kommandozeilenapplikation auf, bei der dann die falsche \texttt{cpe:/a:github:github} nicht mehr behandelt werden muss, sondern nur noch die konkreten git-spezifischen \acrshortpl{cpe} aufgeführt werden können.
+Ein spezifischer Folgeeintrag darunter führt die tatsächliche \texttt{git}-Kommandozeilenapplikation auf, bei der die falsche \texttt{cpe:/a:github:github} nicht mehr behandelt werden muss, sondern nur noch die konkreten git-spezifischen \acrshortpl{cpe} aufgeführt werden können.
 Ein weiterer Eintrag könnte in dem Fall, dass tatsächlich der Enterprise Server gemeint ist, die entsprechende \acrshort{cpe} wieder hinzufügen.
 
 So können allgemeine Muster an einer Stelle behandelt werden und artefaktspezifische Regeln ohne diese isoliert aufgeführt werden können.
@@ -121,7 +121,7 @@ In der Praxis würde nun noch ein weiterer Eintrag für die PHP-Bibliothek angel
 Auch nicht-\acrshort{cpe}-Attribute können auf Artefakten ergänzt werden.
 In dem Beispiel in \autoref{lst:correlation-win-10-21H2} wird eine Microsoft-Produkt-Id zu dem Betriebssystem Windows 10 in der Version 21H2 zugeordnet.
 Der \href{https://github.com/org-metaeffekt/metaeffekt-documentation/blob/bd184b2889d5421b5a71dcd26c1ac0ffc63d07e7/metaeffekt-vulnerability-management/data-mirror/msrc/understanding-data.md}{Dokumentationeintrag zu den Microsoft-Datenquellen} und in \autoref{subsec:msrc-product-ids} wird das Microsoft-Produktidentifikator-Ökosystem näher erklärt, aber prinzipiell haben alle versionierten Produkte in der Microsoft-Datenbank eine eindeutige numerische Id, unter der Schwachstellen registriert werden.
-Daher muss nur auf die exakten Attribute geprüft werden und dann kann die korrekte Produkt-Id zu dem Artefakt hinzugefügt werden.
+Daher muss nur auf die exakten Attribute geprüft werden und kann die korrekte Produkt-Id zu dem Artefakt hinzugefügt werden.
 Zusätzlich wird für das EOL-Ökosystem die entsprechende Produkt-Id \texttt{windows} hinzugefügt und eine für die Abfrage spezifische Version die in diesem Ökosystem verwendet werden muss.
 
 \begin{lstlisting}[style=yaml,caption={Korrelationseintrag für Windows 10},label={lst:correlation-win-10-21H2}]
@@ -154,7 +154,6 @@ Es hat sich herausgestellt, dass die unterschiedlichen JRE/JDK-Versionen nicht n
 Die Erfassung des Update-Wertes aus dem Versions-Attribut der Artefakte ist für die Systeme der \metaeffektsp herausfordernd, darum hat man sich entschlossen, die bekannten Versionen mit ihren Updates aus dem \acrshort{cpe} Dictionary auszulesen.
 Jedes JRE/JDK hat seine eigenen Versionsformate, darum ist es erforderlich diesen Prozess beliebig konfigurierbar zu machen.
 Daraus ist ein einfaches Generatorformat in JSON entstanden, das für jede angegebene Version in einer \acrshort{cpe} einen Eintrag generiert, den er nach einer Schablone auffüllt.
-Die produktiv eingesetzte Generatordatei kann in \autoref{ch:generatorformat-jre-jdk} zur Referenz gefunden werden.
 
 In \autoref{lst:correlation-generated-zulu-example} kann eine der generierten Dateien für das Zulu JDK gesehen werden:
 Es wird ein allgemeiner Eintrag ganz oben ohne Versionsangaben (beliebige Version) generiert, und darunter für jede bekannte Version und jedes Update.
@@ -177,11 +176,15 @@ Es wird ein allgemeiner Eintrag ganz oben ohne Versionsangaben (beliebige Versio
     CPE URIs: cpe:/a:azul:zulu:8:update282
 \end{lstlisting}
 
+Ein Ausschnitt der produktiv für die generierten Einträge eingesetzte Konfigurationsdatei kann in \autoref{lst:correlation-generator-format-cpe-jre-jdk} zur Referenz gefunden werden.
+
+\input{kapitel/anhang/jre-jdk-correlation-generator}
+
 \paragraph{NPM-Pakete}
 
 Das \acrshort{cpe} Dictionary enthält eine Vielzahl an Einträgen, die in ihren Referenzen URLs auf die Plattform \texttt{npmjs.com} enthalten.
 Diese Metadaten werden ausgelesen, um automatisch die \acrshortpl{cpe} zu finden, die zu NPM-Paketen gehören.
-Für jeden dieser Einträge wird dann geprüft, ob aus der URL ein Paketname für reguläre oder \enquote{scoped} NPM-Pakete extrahiert werden kann.
+Für jeden dieser Einträge wird geprüft, ob aus der URL ein Paketname für reguläre oder \enquote{scoped} NPM-Pakete extrahiert werden kann.
 Für diejenigen, bei denen diese Extraktion erfolgreich war, werden aus diesem Namen verschiedene Repräsentationen abgeleitet, wie sie im Dateisystem vorkommen könnten, um unterschiedliche mögliche Namensvarianten des Pakets zu unterstützten.
 
 Mit diesen Namen werden anschließend Korrelationseinträge zwischen zugehörigen Artefakten und \acrshortpl{cpe} generiert.
@@ -213,7 +216,7 @@ Eine typische Sitzung beginnt mit der Auswahl eines Inventars und dem automatisi
 Dann begibt sich die Person auf den Prozess, jedes Artefakt in dem Inventar auf seine \acrshort{cpe}-Zuordnungen einzeln zu prüfen und Korrekturen durch das Anlegen von neuen Korrelationseinträgen vorzunehmen.
 
 In \autoref{fig:correlation-utilities-demo} kann eine beispielhaft angeordnete Nutzeroberfläche gesehen werden.
-Die Benutzeroberfläche in dieser Anordnung besteht links oben aus der Tabelle der Artefakte, mit farbigen Status-Indikatoren pro Zeile um schnell nach relevanten Metriken filtern zu können.
+Die Benutzeroberfläche in dieser Anordnung besteht links oben aus der Tabelle der Artefakte, mit farbigen Status-Indikatoren pro Zeile, um schnell nach relevanten Metriken filtern zu können.
 Links unten ist ein Widget zu sehen, das eine Detailsicht mit allen Attributen des aktuell ausgewählten Artefakts anzeigt.
 Hier werden zudem über Web-Requests und lokale Datenbankabfragen diverse weitere Informationen, Links und Internetsuchen aggregiert und für den Nutzer vorbereitet.
 
@@ -243,12 +246,12 @@ Für den allgemeinen Arbeitsablauf mit diesem Tool gibt es pro Artefakt mehrere 
     Nachdem sie auf ihre Richtigkeit geprüft wurden, muss die Entscheidung über einen vorhandenen oder neuen Korrelationseintrag in einem der manuellen \acrshort{cpe}-Attribute festgehalten werden.
     Doch nicht nur die automatisch hinzugefügten \acrshort{cpe} müssen untersucht werden, es muss auch nach zusätzlichen \acrshortpl{cpe} im Internet oder den lokalen Datenbanken gesucht werden, um sicherzustellen, dass alle korrekten \acrshort{cpe} gefunden werden.
 
-    \item Wenn das Artefakt nur manuelle \acrshort{cpe}-Attribute gesetzt hat, dann handelt es sich bei diesem Artefakt um ein bereits bekanntes, welches in der Vergangenheit einmal bearbeitet wurde.
+    \item Wenn das Artefakt nur manuelle \acrshort{cpe}-Attribute gesetzt hat, handelt es sich bei diesem Artefakt um ein bereits bekanntes, welches in der Vergangenheit einmal bearbeitet wurde.
     In den meisten Fällen ist hier keine neue Arbeit nötig.
     Manchmal jedoch gibt es Fälle, in denen ein Artefakt seit der letzten Analyse eine neue \acrshort{cpe} zugewiesen bekommen hat, etwas bei dem vorherigen Durchgang übersehen wurde, oder es sich um eine Fehlidentifikation in den Korrelationsdaten handelt und diese fehlerhaft hinzugefügt wurde.
     Je nach Attribut-Kombination sind unterschiedliche Fälle wahrscheinlicher, für welche eine Person mit der Zeit ein Gefühl bekommt.
 
-    \item Wenn das Artefakt überhaupt keine \acrshort{cpe}-Information hat, dann muss manuell nachgeprüft werden, ob es zusätzliche gibt, die diesem Produkt entsprechen.
+    \item Wenn das Artefakt überhaupt keine \acrshort{cpe}-Information hat, muss manuell nachgeprüft werden, ob es zusätzliche gibt, die diesem Produkt entsprechen.
     Wenn eine oder mehrere passende gefunden werden, wird mit diesen ein neuer Korrelationseintrag angelegt.
 \end{itemize}
 

@@ -1,40 +1,5 @@
-\chapter{Korrelationsgeneratordatei im Generatorformat für JRE/JDK}\label{ch:generatorformat-jre-jdk}
-
-\begin{lstlisting}[style=json,caption={Korrelationsgeneratordatei im Generatorformat für JRE/JDK},label={lst:correlation-generator-format-cpe-jre-jdk},basicstyle=\ttfamily\scriptsize]
+\begin{lstlisting}[style=json,caption={Korrelationsgeneratordatei im Generatorformat für Zulu JRE/JDK},label={lst:correlation-generator-format-cpe-jre-jdk},basicstyle=\ttfamily\scriptsize]
 [
-  {
-    "artifactPatterns": [
-      {
-        "pattern": "/amazon-corretto-{VERSION}.*{UPDATE}{END}/i",
-        "endSpecific": ".*",
-        "endUnspecific": "$"
-      },
-      {
-        "pattern": "/amazon-corretto-java-{VERSION}.*{UPDATE}{END}/i",
-        "endSpecific": ".*",
-        "endUnspecific": "$"
-      },
-      {
-        "pattern": "/java-(?:\\d\\.?)+-amazon-corretto(?:-jdk)?-{VERSION}.*{UPDATE}{END}/i",
-        "endSpecific": ".*",
-        "endUnspecific": "$"
-      }
-    ],
-    "defaultArtifactPatterns": [
-      "amazon-corretto-*/i",
-      "/java-(?:\\d\\.?)+-amazon-corretto-.*/i"
-    ],
-    "duplicatingArtifactPatternReplacements": {
-      "-8.*": "-1\\.8\\.0.*"
-    },
-    "requireAllQueryCpes": true,
-    "queryCpes": [
-      "cpe:/a:amazon:corretto",
-      "cpe:/a:oracle:jdk",
-      "cpe:/a:oracle:jre"
-    ],
-    "outputFile": "generated/amazon-corretto.yaml"
-  },
   {
     "artifactPatterns": [
       {

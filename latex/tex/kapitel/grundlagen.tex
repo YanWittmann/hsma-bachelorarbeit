@@ -11,7 +11,7 @@ Die Darstellung verbindet aktuelle Forschungsstände, Spezifikationen und prakti
 \paragraph{Schwäche (Weakness)}
 
 Der Begriff \enquote{Schwäche} in einer Software-Komponente bezeichnet einen intrinsischen Fehler, Defekt oder eine problematische Eigenschaft, die unter bestimmten Bedingungen in einer Software oder Hardware zu unerwünschtem Verhalten führen kann.
-Schwächen beschreibende grundlegende Fehlermuster, die unabhängig von spezifischen Implementierungen oder Angriffsszenarien existieren \autocite{Ross_Winstead_McEvilley_2022}.
+Schwächen beschreiben grundlegende Fehlermuster, die unabhängig von spezifischen Implementierungen oder Angriffsszenarien existieren \autocite{Ross_Winstead_McEvilley_2022}.
 
 Das \acrfull{cwe}-Projekt\footnote{\url{https://cwe.mitre.org/about/index.html}}, unter der Leitung der MITRE Corporation, stellt einen großen Katalog solcher Software- und Hardware-Schwächen dar.
 Als Community-getriebenes Projekt ordnet es Schwächen in einem hierarchischen System als \acrshort{cwe}-Einträge an, die verschiedene Abstraktionsebenen abdecken\ \autocite{wu2016cwe}.
@@ -22,7 +22,7 @@ Die Klassifikation reicht von abstrakteren Kategorien (\verb+CWE-20+: Improper I
 Während Schwächen allgemeine Fehlermuster beschreiben, stellt eine Schwachstelle eine konkrete Ausprägung einer Schwäche in einem spezifischen System oder Produkt dar.
 Sie beeinträchtigt die zentralen \acrshort{ciavuln}-Schutzziele (Confidentiality (Vertraulichkeit), Integrity (Integrität) und Availability (Verfügbarkeit)) und stellt eine Verletzung formeller oder impliziter Sicherheitsanforderungen dar.
 Das \acrshort{cve}-Programm, betrieben durch die MITRE Corporation und unterstützt von US-Behörden wie der \acrfull{cisa}, bietet einen weltweit anerkannten Standard zur Identifikation und Beschreibung von öffentlich bekannten Schwachstellen.
-Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.\,B.\ \verb+CVE-2024-12345+) und wird in Kooperation mit autorisierten \acrfullpl{cna} mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
+Jede Schwachstelle erhält dabei eine eindeutige Kennung (z.\,B.\ \verb+CVE-2024-12345+) und wird in Kooperation mit autorisierten CVE Numbering Authorities (CNAs) mit einer Beschreibung der Schwachstelle, Referenzen zu betroffenen Produktversionen, der zugrundeliegende \acrshort{cwe}-Klassifikation sowie einer Bewertung des Schweregrads klassifiziert\ \autocite{Ross_Winstead_McEvilley_2022, CveGlossaryCommonVulnerabilitiesAndExposures12mai2025}.
 Die \acrshort{cve} Schwachstellen-Informationen werden über eine \acrshort{api} von der \acrshort{nvd} öffentlich zur Verfügung gestellt\footnote{\url{https://nvd.nist.gov/developers/vulnerabilities}}.
 
 Im Rahmen dieser Arbeit werden ausschließlich \acrshort{cve} als Schwachstellen betrachtet.
@@ -63,7 +63,7 @@ Zur einheitlichen Darstellung und Verbreitung solcher Inventare haben sich mehre
 \paragraph{\acrfull{spdx}}
 wurde ursprünglich für das Lizenzmanagement entwickelt und stellt heute einen häufig eingesetzten Standard zur Beschreibung von Software-Inventaren dar\footnote{\url{https://spdx.dev}}.
 Der Fokus des Projekts lag bis Version 2.3 hauptsächlich auf lizenzrechtlichen Informationen.
-Mit Version 3.0 wurde der Standard auf weitere Aspekte erweitert um diese besser Abbilden zu können, vor allem im Kontext von Schwachstellanalysen.
+Mit Version 3.0 wurde der Standard auf weitere Aspekte erweitert, um diese besser abbilden zu können, vor allem im Kontext von Schwachstellenanalysen.
 Heute ermöglicht \acrshort{spdx} nicht nur die Darstellung von Lizenzen, sondern auch die Beschreibung von Komponenten, und deren Abhängigkeiten oder Beziehungen \autocite{spdxOverview1june2024}.
 \acrshort{spdx} wird von der Linux Foundation gepflegt und ist unter \texttt{ISO/IEC 5962:2021}\footnote{\url{https://www.iso.org/standard/81870.html}} international standardisiert.
 
@@ -73,11 +73,11 @@ CycloneDX beschreibt ein maschinenlesbares Format zur Dokumentation von Software
 Durch die Möglichkeit, eigene Felder und Erweiterungen in den Dokumenten zu verwenden, können domänenspezifische Anforderungen ohne Anpassung des Standards abgedeckt werden.
 Neuere Versionen führen Erweiterungen für z.\,B.\ für Hardware-Komponenten (HBOM)\footnote{\url{https://cyclonedx.org/capabilities/hbom}}, KI-Modelle und Trainingsdaten (AI/ML-BOM)\footnote{\url{https://cyclonedx.org/capabilities/mlbom}} oder Konfigurationen und Betriebsdaten (OBOM)\footnote{\url{https://cyclonedx.org/capabilities/obom}} hinzu.
 
-\paragraph{\metaeffekt-Inventare}
-werden im Detail in \autoref{sec:metaeffekt-inventory-format} erklärt.
+\paragraph{Das Inventar-Format der \metaeffekt}
+wird im Detail in \autoref{sec:metaeffekt-inventory-format} erklärt.
 Durch Konverter-Plugins\footnote{\url{https://gitlab.opencode.de/metaeffekt/metaeffekt-components/-/tree/master}} können Inventare vom und zum proprietären Format der \metaeffektsp von \acrshort{spdx} und CycloneDX konvertiert werden.
 Durch den \metaeffektsp Extractor kann die Erzeugung von Inventaren auf Basis von Analysen von Quellcode, Build-Artefakten oder Softwarecontainern automatisiert werden.
-Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellenanalyse oder Lizenzklassifikation verwendet werden und dienen als Eingabe in die Prozesse, die in dieser Arbeit entwickelt werden sollen.
+Die erzeugten Inventare im \metaeffekt-Format können in der Schwachstellenanalyse oder Lizenzklassifikation verwendet werden und dienen als Eingabe in die Prozesse, die in dieser Arbeit entwickelt werden sollen.
 
 % “Table 3. SBOM issue categories” ([Bi et al., 2023, p. 13](zotero://select/library/items/WYCQM3PA)) ([pdf](zotero://open-pdf/library/items/XG7WITCJ?page=13&annotation=LSB777ZB)) Bi_Xia_Xing_Lu_Zhu_2023
 %   ganz nette übersicht über die use-cases der SBOM
@@ -87,11 +87,11 @@ Die erzeugten Inventare im \metaeffekt-Format können dann in der Schwachstellen
 
 Schwachstellenmanagement (Vulnerability Management) beschreibt einen zyklischen Prozess zur Identifikation, Bewertung, Behebung und Kommunikation von Schwachstellen in IT-Systemen.
 Ziel ist es, Sicherheitslücken möglichst frühzeitig, idealerweise vor Auslieferung, zu erkennen, nach Risiko einzuordnen und durch geeignete Maßnahmen wie Patches oder Konfigurationsanpassungen zu mitigieren.
-Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Scanning, (2) Schwachstellenerkennung, (3) Analyse und (4) Reporting \autocite{foreman2019vulnerabilityManagement}.
+Der typische Schwachstellenmanagement-Prozess besteht aus vier Hauptphasen: (1) Identifikation und Zuordnung der Softwarebestandteile, (2) Schwachstellenkorrelation, (3) Analyse und kontextualisierte Bewertung und (4) Reporting \autocite{foreman2019vulnerabilityManagement}.
 
-In der Praxis beginnt dieser Prozess mit der automatisierten Erkennung potenzieller Schwachstellen durch den Abgleich von Software-Inventaren mit Einträgen aus bekannten \acrshortpl{vdb}, wie der \acrshort{nvd}.
+In der Praxis beginnt dieser Prozess mit der automatisierten Zuordnung potenzieller Schwachstellen durch den Abgleich von Software-Inventaren mit Einträgen aus bekannten \acrshortpl{vdb}, wie der \acrshort{nvd}.
 Dieser Schritt identifiziert Schwachstellen, die auf den gegebenen Komponenten grundsätzlich infrage kommen, trifft aber noch keine Aussage über eine tatsächliche Betroffenheit, sodass auch nicht relevante Schwachstellen zunächst erfasst werden.
-Daher folgt die Triage, in der jede gefundene Schwachstelle kontextbezogen auf ihre Anwendbarkeit geprüft wird (\enquote{Applicable} und \enquote{Not Applicable}).
+Daher folgt daraufhin in der Triage eine Bewertung jeder gefundene Schwachstelle im Projektkontext, in der diese auf ihre Anwendbarkeit geprüft werden (\enquote{Applicable} und \enquote{Not Applicable}) \autocite{Boyens_Smith_Bartol_Winkler_Holbrook_Fallon_2024}.
 
 Auf Grundlage der verbleibenden relevanten Schwachstellen erfolgt eine Bewertung, bei der Faktoren wie Schweregrad, Angriffsvektor, Ausnutzbarkeit und Rahmenbedingungen berücksichtigt werden, um Prioritäten für das weitere Vorgehen zu setzen.
 Diese Bewertung stellt immer eine Momentaufnahme des identifizierten Risikos dar und dient als Grundlage für Entscheidungen für die nächsten Maßnahmen.
@@ -124,9 +124,9 @@ Ein grundlegendes Problem bei der Identifikation ist die Unterscheidung zwischen
 Anhand eines Beispiels aus der Chemie:
 
 \begin{quote}
-    Natriumchlorid ist eine kubische Kristallstruktur und kann mit \textit{NaCl} als identifizierende Verhältnisformel vollständig nur aufgrund seiner inherenten Eigenschaften beschrieben werden.
+    Natriumchlorid ist eine kubische Kristallstruktur und kann mit \textit{NaCl} als identifizierende Verhältnisformel vollständig nur aufgrund seiner inhärenten Eigenschaften beschrieben werden.
     Allerdings gibt es noch weitere Systeme, wie chemische Stoffe angegeben werden können.
-    Authoritative Systeme wie CAS-Nummern definieren einen künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
+    Autoritative Systeme wie CAS-Nummern definieren einen künstlichen Bezeichner für Stoffe, so etwa \textit{7647-14-5} für Natriumchlorid \autocite{Huebner_2003}.
     Die \textit{Identität} ist die eigentliche Zusammensetzung von Natriumchlorid, während NaCl und 7647-14-5 \textit{Namen} sind, die dieser Struktur gegeben wurden.
 \end{quote}
 
@@ -149,7 +149,7 @@ Eine weitere Ausprägung des Produkts ist die konkrete Datei \texttt{log4j-api-2
 Repräsentationen sind damit an formale Spezifikationen und technische Formate gebunden und werden aus unterschiedlichen Anwendungsfällen heraus erstellt.
 Darum spiegeln sie nicht notwendigerweise die vollständige Identität eines Produkts wider.
 
-Der Begriff \enquote{Produktidentifikationsstandard-\textit{Ökosystem}} wird wie von der \citeauthor{CISA2023} dazu verwendet, um zu verdeutlichen, dass es für das erfolgreiche Einführen eines solchen Systems nicht einfach ausreicht, ein technisches Format zur Beschreibung von Softwareprodukten zu definieren.
+Der Begriff \enquote{Produktidentifikationsstandard-\textit{Ökosystem}} wird in dieser Arbeit wie von \acrshort{cisa} dazu verwendet, um zu verdeutlichen, dass es für das erfolgreiche Einführen eines solchen Systems nicht einfach ausreicht, ein technisches Format zur Beschreibung von Softwareprodukten zu definieren.
 Vielmehr ist ein Ökosystem notwendig, das von der Industrie akzeptiert wird und dessen Regeln durchgängig angewendet werden, das auch Prozesse zur Erstellung, Verbreitung und Nutzung solcher Identifikatoren umfasst \autocite{CISA2023}.
 Produktidentifikatoren müssen in allen relevanten Kontexten und Zeitpunkten verfügbar sein, sei es durch die Weitergabe dieser Identifikatoren durch Hersteller und Zwischenherstellern oder indem sich die Identifikatoren aus der Software selbst herleiten lassen.
 Zudem muss das Ökosystem alle Nutzungskontexte und Granularitätsstufen unterstützen, die in der Realität auftreten können, von Softwarevarianten bis zu allgemeinen Produktfamilien.
@@ -159,7 +159,7 @@ Im Folgenden werden Produktidentifikationsstandards in zwei Kategorien differenz
 
 \paragraph{Inherente Identifikatoren} % inherente, eigenschaftsbasierte, intrinsische
 oder auch eigenschaftsbasierte Identifikatoren lassen sich direkt deterministisch aus einem Software-Artefakt selbst ableiten, ohne weitere namensgebende Register oder zentrale Organisationen zu benötigen.
-\acrshort{cisa} sieht als das Kriterium für diese Art, dass sich die Identifikatoren ausschließlich aufgrund von den Dateien der Software berechnet werden kann.
+\acrshort{cisa} sieht als das Kriterium für diese Art, dass sich die Identifikatoren ausschließlich aufgrund von den Dateien der Software berechnet werden können.
 Kryptografische Hashwerte wie etwa SHA1 oder SHA256 mit Standards wie OmniBOR\footnote{\url{https://omnibor.io}} sind bekannte Formen von inhärenten Identifikatoren.
 
 In der Praxis bestehen jedoch mehrere Herausforderungen:
@@ -170,12 +170,12 @@ In der Praxis bestehen jedoch mehrere Herausforderungen:
     \item Die aktuell bei der \metaeffektsp eingesetzten \acrshortpl{vdb} (wie die \acrshort{nvd}) verwenden keine Datei-Hashes zur Produktidentifikation, damit bringen Hashes im Nutzungskontext effektiv keinen Mehrwert.
 \end{itemize}
 
-In dieser Arbeit wird zusätzlich auch \acrshort{purl} als inherente Identifikator gesehen, da ein großer Teil der Software-Artefakte in den Inventaren der \metaeffektsp sich eindeutig \acrshortpl{purl} zuweisen lassen.
+In dieser Arbeit wird zusätzlich auch \acrshort{purl} als inherenter Identifikator gesehen, da ein großer Teil der Software-Artefakte in den Inventaren der \metaeffektsp sich eindeutig \acrshortpl{purl} zuweisen lassen.
 
 \paragraph{Autoritative Identifikatoren}\label{par:authorative-identifiers} % definierte, extrinsische
 werden durch einen bestimmten Akteur explizit einem Softwareprodukt zugewiesen und sind damit eine von außen vergebene Referenz auf ein Produkt.
 Anders als bei inhärenten Identifikatoren gibt es bei autoritativen Identifikatoren nicht die Möglichkeit, diese ohne das Wissen einer äußeren Quelle zu erfahren.
-Es muss also entweder selbst einen solchen Identifikator erzeugt und in einem Register registriert werden, oder auf einen im Register vorhandenen zurückgegriffen werden.
+Es muss also entweder selbst ein solchen Identifikator erzeugt und in einem Register registriert werden, oder auf einen im Register vorhandenen zurückgegriffen werden.
 Parteien, die für das Erzeugen, Registrieren und Verwalten von Identifikatoren verantwortlich sind, werden \enquote{Identifier-Generatoren} genannt \autocite{CISA2023}.
 Generatoren können sich auf manuelle oder automatische Prozesse beziehen.
 
@@ -198,7 +198,7 @@ Um Beispiele für diese aufführen zu können, werden vor allem \acrshortpl{cpe}
     Ein Beispiel sind die \acrshort{cpe} für Cyrus SASL\footnote{\url{https://github.com/cyrusimap/cyrus-sasl}}, die ihre Haupt-\acrshort{cpe} \texttt{cpe:/a:cyrusimap:cyrus-sasl} besitzen, jedoch daneben auch noch eine Reihe an weiteren von anderen Generatoren registriert wurden, die dasselbe Produkt meinen:
     \texttt{cpe:/a:carnegie\_mellon\_university:cyrus-sasl, cpe:/a:cmu:cyrus-sasl, cpe:/a:cyrusimap:cyrus\_sasl, cpe:/a:cyrus:sasl} wurden von Forschern an der \acrfull{cmu} einmal mit ihren ausgeschriebenen Namen und einmal mit ihrem Kürzel vergeben um sich als Entdecker einer Schwachstelle in diesem Produkt zu verewigen, aber auch Doppelregistrierungen mit kleinen Unterschieden wie dem Ersetzen eines Bindestrichs mit einem Underscore sind häufig zu finden.
 
-    \item Fehlerhaft registrierte Identifikatoren (Rechtschreibfehler, nicht existierende Produkte, \ldots) könne nicht einfach aus den Daten entfernt oder korrigiert werden, da andere Systeme diese bereits konsumiert haben könnten und durch den Weitertransport an Dritte muss die Erwartung der Existenz dieser aufrechterhalten werden.
+    \item Fehlerhaft registrierte Identifikatoren (Rechtschreibfehler, nichtexistierende Produkte, \ldots) könne nicht einfach aus den Daten entfernt oder korrigiert werden, da andere Systeme diese bereits konsumiert haben könnten und durch den Weitertransport an Dritte muss die Erwartung der Existenz dieser aufrechterhalten werden.
     Ein Beispiel sind die \acrshort{cpe} für Python, bei diesen wurde bei der Erstellung zunächst eine falsch benannte \texttt{cpe:2.3:a:python:py\textit{ht}on} registriert und kurz darauf mit der \texttt{cpe:2.3:a:python:python} korrigiert.
     Die Existenz der falschen \acrshort{cpe} wird für immer in dem Datensatz vorhanden sein.
 
@@ -207,7 +207,7 @@ Um Beispiele für diese aufführen zu können, werden vor allem \acrshortpl{cpe}
     Die Koordination von Identifier-Generatoren ist wie in den anderen Punkten erwähnt realistisch kaum umsetzbar, und von jedem Generator zu fordern, eine eigene Infrastruktur für etwas aufzubauen, was für die meisten nur ein Hintergedanke ist, ist ebenfalls nicht realistisch möglich \autocite{CISA2023}.
 \end{itemize}
 
-Diese Herausforderungen sind Teil der Begründung, warum heutzutage eine solche Vielfalt an Ansätzen nebeneinander ko-existieren und jeweils nur einen kleineren Aspekt oder eine Untermenge der Menge an Produkten adressieren.
+Diese Herausforderungen sind Teil der Begründung, warum heutzutage eine solche Vielfalt an Ansätzen nebeneinander koexistieren und jeweils nur einen kleineren Aspekt oder eine Untermenge der Menge an Produkten adressieren.
 Für ein funktionierendes Ökosystem autoritativer Identifikatoren sind neben dem Format also vor allem die umliegenden Prozesse zur Erzeugung, zur Veröffentlichung und zur Verteilung der Identifikatoren im gesamten Lebenszyklus von Software entscheidend.
 
 \subsection{\acrfull{cpe}}\label{subsec:cpe-description}
@@ -267,7 +267,7 @@ Die erweiterten Attributfelder sind also zwar technisch vorgesehen, werden aber 
 
 Neben dem ersten Attribut \texttt{part}, welches nur einen der drei Werte \texttt{a} für \enquote{Application}, \texttt{h} für \enquote{Hardware} und \texttt{o} für \enquote{Operating System} annehmen kann, können alle weiteren Attribute beliebige Texte enthalten.
 Alternativ kann jedes Attribut auch auf einen von zwei Werten mit logischer Bedeutung gesetzt werden:
-\enquote{\texttt{ANY}} (\enquote{\texttt{*}}) gibt an, dass bei einem Abgleich mit diesem Attribut jeder beliebige Wert gültig wäre und \enquote{\texttt{NA}} (\enquote{\texttt{-}}), bei dem explizit kein Wert in der zu vergleichenden \acrshort{cpe} stehen darf, um erfolgreich gematched zu werden \autocite{Parmelee_Booth_Waltermire_Scarfone_2011}.
+\enquote{\texttt{ANY}} (\enquote{\texttt{*}}) gibt an, dass bei einem Abgleich mit diesem Attribut jeder beliebige Wert gültig wäre und \enquote{\texttt{NA}} (\enquote{\texttt{-}}), bei dem explizit kein Wert in der zu vergleichenden \acrshort{cpe} stehen darf, um erfolgreich zugeordnet zu werden \autocite{Parmelee_Booth_Waltermire_Scarfone_2011}.
 
 Da \acrshort{cpe} das für die \metaeffektsp wichtigste Ökosystem zur Schwachstellenerkennung ist, werden in den folgenden Paragrafen noch einmal auf einige weitere Eigenschaften und Probleme eingegangen.
 
@@ -282,7 +282,7 @@ Neben den allgemeinen Herausforderungen von autoritativen Identifikatoren (\auto
     Der Großteil dieser \acrshortpl{cve} sind Schwachstellen, die von der \acrshort{nvd} bislang laut eigener Aussage nicht vollständig dokumentiert wurden, weil sie mit dem exponentiellen Wachstum der Meldungen nicht mehr Schritt halten können\footnote{\url{https://www.nist.gov/itl/nvd}}.
 
     \item Die \acrshort{nvd} teilt ihren \acrshort{cpe}-Datensatz in zwei Teile auf, das \acrshort{cpe}-Dictionary \autocite{Cichonski_Waltermire_Scarfone_2011} und den \acrshort{cpe} Match Feed.
-    Das bedeutet, dass Softwareprodukte existieren können, für die keine \acrshort{cpe}-Einträge im offiziellen Dictionary zugewiesen wurden aber im Match Feed verwendet werden, was bedeutet, dass ohne beide Datenquellen in Betracht zu ziehen und diese zu deduplizieren die relevanten Produkte nicht eindeutig mit Schwachstellen in Verbindung gebracht werden können \autocite{Sanguino_Uetz_2017}.
+    Das bedeutet, dass Softwareprodukte existieren können, für die keine \acrshort{cpe}-Einträge im offiziellen Dictionary zugewiesen wurden, aber im Match Feed verwendet werden, was bedeutet, dass ohne beide Datenquellen in Betracht zu ziehen und diese zu deduplizieren, die relevanten Produkte nicht eindeutig mit Schwachstellen in Verbindung gebracht werden können \autocite{Sanguino_Uetz_2017}.
     \textcite{Sanguino_Uetz_2017} führen dieses Problem in weiterem Detail auf.
 
     % 2001004 total entries
@@ -301,7 +301,7 @@ Neben den allgemeinen Herausforderungen von autoritativen Identifikatoren (\auto
 \end{itemize}
 
 % TODO: Vielleicht eine Liste daraus machen?
-\begin{lstlisting}[caption=Ungültige CPE 2.3 Format Strings aus dem NVD CPE Dictionary und ihre korrigierten Gegenstücke,label=lst:invalid-cpe-strings-in-dictionary]
+\begin{lstlisting}[caption=Ungültige CPE aus dem CPE Dictionary und ihre korrigierten Gegenstücke,label=lst:invalid-cpe-strings-in-dictionary]
 Fehlendes "part"-Attribut:
    cpe:2.3:sainwp:onestore_sites:*:*:*:*:*:*:wordpress:*:*
    cpe:2.3:a:sainwp:onestore_sites:*:*:*:*:*:wordpress:*:*
@@ -365,7 +365,7 @@ Li et al.\ setzen ein \acrfull{ai-rnn} in Kombination mit Word2Vec ein, mit eine
 \medskip
 
 Die Herausforderung all dieser Methoden liegt in der sehr heterogenen und fehlerbehafteten Datenlage, wie in vorhergegangenen Kapiteln gezeigt.
-Das Ergebnis sind also häufig falsch-negativen und falsch-positiven Zuordnungen, was zu der Notwendigkeit führt, die Ergebnisse immer noch einmal manuell prüfen zu müssen.
+Das Ergebnis ist also häufig falsch-negativen und falsch-positiven Zuordnungen, was zu der Notwendigkeit führt, die Ergebnisse immer noch einmal manuell prüfen zu müssen.
 Einige Ansätze schlagen als Methode daher bereits eine Kombination einer automatischer Vorselektion und menschlicher Prüfung vor, um die Fehlerquote zu verringern \autocite{Takahashi_Miyamoto_Nakao_2016, Sanguino_Uetz_2017}.
 
 \paragraph{Der Ansatz der \metaeffekt}
@@ -441,7 +441,7 @@ Einige Beispiele für solche Ids können in \autoref{tab:ms-product-id-example} 
         \resizebox{1.2\textwidth}{!}{%
             \begin{tabular}{llll}
                 \toprule
-                \textbf{ID}  & \textbf{Vendor} & \textbf{Family} & \textbf{Name}                                                       \\
+                \textbf{Id}  & \textbf{Vendor} & \textbf{Family} & \textbf{Name}                                                       \\
                 \midrule
                 11673        & Windows         & Microsoft       & Windows 10 Version 1809 for HoloLens                                \\
                 11568        & Windows         & Microsoft       & Windows 10 Version 1809 for 32-bit Systems                          \\

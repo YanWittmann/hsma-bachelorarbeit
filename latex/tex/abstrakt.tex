@@ -7,21 +7,21 @@
 % Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Deutsch
 \newcommand{\hsmaabstractde}{
     Um Softwareartefakte verschiedenen Produktrepräsentationen wie CPE, PURL oder Microsoft-Produktkennungen zuordnen zu können, wurde in dieser Arbeit ein neues System für die Modellierung von Beziehungen zwischen Produkten für das Schwachstellenmanagement-System der \metaeffektsp GmbH entwickelt.
-    Ausgangspunkt ist eine Analyse der Schwächen des bisherigen YAML-basierten Formats, darunter die Übergeneralisierung von Regeln zur Auswahl von Artefakten, uneinheitliche Typangaben und schwer nachvollziehbare Entscheidungen.
+    Ausgangspunkt ist eine Analyse der Schwächen des bisherigen YAML-basierten Formats, darunter die Übergeneralisierung von Regeln zur Auswahl von Artefakten, uneinheitliche Typangaben und eingeschränkt nachvollziehbare Entscheidungen.
     Als Lösung wurde ein graphenbasiertes Modell entworfen, in dem Produkte und ihre verschiedenen Darstellungen als Knoten erfasst und ihre Beziehungen durch Kanten beschrieben werden.
     Dieses Modell wurde in Java zur Demonstration der Funktionsfähigkeit umgesetzt und nutzt SQLite zur Speicherung der Daten.
     Durch eine Analyse der möglichen Datenquellen werden im neuen System typische Merkmale der Daten genutzt, um typspezifische Attribute für genauere und bewusstere Zuordnungen explizit bereitzustellen.
     Manuelle Anpassungen bleiben weiterhin über ein manuelles Modifikationsformat möglich.
-    Zudem wird die automatische Generierung öffentlicher Datenanteile und innere Konsistenzprüfung behandelt.
+    Zudem wird die automatische Generierung von Inahlten aus öffentlichen Datenanteilen und innere Konsistenzprüfung behandelt.
 }
 
 % Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Englisch
 \newcommand{\hsmaabstracten}{
-    In order to reilably assign software artefacts to various product representations such as CPEs, PURLs, or Microsoft product identifiers, this thesis presents the development of a new system for modeling relationships between products for the vulnerability management system of \metaeffektsp GmbH.
+    In order to reliably assign software artefacts to various product representations such as CPEs, PURLs, or Microsoft product identifiers, this thesis presents the development of a new system for modeling relationships between products for the vulnerability management system of \metaeffektsp GmbH.
     The work begins with an analysis of the limitations of the existing YAML-based correlation solution, which include overly broad selection rules, inconsistent type matching, and limited traceability of decision logic.
     As a solution, a graph-based model was designed, in which products and their representations are expressed as nodes, and their relationships are described through typed edges.
     This model was implemented in Java to demonstrate its feasibility and uses SQLite for data storage.
     Based on an analysis of common input sources, the new system identifies characteristic patterns to extract type-specific attributes, enabling more accurate and deliberate correlations.
-    Manual adjustments remain possible through a dedicated modification format.
-    The system also addresses the automated generation of graph contents and ensures internal consistency through validation mechanisms.
+    Manual adjustments remain possible by applying a dedicated modification format.
+    The system also addresses the automated generation of graph contents from public data sources and ensures internal consistency through validation mechanisms
 }

@@ -187,16 +187,16 @@ So können firmeninterne Ergänzungen weiterhin in einem separaten, nicht öffen
 % Die inkrementelle Anwendung von Korrelationseinträgen erfordert eine strenge Reihenfolge, die aktuell nur durch die Position in der \acrshort{yaml}-Datei gesteuert wird. Änderungen in der Eintragsreihenfolge können unbeabsichtigte Seiteneffekte verursachen. Explizite Abhängigkeitsdeklarationen oder eine deklarative Priorisierungslogik (anstatt impliziter Dateiordnung) würden Robustheit und Verständlichkeit erhöhen.
 
 Das aktuelle System für Korrelationseinträge verarbeitet die Daten inkrementell (siehe \autoref{par:incremental-correlation-entries}), d.h.\ jeder Eintrag baut potenziell auf dem Zustand auf, der durch vorherige Einträge abgeleitet wurde.
-Da diese Abhängigkeiten zwischen Einträgen nicht explizit deklariert werden müssen, ergibt sich die Reihenfolge innerhalb einer \acrshort{yaml}-Datei wenigstens noch basierend auf der Position innerhalb der Datei, Dateiübergreifend jedoch ist die Verarbeitungsreihenfolge arbiträr basierend auf der Ordnung, die das Dateisystem dem Programm übergibt.
+Da diese Abhängigkeiten zwischen Einträgen nicht explizit deklariert werden müssen, ergibt sich die Reihenfolge innerhalb einer \acrshort{yaml}-Datei wenigstens noch basierend auf der Position innerhalb der Datei, dateiübergreifend jedoch ist die Verarbeitungsreihenfolge arbiträr basierend auf der Ordnung, die das Dateisystem dem Programm übergibt.
 Dies macht das System empfindlich gegenüber Umordnungen der Einträge, vor allem wenn über Dateien hinweg absichtlich oder unabsichtlich Abhängigkeiten erstellt wurden.
 
 Ein Beispiel für eine solche Situation ist in \autoref{lst:correlation-order-depdendency-example} dargestellt, deren beide Korrelationseinträge in zwei separaten Dateien aufgeführt sind.
 Der erste Eintrag ergänzt eine Liste an \acrshortpl{cpe} ganz allgemein für \texttt{redis}-Artefakte in dem \texttt{Additional CPE URIs}-Attribut.
 Der zweite hat nun das Ziel, diese für das Python-Modul \enquote{redis}\footnote{\url{https://pypi.org/project/redis}} als nicht zutreffend zu markieren.
-Dafür müssen die \acrshort{cpe} über das \texttt{remove}-Schlüsselwort zunächst wieder aus dem \texttt{Additional CPE URIs}-Attribut entfernt, und dann explizit als \texttt{Inapplicable CPE URIs} für das Python-Modul gesetzt werden.
+Dafür müssen die \acrshort{cpe} über das \texttt{remove}-Schlüsselwort zunächst wieder aus dem \texttt{Additional CPE URIs}-Attribut entfernt, und explizit als \texttt{Inapplicable CPE URIs} für das Python-Modul gesetzt werden.
 Wenn nun die Verarbeitungsreihenfolge der Einträge sich durch eine Verschiebung oder Umbenennung der Dateien ändert, dann wird auch diese Logik nicht mehr korrekt greifen können.
 
-\begin{lstlisting}[style=yaml,caption={Korrelationseinträge in zwei unterschiedlichen Dateien, die aufeinander aufbauen},label={lst:correlation-order-depdendency-example}]
+\begin{lstlisting}[style=yaml,caption={Zwei aufeinander aufbauende Korrelationseinträge},label={lst:correlation-order-depdendency-example}]
 - affects:
     - Id: redis-*/i
       Component: redis/i
@@ -233,7 +233,7 @@ Es enthält keine Metadaten über sich selbst, und jeder Eintrag steht lose nebe
 % Abbildung von Versionen nicht ausreichend erfasst.
 % Abhängigkeit auf Daten und erfassung parametrisierter Muster ist nicht möglich.
 
-Im vorhandenen Format ist es für jede bekannte Ausprägung einzelner Attributkombinationen die zu einer anderen Parametrisierung der Zielrepräsentation führen notwendig, einen neuen Eintrag zu erzeugen, der auf diese Attribute prüft und dann explizit die Zielform mit dem Parameter befüllt angibt.
+Im vorhandenen Format ist es für jede bekannte Ausprägung einzelner Attributkombinationen die zu einer anderen Parametrisierung der Zielrepräsentation führen notwendig, einen neuen Eintrag zu erzeugen, der auf diese Attribute prüft und explizit die Zielform mit dem Parameter befüllt angibt.
 Dies ist besonders in \autoref{lst:correlation-generated-zulu-example} leicht zu erkennen, da hier für jede Version einer \acrshort{cpe} in einem neuen Eintrag eine entsprechende Versionsprüfung vorgenommen werden muss.
 
 Die dynamische Abhängigkeit auf Referenzdaten ist momentan also nur über die Erfassung mit parametrisierten Mustern möglich, was weder erweiterbar noch leicht zu pflegen ist.
