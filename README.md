@@ -54,10 +54,6 @@ Das neue System bietet eine Reihe von Verbesserungen gegenüber der bisherigen L
 
 ## Fazit
 
-Die Arbeit zeigt, dass ein graphenbasiertes Modell eine effektive Lösung für die Herausforderungen im Schwachstellenmanagement darstellt.
-Das entwickelte System bietet eine solide Grundlage für präzisere, transparentere und besser wartbare Korrelationen von Softwareprodukten.
-Zukünftige Erweiterungen könnten sich auf die automatische Konvertierung der alten Korrelationsdaten und die Integration weiterer Datenquellen konzentrieren.
-
 Die vorliegende Arbeit hat ein konzeptionell und technisch neues graphenbasiertes Korrelationssystem entwickelt und implementiert.
 Es adressiert die Herausforderungen bei der zuverlässigen Zuordnung heterogener Produktrepräsentationen im Schwachstellenmanagement.
 Durch die Einführung einer einheitlichen, produktzentrischen Modellierung und expliziter semantischer Beziehungen wurde eine Lösung geschaffen, die die Skalierbarkeit, Wartbarkeit, Konsistenz und Nachvollziehbarkeit gegenüber dem bisherigen System signifikant verbessert.
